@@ -224,6 +224,7 @@ export default function ReferralForm({
               {...register("referralCode")}
               disabled={!!defaultReferralCode}
               error={!!errors.referralCode}
+              defaultValue={defaultReferralCode}
               helperText={errors.referralCode?.message}
               InputProps={{
                 startAdornment: (
