@@ -1,12 +1,44 @@
 "use client";
 
-function PageContent(): React.JSX.Element | null {
+import { useSearchParams } from "next/navigation";
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import WinACarForm from "./components/WinACarForm";
+import Footer from "./components/Footer";
+import { useQuery } from "@tanstack/react-query";
+import { getStoreBySlug } from "@/services/store.service";
+
+export default function WinACarPage() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get("refferalcode") || "";
+  const slug = searchParams.get("slug") || "";
+
+  const { data: store, isLoading } = useQuery({
+    queryKey: ["store", slug],
+    queryFn: () => getStoreBySlug(slug),
+    enabled: !!slug,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const showExtendedFields = !!slug;
+
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full">
-      <h1 className="text-4xl font-bold">Win a Car</h1>
-      <p className="mt-4 text-lg">Stay tuned for more details! , Messi the goat</p>
-    </div>
+    <>
+      <Navbar />
+      <Hero />
+
+      <WinACarForm
+        showExtendedFields={showExtendedFields}
+        tokenValue={token}
+        storeName={store?.name || ""}
+        isLoading={isLoading}
+        storeId={store?._id || ""}
+        sweepstakeId={(process.env.NEXT_PUBLIC_SWEEPSTAKE_ID || "").toString()}
+      />
+
+      <Footer />
+    </>
   );
 }
-
-export default PageContent;
