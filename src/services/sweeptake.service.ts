@@ -13,9 +13,12 @@ interface RegisterPayload {
   lastName?: string;
   email?: string;
   zipCode?: string;
+  campaignId?: string;
 }
 
 export async function registerParticipant(payload: RegisterPayload) {
+  console.log("🚀 Payload para registrar participante:", payload);
+  
   try {
     const response = await api.post("/sweepstakes/participants/participate-by-refferal", payload);
     return response.data;

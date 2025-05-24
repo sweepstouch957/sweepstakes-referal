@@ -15,7 +15,7 @@ export default function Hero() {
           url(${isMobile ? BgMobile.src : BgDesktop.src})
         `,
         height: "100vh",
-        marginTop: { xs: "48px", sm: "80px" },
+        marginTop: { xs: "48px", sm: "64px" },
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
