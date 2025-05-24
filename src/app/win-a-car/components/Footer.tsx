@@ -26,7 +26,6 @@ export default function Footer() {
           textAlign={isSmall ? "center" : "left"}
         >
           <Box>
-            <Typography variant="body1">📞 +1 (201) 340-2015</Typography>
             <Typography variant="body1">📧 info@sweepstouch.com</Typography>
           </Box>
 
