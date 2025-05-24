@@ -88,7 +88,7 @@ export default function WinACarFormWithThankYou({
       lastName: data.lastName,
       email: data.email,
       zipCode: data.zip,
-      customerPhone: `+1${cleanPhone}`,
+      customerPhone: `${cleanPhone}`,
       method: "referral",
     });
   };

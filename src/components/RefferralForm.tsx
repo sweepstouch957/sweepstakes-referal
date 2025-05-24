@@ -97,6 +97,7 @@ export default function ReferralForm({
     <Box
       component="form"
       onSubmit={handleSubmit(onSubmit)}
+      id="form"
       sx={{
         "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
           {
@@ -108,55 +109,44 @@ export default function ReferralForm({
       }}
     >
       <Stack spacing={2}>
-        <Stack
-          gap={2}
-          direction={{ xs: "column", sm: "row" }}
-          justifyContent={"space-between"}
-          width={"100%"}
-        >
-          <Box>
-            {isLoading ? (
-              <Skeleton height={56} variant="rounded" />
-            ) : (
-              <TextField
-                {...register("firstName")}
-                error={!!errors.firstName}
-                helperText={errors.firstName?.message}
-                placeholder="First Name"
-                fullWidth
-                inputProps={{ maxLength: 50 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Person />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-          </Box>
-          <Box>
-            {isLoading ? (
-              <Skeleton height={56} variant="rounded" />
-            ) : (
-              <TextField
-                {...register("lastName")}
-                error={!!errors.lastName}
-                helperText={errors.lastName?.message}
-                placeholder="Last Name"
-                fullWidth
-                inputProps={{ maxLength: 50 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PersonOutline />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-          </Box>
-        </Stack>
+        {isLoading ? (
+          <Skeleton height={56} variant="rounded" />
+        ) : (
+          <TextField
+            {...register("firstName")}
+            error={!!errors.firstName}
+            helperText={errors.firstName?.message}
+            placeholder="First Name"
+            fullWidth
+            inputProps={{ maxLength: 50 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Person />
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
+        {isLoading ? (
+          <Skeleton height={56} variant="rounded" />
+        ) : (
+          <TextField
+            {...register("lastName")}
+            error={!!errors.lastName}
+            helperText={errors.lastName?.message}
+            placeholder="Last Name"
+            fullWidth
+            inputProps={{ maxLength: 50 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonOutline />
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
 
         {isLoading ? (
           <Skeleton height={56} variant="rounded" />
@@ -222,16 +212,23 @@ export default function ReferralForm({
             <TextField
               placeholder="Referral Code"
               {...register("referralCode")}
-              disabled={!!defaultReferralCode}
-              error={!!errors.referralCode}
               defaultValue={defaultReferralCode}
+              error={!!errors.referralCode}
               helperText={errors.referralCode?.message}
               InputProps={{
+                readOnly: true,
                 startAdornment: (
                   <InputAdornment position="start">
                     <LinkIcon />
                   </InputAdornment>
                 ),
+                sx: {
+                  backgroundColor: "#fff", // o cualquier color que mantenga el diseño
+                  cursor: "not-allowed",
+                  "& input": {
+                    color: "#000", // mantener color de texto si lo necesitas
+                  },
+                },
               }}
             />
           </FormControl>
@@ -246,14 +243,22 @@ export default function ReferralForm({
               {...register("supermarket")}
               error={!!errors.supermarket}
               helperText={errors.supermarket?.message}
+              defaultValue={defaultStoreName}
               InputProps={{
+                readOnly: true,
                 startAdornment: (
                   <InputAdornment position="start">
                     <Store />
                   </InputAdornment>
                 ),
-                value: defaultStoreName,
-                disabled: true,
+                sx: {
+                  backgroundColor: "#fff", // o cualquier color que mantenga el diseño
+                  cursor: "not-allowed",
+                  "& input": {
+                    color: "#000", // mantener color de texto si lo necesitas
+                  },
+                },
+                disabled: !!defaultStoreName, // deshabilitar si no hay nombre de tienda
               }}
             />
           ))}

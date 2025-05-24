@@ -12,7 +12,7 @@ import {  Container, Skeleton } from "@mui/material";
 
 function WinACarFormContainer() {
   const searchParams = useSearchParams();
-  const token = searchParams.get("referralCode") || "";
+  const token = searchParams.get("referralcode") || "";
   const slug = searchParams.get("slug") || "";
 
   const { data: store, isLoading } = useQuery({
