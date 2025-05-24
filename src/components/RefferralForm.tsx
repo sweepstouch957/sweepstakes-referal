@@ -38,7 +38,9 @@ interface Props {
 const schema = z.object({
   firstName: z.string().min(1, "First Name is required").max(50),
   lastName: z.string().min(1, "Last Name is required").max(50),
-  phone: z.string().regex(/^\(\d{3}\) \d{3}-\d{4}$/, "Phone must be in format (123) 456-7890"),
+  phone: z
+    .string()
+    .regex(/^\(\d{3}\) \d{3}-\d{4}$/, "Phone must be in format (123) 456-7890"),
   email: z.string().email("Invalid email address"),
   zip: z.string().regex(/^\d{5}$/, "Zip code must be 5 digits"),
   referralCode: z.string(),
@@ -76,7 +78,8 @@ export default function ReferralForm({
   const formatPhoneNumber = (value: string) => {
     const cleaned = value.replace(/\D/g, "").slice(0, 10);
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{0,4})$/);
-    if (match) return `(${match[1]}) ${match[2]}${match[3] ? `-${match[3]}` : ""}`;
+    if (match)
+      return `(${match[1]}) ${match[2]}${match[3] ? `-${match[3]}` : ""}`;
     return cleaned;
   };
 
@@ -95,16 +98,22 @@ export default function ReferralForm({
       component="form"
       onSubmit={handleSubmit(onSubmit)}
       sx={{
-        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#ff4b9b",
-        },
+        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+          {
+            borderColor: "#ff4b9b",
+          },
         "& .MuiInputLabel-root.Mui-focused": {
           color: "#ff4b9b",
         },
       }}
     >
       <Stack spacing={2}>
-        <Stack spacing={2} direction={{ xs: "column", sm: "row" }}>
+        <Stack
+          gap={2}
+          direction={{ xs: "column", sm: "row" }}
+          justifyContent={"space-between"}
+          width={"100%"}
+        >
           <Box>
             {isLoading ? (
               <Skeleton height={56} variant="rounded" />
@@ -227,8 +236,8 @@ export default function ReferralForm({
           </FormControl>
         )}
 
-        {showExtendedFields && (
-          isLoading ? (
+        {showExtendedFields &&
+          (isLoading ? (
             <Skeleton height={56} variant="rounded" />
           ) : (
             <TextField
@@ -242,15 +251,15 @@ export default function ReferralForm({
                     <Store />
                   </InputAdornment>
                 ),
-              value: defaultStoreName,
-              disabled: true,
+                value: defaultStoreName,
+                disabled: true,
               }}
             />
-          )
-        )}
+          ))}
 
         <Typography variant="caption" textAlign="center" color="text.secondary">
-          By participating, you agree to receive promotional messages. View our terms and conditions.
+          By participating, you agree to receive promotional messages. View our
+          terms and conditions.
         </Typography>
 
         <Button
