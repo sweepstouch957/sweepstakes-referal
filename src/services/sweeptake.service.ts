@@ -28,3 +28,5 @@ export async function registerParticipant(payload: RegisterPayload) {
     throw error?.response?.data || { error: "Error al registrar participante" };
   }
 }
+
+

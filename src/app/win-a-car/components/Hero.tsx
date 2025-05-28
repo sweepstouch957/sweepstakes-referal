@@ -11,14 +11,14 @@ export default function Hero() {
       sx={{
         width: "100%",
         backgroundImage: `
-          linear-gradient(to bottom, rgba(255,255,255,0) 80%, rgba(255,255,255,1)),
+          linear-gradient(to bottom, rgba(255,255,255,0) 90%, rgba(255,255,255,1)),
           url(${isMobile ? BgMobile.src : BgDesktop.src})
         `,
-        height: "100vh",
+        height: isMobile ? "80vh" : "100vh",
         marginTop: { xs: "48px", sm: "64px" },
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
+        backgroundPosition: isMobile ? "top center" : "center",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

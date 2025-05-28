@@ -8,8 +8,8 @@ import Footer from "./components/Footer";
 import { useQuery } from "@tanstack/react-query";
 import { getStoreBySlug } from "@/services/store.service";
 import { Suspense } from "react";
-import {  Container, Skeleton } from "@mui/material";
-
+import { Container, Skeleton } from "@mui/material";
+import Cookies from "js-cookie";
 function WinACarFormContainer() {
   const searchParams = useSearchParams();
   const token = searchParams.get("referralcode") || "";
@@ -24,6 +24,11 @@ function WinACarFormContainer() {
     staleTime: 1000 * 60 * 5,
   });
 
+  // setStoreId in local storage
+  if (store) {
+    Cookies.set("storeId", store._id);
+  }
+
   const showExtendedFields = !!slug;
 
   return (
@@ -32,7 +37,7 @@ function WinACarFormContainer() {
       tokenValue={token}
       storeName={store?.name || ""}
       isLoading={isLoading}
-      storeId={store?._id || ""}
+      storeId={store?._id || Cookies.get("storeId") || ""}
       sweepstakeId={(process.env.NEXT_PUBLIC_SWEEPSTAKE_ID || "").toString()}
       campaignId={(process.env.NEXT_PUBLIC_CAMPAIGN_ID || "").toString()}
     />

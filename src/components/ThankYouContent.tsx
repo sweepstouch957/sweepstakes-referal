@@ -10,6 +10,7 @@ import {
   Chip,
   Tooltip,
   Snackbar,
+  Paper,
 } from "@mui/material";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -20,7 +21,6 @@ import Image from "next/image";
 import ParticipationImage from "@public/referral-illustration.webp";
 import { useState } from "react";
 
-
 interface ThankYouProps {
   referralCode: string;
   referralLink: string;
@@ -28,6 +28,7 @@ interface ThankYouProps {
   userCoupons: Array<{
     code: string;
     method: string;
+    store: string;
   }>;
 }
 
@@ -37,15 +38,12 @@ export default function ThankYouContent({
   supermarket,
   userCoupons,
 }: ThankYouProps) {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
   const copyReferralCode = () => {
     navigator.clipboard.writeText(referralCode);
     setSnackbarOpen(true);
-    
-    setTimeout(() => {
-      setSnackbarOpen(false);
-    }, 2000);
+    setTimeout(() => setSnackbarOpen(false), 2000);
   };
 
   const share = (platform: string) => {
@@ -64,31 +62,22 @@ export default function ThankYouContent({
     if (platform === "link") {
       navigator.clipboard.writeText(referralLink);
       setSnackbarOpen(true);
-      setTimeout(() => {
-        setSnackbarOpen(false);
-      }, 2000);
+      setTimeout(() => setSnackbarOpen(false), 2000);
     } else {
       window.open(urls[platform], "_blank");
     }
   };
 
-
   return (
     <>
-      <Box sx={{ bgcolor: "#fff", pb: 6 }}>
+      <Box sx={{ bgcolor: "#f9f9ff", py: 6 }}>
         <Container maxWidth="sm">
-          <Box
-            sx={{
-              backgroundColor: "#fff",
-              borderRadius: 4,
-              mt: 12,
-              boxShadow: 3,
-              p: 4,
-              textAlign: "center",
-            }}
+          <Paper
+            elevation={4}
+            sx={{ p: 4, borderRadius: 4, textAlign: "center" }}
           >
             <Typography variant="h4" sx={{ color: "#ff4b9b" }} fontWeight={700}>
-              Thank you for participating!
+              🎉 Thank you for participating!
             </Typography>
             <Typography variant="body1" mt={1}>
               Your registration with <b>{supermarket}</b> was successful!
@@ -118,7 +107,7 @@ export default function ThankYouContent({
               >
                 {referralCode}
               </Typography>
-              <Tooltip title="Copiar código">
+              <Tooltip title="Copy code">
                 <IconButton size="small" onClick={copyReferralCode}>
                   <ContentCopyIcon fontSize="small" />
                 </IconButton>
@@ -126,24 +115,23 @@ export default function ThankYouContent({
             </Box>
 
             <Typography variant="subtitle1" fontWeight={700} mt={4}>
-              Share it with your friends and increase your chances of winning:
+              📢 Share it and increase your chances of winning:
             </Typography>
             <Typography variant="body2" mt={1}>
-              • For each friend who completes their registration with your code,
-              you’ll get 1 additional entry.
+              • 1 friend = 1 additional entry 🚀
             </Typography>
             <Typography variant="body2">
-              • The more referrals, the closer you are to the wheel!
+              • More referrals = Closer to the car 🏎️
             </Typography>
 
-            <Box my={2}>
+            <Box my={3}>
               <Image
                 src={ParticipationImage.src}
-                alt="Thank You"
+                alt="Referral Illustration"
                 width={422}
                 height={445}
                 style={{
-                  borderRadius: "8px",
+                  borderRadius: "12px",
                   maxWidth: "100%",
                   height: "auto",
                 }}
@@ -151,7 +139,7 @@ export default function ThankYouContent({
             </Box>
 
             <Divider sx={{ my: 3 }}>
-              <Chip label="Your Coupons" color="primary" />
+              <Chip label="Your Participations" color="primary" />
             </Divider>
 
             <Stack spacing={1}>
@@ -160,18 +148,38 @@ export default function ThankYouContent({
                   <Box
                     key={idx}
                     sx={{
-                      backgroundColor: "#f7f7f7",
+                      backgroundColor: "#fefefe",
                       borderRadius: 2,
                       p: 2,
+                      boxShadow: 1,
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
                     }}
                   >
-                    <Typography variant="body1" fontWeight={700}>
-                      {coupon.code}
-                    </Typography>
-                    <Chip label={coupon.method} size="small" />
+                    <Stack spacing={0.5}>
+                      <Typography variant="caption" color="text.secondary">
+                        Code
+                      </Typography>
+                      <Typography variant="body1" fontWeight={700}>
+                        {coupon.code}
+                      </Typography>
+                    </Stack>
+                    <Stack spacing={0.5} alignItems="flex-end">
+                      <Chip
+                        label={coupon.method}
+                        size="small"
+                        color="secondary"
+                      />
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        textAlign="right"
+                        maxWidth={"30ch"}
+                      >
+                        {coupon.store}
+                      </Typography>
+                    </Stack>
                   </Box>
                 ))
               ) : (
@@ -181,17 +189,18 @@ export default function ThankYouContent({
               )}
             </Stack>
 
-            <Typography variant="subtitle1" fontWeight={700} mt={4}>
-              How to share?
+            <Divider sx={{ my: 4 }}>
+              <Chip label="How to Share?" color="secondary" />
+            </Divider>
+
+            <Typography variant="body2" mb={1}>
+              • Copy your link and send via WhatsApp
             </Typography>
-            <Typography variant="body2" mt={1}>
-              • Copy your unique link and send it via WhatsApp
-            </Typography>
-            <Typography variant="body2">
-              • Share on Facebook, Instagram, or email
+            <Typography variant="body2" mb={2}>
+              • Share on Facebook, Instagram or wherever!
             </Typography>
 
-            <Stack direction="row" spacing={2} justifyContent="center" mt={3}>
+            <Stack direction="row" spacing={2} justifyContent="center" mt={2}>
               <IconButton
                 onClick={() => share("whatsapp")}
                 sx={{
@@ -241,14 +250,15 @@ export default function ThankYouContent({
             >
               Good luck and thanks for being part of Sweepstouch!
             </Typography>
-          </Box>
+          </Paper>
         </Container>
       </Box>
-      <Snackbar 
+
+      <Snackbar
         open={snackbarOpen}
-        onClose={() => {}}
-        color="success"
-        message="Link copied to clipboard"
+        onClose={() => setSnackbarOpen(false)}
+        message="Link copied to clipboard!"
+        autoHideDuration={2000}
       />
     </>
   );
