@@ -1,4 +1,5 @@
 import CustomButton from "@/app/win-a-car/components/Button";
+import { formatTimer } from "@/utils/formatTimer";
 import { Box, FormControl, FormLabel, Typography } from "@mui/material";
 import OTPInput from "react-otp-input";
 
@@ -30,7 +31,7 @@ export default function OtpStep({
       }}
     >
       <FormLabel>
-        Enter the OTP sent to   
+        Enter the OTP sent to
         {phone ? ` +1${phone}` : "phone number"}:
       </FormLabel>
 
@@ -56,7 +57,7 @@ export default function OtpStep({
 
       {resendTimer > 0 ? (
         <Typography color="text.secondary">
-          You can try again in <strong>{resendTimer}s</strong>
+          You can try again in <strong>{formatTimer(resendTimer)}</strong>
         </Typography>
       ) : (
         <Box>

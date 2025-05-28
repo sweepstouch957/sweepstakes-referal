@@ -8,7 +8,6 @@ import { useMutation } from "@tanstack/react-query";
 import { OtpService } from "@/services/otp.service";
 import { validateReferalCode } from "@/services/referrer.service";
 
-
 const schema = z.object({
   firstName: z
     .string()
@@ -20,29 +19,22 @@ const schema = z.object({
     .min(1, { message: "Last name is required" })
     .max(50, { message: "Last name must be less than 50 characters" }),
 
-  phone: z
-    .string()
-    .regex(/\(\d{3}\) \d{3}-\d{4}/, {
-      message: "Phone number must be in format (123) 456-7890",
-    }),
+  phone: z.string().regex(/\(\d{3}\) \d{3}-\d{4}/, {
+    message: "Phone number must be in format (123) 456-7890",
+  }),
 
   email: z.string().email({ message: "Enter a valid email address" }),
 
-  zip: z
-    .string()
-    .regex(/^\d{5}$/, { message: "ZIP code must be 5 digits" }),
+  zip: z.string().regex(/^\d{5}$/, { message: "ZIP code must be 5 digits" }),
 
   referralCode: z.string().optional(),
 
   supermarket: z.string().optional(),
 
-  otp: z
-    .string()
-    .length(6, { message: "OTP must be exactly 6 digits" }),
+  otp: z.string().length(6, { message: "OTP must be exactly 6 digits" }),
 });
 
 export default schema;
-
 
 export type FormData = z.infer<typeof schema>;
 
@@ -92,16 +84,20 @@ export function useReferralStepper(
     isPending: isValidatingReferral,
   } = useMutation({
     mutationFn: (referral: string) => validateReferalCode(referral),
-    onError: (error: any) => {      
-      setReferralError( error?.response?.data?.error || "Referral validation failed");
+    onError: (error: any) => {
+      setReferralError(
+        error?.response?.data?.error || "Referral validation failed"
+      );
     },
-
   });
 
-  const handeSetOtp = useCallback((val: string) => {
-    setValue("otp", val, { shouldValidate: true });
-    setOtp(val);
-  }, [ setValue ]);
+  const handeSetOtp = useCallback(
+    (val: string) => {
+      setValue("otp", val, { shouldValidate: true });
+      setOtp(val);
+    },
+    [setValue]
+  );
   const handleSendOtp = useCallback(async () => {
     setIsLoadingOtp(true);
     setResendError(null);
@@ -120,11 +116,9 @@ export function useReferralStepper(
   }, [getValues]);
 
   const handleFinalSubmit = async (data: FormData) => {
-    
     setIsValidatingOtp(true);
     setValue("otp", otp, { shouldValidate: true });
-  
-    
+
     const valid = await trigger("otp");
     if (!valid) return setIsValidatingOtp(false);
     try {
@@ -139,11 +133,7 @@ export function useReferralStepper(
     }
     setIsValidatingOtp(false);
   };
-
-  useEffect(() => {
-    if (referralValidation?.valid) handleSendOtp();
-  }, [referralValidation, handleSendOtp]);
-
+  
   useEffect(() => {
     if (resendTimer > 0) {
       timerRef.current = setInterval(() => {

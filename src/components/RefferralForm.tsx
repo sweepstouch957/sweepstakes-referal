@@ -47,7 +47,7 @@ export default function ReferralForm({
     setReferralError,
   } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit);
 
-  const nextStep = async () => {
+  const nextStep = async () => {    
     if (activeStep === 0) {
       const valid = await trigger([
         "firstName",
@@ -58,25 +58,37 @@ export default function ReferralForm({
       ]);
       if (!valid) return;
       setActiveStep(1);
-    } else if (activeStep === 1) {
+      return;
+    }
+
+    // Paso 2: Validación del código de referido
+    if (activeStep === 1) {
       const valid = await trigger(["referralCode"]);
       if (!valid) return;
+
       const code = getValues("referralCode");
+      // Si hay código, intenta validarlo
       if (code) {
         try {
           const validation = await validateReferralCodeMutation(code);
-          if (validation.valid) {
-            await handleSendOtp();
+          if (!validation.valid) {
+            // Aquí podrías manejar el error (ej: setBackendError("Código inválido"))
+            return;
           }
+          // Si es válido, avanza y manda el OTP
+          setActiveStep(2);
+          await handleSendOtp();
+          return;
         } catch (err) {
           console.error("Validation error", err);
+          // Aquí podrías setear un estado de error visual si lo necesitas
+          return;
         }
-      } else {
-        await handleSendOtp();
       }
+      setActiveStep(2);
+      await handleSendOtp();
     }
   };
-
 
   const prevStep = () => setActiveStep((prev) => prev - 1);
 
@@ -138,7 +150,10 @@ export default function ReferralForm({
               )}
             </CustomButton>
           ) : (
-            <CustomButton disabled={isValidatingOtp || isLoading} onClick={form.handleSubmit(handleFinalSubmit)}>
+            <CustomButton
+              disabled={isValidatingOtp || isLoading}
+              onClick={form.handleSubmit(handleFinalSubmit)}
+            >
               {isValidatingOtp ? (
                 <CircularProgress size={22} color="inherit" />
               ) : (
