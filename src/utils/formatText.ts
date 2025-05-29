@@ -9,7 +9,23 @@ export function generateReferralCopy(storeName: string, referralLink: string) {
   // Arma el texto bonito
   return (
     `¡${storeEmoji} ${storeName} te invita a participar!\n\n` +
-    `Regístrate con mi código *${code}* y gana más oportunidades de ganar en Sweepstouch.\n\n` +
+    `Regístrate con mi código *${code}* y gana más oportunidades de ganar un auto nuevo.\n\n` +
     `🔗 Link de registro: ${referralLink}`
   );
+}
+
+export function shareOnWhatsApp(storeName: string, referralLink: string) {
+  const msg = encodeURIComponent(generateReferralCopy(storeName, referralLink));
+  const url = `https://wa.me/?text=${msg}`;
+  window.open(url, "_blank");
+}
+
+export function shareOnFacebook(storeName: string, referralLink: string) {
+  const quote = encodeURIComponent(
+    `¡Participa en el sorteo de ${storeName}! Regístrate con este link para ganar un auto de ultimo modelo!.`
+  );
+  const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+    referralLink
+  )}&quote=${quote}`;
+  window.open(url, "_blank");
 }

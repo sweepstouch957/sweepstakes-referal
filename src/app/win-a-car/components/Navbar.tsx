@@ -8,8 +8,6 @@ import {
   Container,
   Avatar,
   IconButton,
-  useMediaQuery,
-  useTheme,
   Box,
 } from "@mui/material";
 import Image from "next/image";
@@ -22,8 +20,6 @@ import UserMenu from "./UserMenu";
 import { Person } from "@mui/icons-material";
 
 export default function Navbar() {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
 
   const [user, setUser] = useState<null | {
@@ -34,14 +30,10 @@ export default function Navbar() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const userCookie = Cookies.get("sweepstouch_user_profile");
-    if (userCookie) {
-      try {
-        const parsedUser: any = JSON.parse(userCookie);
-        setUser(parsedUser.user);
-      } catch {
-        setUser(null);
-      }
+    setIsLoading(true);
+    const user: any = Cookies.get("sweepstakes_user");
+    if (user) {
+      setUser(JSON.parse(user));
     }
     setIsLoading(false);
   }, []);
@@ -54,7 +46,9 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    Cookies.set("sweepstouch_user_profile", "");
+    Cookies.remove("sweepstakes_user");
+    Cookies.remove("sweepstakes_cupons");
+    Cookies.remove("sweepstakes_token");
     setUser(null);
     router.push("/win-a-car/login");
   };
@@ -79,12 +73,7 @@ export default function Navbar() {
     >
       <Container maxWidth="lg">
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Image
-            src={Logo}
-            alt="Sweepstouch"
-            width={isMobile ? 120 : 200}
-            height={48}
-          />
+          <Image src={Logo} alt="Sweepstouch" width={200} height={48} />
 
           {!isLoading && (
             <Box display="flex" alignItems="center" gap={2}>
@@ -122,7 +111,7 @@ export default function Navbar() {
                         p: 4,
                       }}
                     >
-                      {initials || <Person/>} 
+                      {(initials === "KC" ? "KFC" : initials )|| <Person />}
                     </Avatar>
                   </IconButton>
                   <UserMenu

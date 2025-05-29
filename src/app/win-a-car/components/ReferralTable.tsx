@@ -15,23 +15,27 @@ import {
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import StoreIcon from "@mui/icons-material/Store";
 import { useState } from "react";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";;
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { generateReferralCopy } from "@/utils/formatText";
 import { FacebookOutlined, Instagram } from "@mui/icons-material";
 
 interface ReferralLinkItem {
-  storeName: string;
+  sweepstakeId: string;
   text: string;
+  storeId: string;
+  _id?: string;
 }
 
 interface ReferralLinksTableProps {
   links: ReferralLinkItem[];
+  storeName: string;
   onCopy?: (msg: string) => void;
 }
 
 export default function ReferralLinksTable({
   links,
   onCopy,
+  storeName,
 }: ReferralLinksTableProps) {
   const [copiedMsg, setCopiedMsg] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -101,7 +105,7 @@ export default function ReferralLinksTable({
                       fontSize: { xs: 16, md: 19 },
                     }}
                   >
-                    {link.storeName}
+                    Copia tu link de referido en tus redes para tener mas oportunidades de ganar
                   </Typography>
                 </Stack>
                 <Stack
@@ -163,9 +167,7 @@ export default function ReferralLinksTable({
                     {/* WhatsApp */}
                     <Tooltip title="Compartir por WhatsApp" arrow>
                       <IconButton
-                        onClick={() =>
-                          share("whatsapp", link.text, link.storeName)
-                        }
+                        onClick={() => share("whatsapp", link.text, storeName)}
                         sx={{
                           bgcolor: "#25D366",
                           color: "#fff",
@@ -187,9 +189,7 @@ export default function ReferralLinksTable({
                     {/* Facebook */}
                     <Tooltip title="Compartir en Facebook" arrow>
                       <IconButton
-                        onClick={() =>
-                          share("facebook", link.text, link.storeName)
-                        }
+                        onClick={() => share("facebook", link.text, storeName)}
                         sx={{
                           bgcolor: "#3b5998",
                           color: "#fff",
@@ -211,9 +211,7 @@ export default function ReferralLinksTable({
                     {/* Instagram */}
                     <Tooltip title="Ir a Instagram" arrow>
                       <IconButton
-                        onClick={() =>
-                          share("instagram", link.text, link.storeName)
-                        }
+                        onClick={() => share("instagram", link.text, storeName)}
                         sx={{
                           background:
                             "radial-gradient(circle at 35% 110%, #FDCB52 0%, #E1306C 60%, #B12257 100%)",

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -25,6 +26,20 @@ export default function LoginWithOTP() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [userInfo, setUserInfo] = useState<any>(null);
+
+  useEffect(() => {
+    if (userInfo) {
+      try {
+        Cookies.set("sweepstakes_user", JSON.stringify(userInfo.user));
+        Cookies.set("sweepstakes_stores", JSON.stringify(userInfo.stores));
+        Cookies.set("sweepstakes_token", userInfo.token);
+        router.push("/win-a-car/profile")
+      } catch (err: any) {
+        setError("No se pudo guardar la sesión.");
+      }
+    }
+  }, [userInfo, router]);
 
   // Refs para enfocar los campos
   const phoneInputRef = useRef<HTMLInputElement>(null);
@@ -40,14 +55,15 @@ export default function LoginWithOTP() {
       });
     },
     onSuccess: (data) => {
-      Cookies.set(
-        "sweepstouch_user_profile",
-        JSON.stringify({
-          ...data,
-        }),
-        { expires: 10 }
-      );
-      router.push("/win-a-car/profile");
+      if (!data || typeof data !== "object" || !data.success) {
+        setError("Error: Respuesta inesperada del servidor");
+        return;
+      }
+      try {
+        setUserInfo(data);
+      } catch (err: any) {
+        setError("No se pudo guardar la sesión.");
+      }
     },
     onError: (err: any) => {
       setError(

@@ -1,89 +1,225 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Alert,
-  Typography,
-} from "@mui/material";
+import { Box, Container, Paper, Alert, Skeleton, Fade } from "@mui/material";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import ProfileContent from "./componetns/Profile";
 import Cookies from "js-cookie";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getReferralInfoByStore,
+  ReferralInfoResponse,
+} from "@/services/sweeptake.service";
+import ProfileContent from "./componetns/Profile";
 
 export default function WinACarLoginPage() {
   const [profileData, setProfileData] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+  const [selectedStore, setSelectedStore] = useState<string | null>(null);
+  const [initLoading, setInitLoading] = useState(true);
 
+  // 1. Cargar perfil y tiendas solo cuando la página se hidrata.
   useEffect(() => {
-    const raw = Cookies.get("sweepstouch_user_profile");
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw);
-        setProfileData(parsed);
-      } catch (_) {
-        Cookies.set("sweepstouch_user_profile","");
-        setHasError(true);
-      }
-    } else {
-      setHasError(true);
+    const user = Cookies.get("sweepstakes_user");
+    const stores = Cookies.get("sweepstakes_stores");
+    const userInfo: any = {};
+    if (user) userInfo.user = JSON.parse(user);
+    if (stores) userInfo.stores = JSON.parse(stores);
+    setProfileData(userInfo);
+    if (stores) {
+      const storeList = JSON.parse(stores);
+      if (storeList.length > 0) setSelectedStore(storeList[0].slug);
     }
-    setLoading(false);
+    setTimeout(() => setInitLoading(false), 450); // Delay para simular carga real, UX más suave
   }, []);
+
+  const token = Cookies.get("sweepstakes_token");
+
+  // 2. Query solo si ya está todo montado y hay tienda seleccionada.
+  const { data, isLoading, isError, error, isFetching } =
+    useQuery<ReferralInfoResponse>({
+      queryKey: ["referralInfo", selectedStore, token],
+      queryFn: () => getReferralInfoByStore(selectedStore!, token!),
+      enabled: !!selectedStore && !!token && !initLoading,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      staleTime: 1000 * 60 * 2,
+    });
+
+  // 3. Cambiar tienda (ahora usa el handler esperado)
+  const handleChangeStore = (slug: string) => {
+    setSelectedStore(slug);
+    Cookies.set("sweepstakes_last_store", slug, { path: "/" });
+  };
+
+  // 4. Chequear si hay tiendas
+  const noStores =
+    !profileData?.stores ||
+    !Array.isArray(profileData.stores) ||
+    profileData.stores.length === 0;
+
+  // 5. Skeletons bellos para UX (full skeleton de la card)
+  const SkeletonCard = () => (
+    <Paper
+      elevation={4}
+      sx={{
+        p: { xs: 2, sm: 4 },
+        borderRadius: 4,
+        bgcolor: "#19181e",
+        minHeight: 470,
+        textAlign: "center",
+        boxShadow: "0 2px 32px #ff4b9b14",
+      }}
+    >
+      <Skeleton
+        variant="text"
+        sx={{ mx: "auto", width: "70%", height: 46, bgcolor: "#251a2d" }}
+      />
+      <Skeleton
+        variant="rectangular"
+        sx={{
+          my: 2,
+          mx: "auto",
+          width: "100%",
+          height: 38,
+          borderRadius: 2,
+          bgcolor: "#251a2d",
+        }}
+      />
+      <Skeleton
+        variant="rectangular"
+        sx={{
+          my: 2,
+          mx: "auto",
+          width: "95%",
+          height: 48,
+          borderRadius: 2,
+          bgcolor: "#251a2d",
+        }}
+      />
+      <Skeleton
+        variant="rectangular"
+        sx={{
+          my: 2,
+          mx: "auto",
+          width: "100%",
+          height: 64,
+          borderRadius: 3,
+          bgcolor: "#251a2d",
+        }}
+      />
+      <Skeleton
+        variant="rectangular"
+        sx={{
+          my: 2,
+          mx: "auto",
+          width: "90%",
+          height: 28,
+          borderRadius: 2,
+          bgcolor: "#251a2d",
+        }}
+      />
+      <Skeleton
+        variant="rectangular"
+        sx={{
+          my: 2,
+          mx: "auto",
+          width: "85%",
+          height: 28,
+          borderRadius: 2,
+          bgcolor: "#251a2d",
+        }}
+      />
+      <Skeleton
+        variant="rectangular"
+        sx={{
+          my: 2,
+          mx: "auto",
+          width: "99%",
+          height: 44,
+          borderRadius: 2,
+          bgcolor: "#251a2d",
+        }}
+      />
+    </Paper>
+  );
 
   return (
     <Box
       sx={{
-        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        background: "#18181B",
       }}
     >
       <Navbar />
-
       <Box
         sx={{
           flex: 1,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          mt: { xs: 3, md: 6 },
         }}
       >
-        {loading ? (
-          <Container
-            maxWidth="sm"
-            sx={{
-              my: 6,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <CircularProgress  sx={{width:40,height:40}}/>
-          </Container>
-        ) : hasError ? (
-          <Container maxWidth="sm" sx={{ textAlign: "center", mt: 6 }}>
-            <Alert severity="error" sx={{ mb: 2 }}>
-              Error loading profile data. Please try logging in again.
-            </Alert>
-            <Typography variant="body1" color="white">
-              We could not load your profile. If the problem persists, contact
-              support.
-            </Typography>
-          </Container>
-        ) : (
-          <Box mt={{ xs: 4, sm: 6, md: 8 }}>
-            <ProfileContent {...profileData} />
-          </Box>
-        )}
+        <Container maxWidth="md" sx={{ my: 6 }}>
+          <Fade in={initLoading || isLoading || isFetching}>
+            <Box>
+              {(initLoading || isLoading || isFetching) && <SkeletonCard />}
+            </Box>
+          </Fade>
+          {/* Mostrar solo si no hay loading ni error */}
+          {!initLoading && !isLoading && !isFetching && !isError && (
+            <Paper
+              elevation={4}
+              sx={{
+                p: { xs: 2, sm: 4 },
+                borderRadius: 4,
+                bgcolor: "#19181e",
+                textAlign: "center",
+                boxShadow: "0 2px 32px #ff4b9b18",
+              }}
+            >
+              {noStores ? (
+                <Alert severity="warning" sx={{ mb: 2, fontWeight: 600 }}>
+                  No tienes tiendas activas. ¡Participa primero en una campaña!
+                </Alert>
+              ) : (
+                <ProfileContent
+                  storeName={data?.storeName || ""}
+                  referralLinks={data?.referralLinks || []}
+                  registeredPhones={data?.registeredPhones || []}
+                  userCoupons={data?.userCoupons || []}
+                  stores={profileData?.stores || []}
+                  selectedStore={selectedStore}
+                  handleChangeStore={(e: any) =>
+                    handleChangeStore(e.target ? e.target.value : e)
+                  }
+                />
+              )}
+            </Paper>
+          )}
+          {/* Overlay error */}
+          {!initLoading && isError && (
+            <Fade in={true}>
+              <Box
+                sx={{
+                  mt: 2,
+                  minHeight: 400,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Alert severity="error" sx={{ fontWeight: 700 }}>
+                  {error instanceof Error
+                    ? error.message
+                    : "Error al cargar datos"}
+                </Alert>
+              </Box>
+            </Fade>
+          )}
+        </Container>
       </Box>
-
       <Footer />
     </Box>
   );

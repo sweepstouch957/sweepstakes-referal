@@ -17,19 +17,13 @@ export interface RegisterPayload {
   campaignId?: string;
 }
 
-export interface Coupon {
-  _id: string;
-  code: string;
-  sweepstake: string;
-  customer: string;
-  store: string | { _id: string; name: string }; // Puede ser solo el ID o el objeto populado
-  method: string;
-  issuedAt: string;
-  createdAt: string;
-  updatedAt: string;
-  [key: string]: any;
-}
 
+export interface Coupon {
+  code: string;
+  method: string;
+  store: string;
+  issuedAt?: string;
+}
 export interface LoginPayload {
   phone: string;
   otp: string;
@@ -49,13 +43,28 @@ export interface LoginResponse {
   };
   userCoupons: Coupon[];
 }
+export interface ReferralInfoResponse {
+  success: boolean;
+  storeName: string;
+  referralLinks: Array<{
+    sweepstakeId: string;
+    storeId: string;
+    text: string;
+    [key: string]: any;
+  }>;
+  registeredPhones: string[];
+  userCoupons: Coupon[];
+}
 
 /**
  * Registrar un nuevo participante en el sorteo por referido.
  */
 export async function registerParticipant(payload: RegisterPayload) {
   try {
-    const response = await api.post("/sweepstakes/participants/participate-by-refferal", payload);
+    const response = await api.post(
+      "/sweepstakes/participants/participate-by-refferal",
+      payload
+    );
     return response.data;
   } catch (error: any) {
     console.error(
@@ -69,9 +78,14 @@ export async function registerParticipant(payload: RegisterPayload) {
 /**
  * Login del participante (solo número + OTP).
  */
-export async function loginParticipant(payload: LoginPayload): Promise<LoginResponse> {
+export async function loginParticipant(
+  payload: LoginPayload
+): Promise<LoginResponse> {
   try {
-    const response = await api.post<LoginResponse>("/sweepstakes/participants/login", payload);
+    const response = await api.post<LoginResponse>(
+      "/sweepstakes/participants/login",
+      payload
+    );
     return response.data;
   } catch (error: any) {
     console.error(
@@ -79,5 +93,31 @@ export async function loginParticipant(payload: LoginPayload): Promise<LoginResp
       error?.response?.data || error.message
     );
     throw error?.response?.data || { error: "Error en login" };
+  }
+}
+
+export async function getReferralInfoByStore(
+  slug: string,
+  token: string
+): Promise<ReferralInfoResponse> {
+  try {
+    const response = await api.get<ReferralInfoResponse>(
+      `/sweepstakes/participants/referral-info`,
+      {
+        params: { slug },
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "❌ Error al obtener info de referidos por tienda:",
+      error?.response?.data || error.message
+    );
+    throw (
+      error?.response?.data || {
+        error: "Error al obtener info de referidos por tienda",
+      }
+    );
   }
 }
