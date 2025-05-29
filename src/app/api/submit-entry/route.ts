@@ -5,8 +5,6 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
 
     // ✅ Aquí se imprime la data en la consola del servidor
-    console.log('🟢 Datos recibidos desde el formulario:', data);
-
     // Puedes agregar validaciones mínimas si quieres
     if (!data.name || !data.email) {
       return NextResponse.json(

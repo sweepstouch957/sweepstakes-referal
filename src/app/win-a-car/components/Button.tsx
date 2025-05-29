@@ -29,8 +29,7 @@ export default function CustomButton(props: CustomButtonProps) {
             color: "#ff4b9b",
             border: "2px solid #ff4b9b",
             "&:hover": {
-              backgroundColor: "#ff4b9b",
-              color: "#fff",
+              backgroundColor: "#eeeeee",
               border: "2px solid #ff4b9b",
             },
           }),

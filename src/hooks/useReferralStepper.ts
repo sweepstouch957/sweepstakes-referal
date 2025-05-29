@@ -110,6 +110,8 @@ export function useReferralStepper(
       setActiveStep(2);
       setResendTimer(OTP_COOLDOWN);
     } catch (err: any) {
+      console.log(err);
+      
       setResendError(err?.response?.data?.error || "OTP validation failed");
     }
     setIsLoadingOtp(false);
