@@ -65,7 +65,7 @@ export default function WinACarLoginPage() {
       sx={{
         p: { xs: 2, sm: 4 },
         borderRadius: 4,
-        bgcolor: "#19181e",
+        bgcolor: "#eeeeee",
         minHeight: 470,
         textAlign: "center",
         boxShadow: "0 2px 32px #ff4b9b14",
@@ -83,7 +83,7 @@ export default function WinACarLoginPage() {
           width: "100%",
           height: 38,
           borderRadius: 2,
-          bgcolor: "#251a2d",
+          bgcolor: "#eeeeee",
         }}
       />
       <Skeleton
@@ -94,7 +94,7 @@ export default function WinACarLoginPage() {
           width: "95%",
           height: 48,
           borderRadius: 2,
-          bgcolor: "#251a2d",
+          bgcolor: "#eeeeee",
         }}
       />
       <Skeleton
@@ -105,7 +105,7 @@ export default function WinACarLoginPage() {
           width: "100%",
           height: 64,
           borderRadius: 3,
-          bgcolor: "#251a2d",
+          bgcolor: "#eeeeee",
         }}
       />
       <Skeleton
@@ -116,7 +116,7 @@ export default function WinACarLoginPage() {
           width: "90%",
           height: 28,
           borderRadius: 2,
-          bgcolor: "#251a2d",
+          bgcolor: "#eeeeee",
         }}
       />
       <Skeleton
@@ -127,7 +127,7 @@ export default function WinACarLoginPage() {
           width: "85%",
           height: 28,
           borderRadius: 2,
-          bgcolor: "#251a2d",
+          bgcolor: "#eeeeee",
         }}
       />
       <Skeleton
@@ -138,7 +138,7 @@ export default function WinACarLoginPage() {
           width: "99%",
           height: 44,
           borderRadius: 2,
-          bgcolor: "#251a2d",
+          bgcolor: "#eeeeee",
         }}
       />
     </Paper>
@@ -174,9 +174,9 @@ export default function WinACarLoginPage() {
               sx={{
                 p: { xs: 2, sm: 4 },
                 borderRadius: 4,
-                bgcolor: "#19181e",
                 textAlign: "center",
-                boxShadow: "0 2px 32px #ff4b9b18",
+                bgcolor:"#fdf6fb",
+                boxShadow: "0 3px 32px #ff4b9b18",
               }}
             >
               {noStores ? (

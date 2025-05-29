@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import {
   Container,
   Typography,
@@ -19,6 +21,7 @@ import {
   Alert,
   MenuItem,
   Select,
+  useTheme,
 } from "@mui/material";
 import StoreIcon from "@mui/icons-material/Store";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -33,6 +36,12 @@ import ParticipationImage from "@public/referral-illustration.webp";
 import { Coupon } from "@/services/sweeptake.service";
 import { formatPhone } from "@/utils/formatPhone";
 import { shareOnFacebook, shareOnWhatsApp } from "@/utils/formatText";
+
+// COLORES BASE
+const accent = "#ff4b9b";
+const accentSoft = "#ffdbe7";
+const darkBg = "#1b1223";
+const lightBg = "#fff";
 
 export interface ReferralLink {
   sweepstakeId: string;
@@ -81,6 +90,9 @@ export default function ProfileContent({
 }: ProfileContentProps) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("¡Enlace copiado!");
+
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
 
   // Encuentra el link de referido (puede ser vacío)
   const mainReferralLink = referralLinks[0]?.text ?? "";
@@ -143,14 +155,15 @@ export default function ProfileContent({
                   maxWidth: "380px",
                   minWidth: "260px",
                   mb: 2,
-                  background:
-                    "linear-gradient(135deg,#1b1223 70%,#ff4b9b18 100%)",
+                  background: isDark
+                    ? `linear-gradient(135deg,${darkBg} 70%,${accent}22 100%)`
+                    : `linear-gradient(135deg,${lightBg} 70%,${accent}11 100%)`,
                   border: "2px solid",
                   borderColor: "transparent",
-                  borderImage:
-                    "linear-gradient(90deg, #ff4b9b 0%, #fff0 70%) 1",
-                  boxShadow:
-                    "0 4px 32px 0 #ff4b9b19, 0 1.5px 5px 0 #ff4b9b40 inset",
+                  borderImage: `linear-gradient(90deg, ${accent} 0%, #fff0 70%) 1`,
+                  boxShadow: isDark
+                    ? "0 4px 32px 0 #ff4b9b19, 0 1.5px 5px 0 #ff4b9b40 inset"
+                    : "0 4px 24px 0 #ff4b9b08",
                   borderRadius: 4,
                   transition: "transform .18s",
                   "&:hover": { transform: "scale(1.03)" },
@@ -161,7 +174,7 @@ export default function ProfileContent({
                   sx={{
                     p: 2,
                     bgcolor: "transparent",
-                    color: "#fff",
+                    color: isDark ? "#fff" : "#111",
                     borderRadius: 4,
                     minHeight: 140,
                     display: "flex",
@@ -176,7 +189,11 @@ export default function ProfileContent({
                       alignItems="center"
                       justifyContent="space-between"
                     >
-                      <Typography variant="caption" color="#ff4b9b">
+                      <Typography
+                        variant="caption"
+                        color={accent}
+                        sx={{ fontWeight: 700 }}
+                      >
                         Cupón
                       </Typography>
                       <Chip
@@ -184,7 +201,7 @@ export default function ProfileContent({
                         size="small"
                         color={methodColor[coupon.method] || "default"}
                         sx={{
-                          bgcolor: "#ff4b9b",
+                          bgcolor: accent,
                           color: "#fff",
                           fontWeight: 700,
                           letterSpacing: 1.1,
@@ -197,19 +214,24 @@ export default function ProfileContent({
                     <Typography
                       variant="body1"
                       fontWeight={700}
-                      color="#fff"
-                      sx={{ fontSize: "1.2rem" }}
+                      sx={{
+                        color: isDark ? "#fff" : "#2D2D2D",
+                        fontSize: "1.2rem",
+                      }}
                     >
                       {coupon.code}
                     </Typography>
                     {coupon.issuedAt && (
-                      <Typography variant="caption" color="#ffd3e7">
+                      <Typography
+                        variant="caption"
+                        color={isDark ? accentSoft : accent}
+                      >
                         {formatDate(coupon.issuedAt)}
                       </Typography>
                     )}
                     <Typography
                       variant="caption"
-                      color="#ffd3e7"
+                      color={isDark ? accentSoft : accent}
                       textAlign="right"
                       maxWidth={"30ch"}
                       sx={{ mt: 1 }}
@@ -221,7 +243,11 @@ export default function ProfileContent({
               </Box>
             ))
         ) : (
-          <Typography variant="body2" color="#fff" sx={{ width: "100%" }}>
+          <Typography
+            variant="body2"
+            color={isDark ? "#fff" : "#1a1a1a"}
+            sx={{ width: "100%" }}
+          >
             No se encontraron participaciones.
           </Typography>
         )}
@@ -230,7 +256,13 @@ export default function ProfileContent({
   }
 
   return (
-    <Box sx={{ bgcolor: "transparent", py: 2 }}>
+    <Box
+      sx={{
+        bgcolor: isDark ? "#18181B" : "#fdf6fb",
+        py: 2,
+        color: isDark ? "#fff" : "#1a1a1a",
+      }}
+    >
       <Container maxWidth="md" sx={{ px: { xs: 0, md: 1 } }}>
         <Box
           sx={{
@@ -245,10 +277,12 @@ export default function ProfileContent({
           <Typography
             variant="h4"
             fontWeight={700}
-            color="#ff4b9b"
+            color={accent}
             sx={{
               letterSpacing: 1.2,
-              textShadow: "0 2px 16px #ff4b9b50",
+              textShadow: isDark
+                ? "0 2px 16px #ff4b9b50"
+                : "0 2px 16px #ff4b9b18",
               fontSize: { xs: "1.13rem", sm: "1.45rem" },
               mb: 0,
             }}
@@ -261,34 +295,36 @@ export default function ProfileContent({
               value={selectedStore || ""}
               onChange={handleChangeStore}
               sx={{
-                color: "#ff4b9b",
+                color: accent,
                 fontWeight: 700,
+                maxWidth: "100%",
                 pr: 2,
                 "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#ff4b9b",
+                  borderColor: accent,
                 },
                 "& .MuiSelect-icon": {
-                  color: "#ff4b9b",
+                  color: accent,
                 },
+                bgcolor: isDark ? "#24162d" : "#fff",
               }}
               MenuProps={{
                 PaperProps: {
                   sx: {
-                    bgcolor: "#fff",
-                    color: "#ff4b9b",
+                    bgcolor: isDark ? "#24162d" : "#fff",
+                    color: accent,
                     "& .MuiMenuItem-root": {
                       fontWeight: 700,
                       fontSize: 15,
                       letterSpacing: 0.3,
                       "&.Mui-selected": {
                         background: "#ff4b9b18",
-                        color: "#ff4b9b",
+                        color: accent,
                       },
                     },
                   },
                 },
               }}
-              IconComponent={() => <StoreIcon sx={{ color: "#ff4b9b" }} />}
+              IconComponent={() => <StoreIcon sx={{ color: accent }} />}
             >
               {stores.map((store) => (
                 <MenuItem key={store.storeId} value={store.slug}>
@@ -303,11 +339,11 @@ export default function ProfileContent({
                 alignItems: "center",
                 ml: 2,
                 fontWeight: 700,
-                color: "#ff4b9b",
+                color: accent,
                 fontSize: "1.13rem",
               }}
             >
-              <StoreIcon sx={{ mr: 1, color: "#ff4b9b" }} />
+              <StoreIcon sx={{ mr: 1, color: accent }} />
               {storeName}
             </Box>
           )}
@@ -317,28 +353,35 @@ export default function ProfileContent({
         <Typography
           variant="h3"
           fontWeight={900}
-          color="#ff4b9b"
+          color={accent}
           sx={{
             fontSize: { xs: "2rem", sm: "2.7rem" },
             mt: 2,
             mb: 1,
-            textShadow: "0 4px 32px #ff4b9b44",
+            textShadow: isDark
+              ? "0 4px 32px #ff4b9b44"
+              : "0 4px 32px #ff4b9b19",
           }}
         >
           ¡Invita, comparte y gana!
         </Typography>
-        <Typography variant="h6" color="#fff" fontWeight={600} sx={{ mb: 2 }}>
+        <Typography
+          variant="h6"
+          color={isDark ? "#fff" : "#232323"}
+          fontWeight={600}
+          sx={{ mb: 2 }}
+        >
           Comparte tu enlace exclusivo y multiplica tus oportunidades.
         </Typography>
         <Typography
           variant="body1"
-          color="#fff"
+          color={isDark ? "#fff" : "#232323"}
           fontWeight={400}
           sx={{ mb: 2, fontSize: "1.08rem" }}
         >
           Mientras más amigos se registren con tu link,{" "}
-          <b style={{ color: "#ff4b9b" }}>más cupones ganas</b> y{" "}
-          <span style={{ color: "#ff4b9b" }}>
+          <b style={{ color: accent }}>más cupones ganas</b> y{" "}
+          <span style={{ color: accent }}>
             más cerca estarás de ganar el carro!
           </span>
         </Typography>
@@ -351,14 +394,18 @@ export default function ProfileContent({
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
-                background: "linear-gradient(90deg,#ff4b9b20 70%,#23192d 100%)",
+                background: isDark
+                  ? "linear-gradient(90deg,#ff4b9b20 70%,#23192d 100%)"
+                  : "linear-gradient(90deg,#ff4b9b10 70%,#fff 100%)",
                 borderRadius: 3,
-                border: "2.5px solid #ff4b9b",
+                border: `2.5px solid ${accent}`,
                 py: 1.7,
                 px: 2,
                 mb: 2,
                 mt: 1,
-                boxShadow: "0 2px 32px #ff4b9b20",
+                boxShadow: isDark
+                  ? "0 2px 32px #ff4b9b20"
+                  : "0 2px 32px #ff4b9b12",
                 fontWeight: 700,
               }}
             >
@@ -369,7 +416,7 @@ export default function ProfileContent({
                 rel="noopener"
                 sx={{
                   wordBreak: "break-all",
-                  color: "#ff4b9b",
+                  color: accent,
                   fontWeight: 700,
                   fontSize: { xs: "1rem", sm: "1.13rem" },
                   flex: 1,
@@ -384,7 +431,7 @@ export default function ProfileContent({
                   size="medium"
                   sx={{
                     color: "#fff",
-                    bgcolor: "#ff4b9b",
+                    bgcolor: accent,
                     ":hover": { bgcolor: "#ff1f70" },
                     boxShadow: "0 0 8px #ff4b9b70",
                   }}
@@ -397,7 +444,7 @@ export default function ProfileContent({
               </Tooltip>
             </Box>
             <Stack direction="row" spacing={2} justifyContent="center" mb={2}>
-              <Tooltip title="Compartir por WhatsApp , cada persona que se registre te da una participacione extra">
+              <Tooltip title="Compartir por WhatsApp, cada persona que se registre te da una participación extra">
                 <IconButton
                   sx={{
                     bgcolor: "#fff",
@@ -414,7 +461,7 @@ export default function ProfileContent({
                   <WhatsAppIcon fontSize="medium" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Compartir en Facebook, cada persona que se registre te da una participacione extra">
+              <Tooltip title="Compartir en Facebook, cada persona que se registre te da una participación extra">
                 <IconButton
                   sx={{
                     bgcolor: "#fff",
@@ -435,7 +482,7 @@ export default function ProfileContent({
                 <IconButton
                   sx={{
                     bgcolor: "#fff",
-                    color: "#ff4b9b",
+                    color: accent,
                     boxShadow: "0 0 8px #ff4b9b40",
                     borderRadius: 3,
                     mx: 1,
@@ -453,9 +500,11 @@ export default function ProfileContent({
               variant="body2"
               sx={{
                 mb: 1,
-                color: "#ffdbe7",
+                color: isDark ? accentSoft : accent,
                 fontWeight: 500,
-                textShadow: "0 2px 8px #ff4b9b28",
+                textShadow: isDark
+                  ? "0 2px 8px #ff4b9b28"
+                  : "0 2px 8px #ff4b9b12",
               }}
             >
               ¡Copia el link y mándalo por WhatsApp, Messenger, Facebook, SMS,
@@ -472,7 +521,7 @@ export default function ProfileContent({
                 label="Tu código de referido"
                 color="secondary"
                 sx={{
-                  bgcolor: "#ff4b9b",
+                  bgcolor: accent,
                   color: "#fff",
                   fontWeight: 700,
                   px: 2,
@@ -485,19 +534,19 @@ export default function ProfileContent({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 1,
-                background: "#23192d",
+                background: isDark ? "#23192d" : "#fff0f8",
                 borderRadius: 2,
                 py: 0.5,
                 px: 2.7,
                 mb: 2,
-                border: "1.6px solid #ff4b9b",
-                boxShadow: "0 0 14px #ff4b9b21",
+                border: `1.6px solid ${accent}`,
+                boxShadow: isDark ? "0 0 14px #ff4b9b21" : "0 0 8px #ff4b9b12",
               }}
             >
               <Typography
                 variant="h6"
                 fontWeight={700}
-                color="#fff"
+                color={isDark ? "#fff" : "#2D2D2D"}
                 sx={{ userSelect: "text", fontSize: "1.23rem" }}
               >
                 {referralCode}
@@ -506,7 +555,7 @@ export default function ProfileContent({
                 <IconButton
                   size="small"
                   sx={{
-                    color: "#ff4b9b",
+                    color: accent,
                     bgcolor: "#fff",
                     ":hover": { bgcolor: "#fff0" },
                   }}
@@ -531,7 +580,7 @@ export default function ProfileContent({
             color="secondary"
             icon={<GroupAddIcon sx={{ color: "#fff" }} />}
             sx={{
-              bgcolor: "#ff4b9b",
+              bgcolor: accent,
               color: "#fff",
               fontWeight: 700,
               fontSize: "1rem",
@@ -539,7 +588,15 @@ export default function ProfileContent({
           />
         </Divider>
         {registeredPhones.length === 0 ? (
-          <Alert severity="info" sx={{ mb: 3, borderRadius: 2 }}>
+          <Alert
+            severity="info"
+            sx={{
+              mb: 3,
+              borderRadius: 2,
+              bgcolor: isDark ? "#23202c" : "#fff",
+              color: accent,
+            }}
+          >
             Aún no tienes referidos registrados. ¡Comparte tu link para sumar
             más oportunidades!
           </Alert>
@@ -551,7 +608,7 @@ export default function ProfileContent({
                   <ListItemIcon>
                     <Avatar
                       sx={{
-                        bgcolor: "#ff4b9b",
+                        bgcolor: accent,
                         width: 32,
                         height: 32,
                         fontSize: 18,
@@ -563,12 +620,14 @@ export default function ProfileContent({
                   </ListItemIcon>
                   <ListItemText
                     primary={
-                      <b style={{ color: "#ff4b9b", fontSize: 17 }}>
+                      <b style={{ color: accent, fontSize: 17 }}>
                         {formatPhone(phone)}
                       </b>
                     }
                     secondary="¡Cuenta para tus participaciones extra!"
-                    secondaryTypographyProps={{ sx: { color: "#ffd3e7" } }}
+                    secondaryTypographyProps={{
+                      sx: { color: isDark ? accentSoft : accent },
+                    }}
                   />
                 </ListItem>
               ))}
@@ -581,9 +640,9 @@ export default function ProfileContent({
           <Chip
             label="Tus participaciones"
             color="primary"
-            icon={<EmojiEventsIcon sx={{ color: "#ff4b9b" }} />}
+            icon={<EmojiEventsIcon sx={{ color: accent }} />}
             sx={{
-              bgcolor: "#ff4b9b",
+              bgcolor: accent,
               color: "#fff",
               fontWeight: 700,
               fontSize: "1rem",
@@ -603,7 +662,9 @@ export default function ProfileContent({
               maxWidth: "100%",
               height: "auto",
               margin: "auto",
-              boxShadow: "0 2px 48px #ff4b9b44",
+              boxShadow: isDark
+                ? "0 2px 48px #ff4b9b44"
+                : "0 2px 32px #ff4b9b12",
               background: "#fff",
             }}
           />
@@ -614,7 +675,7 @@ export default function ProfileContent({
             label="¡Sigue compartiendo!"
             color="secondary"
             sx={{
-              bgcolor: "#ff4b9b",
+              bgcolor: accent,
               color: "#fff",
               fontWeight: 700,
               fontSize: "1rem",
@@ -625,7 +686,10 @@ export default function ProfileContent({
         <Typography
           variant="body2"
           mb={1}
-          sx={{ color: "#ffdbe7", fontWeight: 600 }}
+          sx={{
+            color: isDark ? accentSoft : accent,
+            fontWeight: 600,
+          }}
         >
           Cuantos más amigos se registren con tu enlace, más boletos para el
           sorteo y ¡más cerca de ganar el auto!
@@ -633,7 +697,7 @@ export default function ProfileContent({
         <Typography
           variant="body1"
           mt={3}
-          sx={{ color: "#ff4b9b", fontWeight: 700 }}
+          sx={{ color: accent, fontWeight: 700 }}
         >
           ¡Sigue compartiendo y mucha suerte en el sorteo!
         </Typography>

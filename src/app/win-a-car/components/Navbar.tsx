@@ -111,7 +111,7 @@ export default function Navbar() {
                         p: 4,
                       }}
                     >
-                      {(initials === "KC" ? "KFC" : initials )|| <Person />}
+                      {initials || <Person />}
                     </Avatar>
                   </IconButton>
                   <UserMenu
