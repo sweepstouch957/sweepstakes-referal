@@ -19,6 +19,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import LoginIcon from "@mui/icons-material/Login";
 import UserMenu from "./UserMenu";
+import { Person } from "@mui/icons-material";
 
 export default function Navbar() {
   const theme = useTheme();
@@ -62,9 +63,10 @@ export default function Navbar() {
     router.push("/win-a-car/login");
   };
 
-  const initials = user
-    ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
-    : "";
+  const initials =
+    user && user?.firstName
+      ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
+      : "";
 
   return (
     <AppBar
@@ -120,7 +122,7 @@ export default function Navbar() {
                         p: 4,
                       }}
                     >
-                      {initials}
+                      {initials || <Person/>} 
                     </Avatar>
                   </IconButton>
                   <UserMenu

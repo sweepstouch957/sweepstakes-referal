@@ -76,7 +76,6 @@ export default function ProfileContent({ user, userCoupons }: ProfileData) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("Link copied to clipboard!");
 
-  
   const copyToClipboard = (
     value: string,
     msg = "Link copied to clipboard!"
@@ -118,19 +117,23 @@ export default function ProfileContent({ user, userCoupons }: ProfileData) {
                 <PersonIcon fontSize="large" />
               </Avatar>
               <Stack direction="row" spacing={3} flexWrap="wrap">
-                <Chip
-                  icon={<PersonIcon />}
-                  label={`${user.firstName} ${user.lastName}`}
-                  color="secondary"
-                  variant="outlined"
-                />
-                <Chip
-                  icon={<EmailIcon />}
-                  label={user.email}
-                  color="primary"
-                  variant="outlined"
-                  sx={{ maxWidth: 200 }}
-                />
+                {(user.firstName && user.firstName) && (
+                  <Chip
+                    icon={<PersonIcon />}
+                    label={`${user.firstName} ${user.lastName}`}
+                    color="secondary"
+                    variant="outlined"
+                  />
+                )}
+                {user.email &&(
+                  <Chip
+                    icon={<EmailIcon />}
+                    label={user.email}
+                    color="primary"
+                    variant="outlined"
+                    sx={{ maxWidth: 200 }}
+                  />
+                )}
                 <Chip
                   icon={<SmartphoneIcon />}
                   label={formatPhone(user.phone)}
