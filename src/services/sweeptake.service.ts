@@ -17,7 +17,6 @@ export interface RegisterPayload {
   campaignId?: string;
 }
 
-
 export interface Coupon {
   code: string;
   method: string;
@@ -117,6 +116,40 @@ export async function getReferralInfoByStore(
     throw (
       error?.response?.data || {
         error: "Error al obtener info de referidos por tienda",
+      }
+    );
+  }
+}
+
+// services/participantService.ts
+
+export interface ReferralLinkSimpleResponse {
+  referralLink: string;
+  storeName: string;
+  referralCode: string;
+  firstName: string;
+}
+
+export async function getReferralLinkByStore(
+  referralCode: string,
+  slug: string
+): Promise<ReferralLinkSimpleResponse> {
+  try {
+    const response = await api.get<ReferralLinkSimpleResponse>(
+      `/sweepstakes/participants/referral-store-info`,
+      {
+        params: { referralCode, slug },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "❌ Error al obtener el link de referido:",
+      error?.response?.data || error.message
+    );
+    throw (
+      error?.response?.data || {
+        error: "Error al obtener el link de referido por tienda",
       }
     );
   }

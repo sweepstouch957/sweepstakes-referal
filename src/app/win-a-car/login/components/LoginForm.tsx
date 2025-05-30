@@ -112,7 +112,7 @@ export default function LoginWithOTP() {
     }
   };
 
-  const handleOtpSubmit = async () => {
+  const handleOtpSubmit = async () => { 
     setIsLoading(true);
     setError(null);
 

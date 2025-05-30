@@ -26,6 +26,7 @@ interface Props {
   sweepstakeId?: string;
   storeId?: string;
   campaignId?: string;
+  slug?: string;
 }
 
 export default function WinACarFormWithThankYou({
@@ -35,6 +36,7 @@ export default function WinACarFormWithThankYou({
   isLoading = false,
   sweepstakeId = "",
   storeId = "",
+  slug = "",
   campaignId = "",
 }: Props) {
   const theme = useTheme();
@@ -47,24 +49,19 @@ export default function WinACarFormWithThankYou({
     mutationFn: registerParticipant,
     onSuccess: (data) => {
       setBackendError(null);
-
-      const payload = {
-        referralCode: data.referralCode,
-        referralLink: data.referralLink,
-        supermarket: storeName,
-        userCoupons: data.userCoupons,
-      };
-
-      Cookies.set("sweepstouch_referral_success", JSON.stringify(payload), {
+      const slugName = data.storeSlug || slug; // Ajusta esto según cómo lo tengas
+      Cookies.set("sweepstouch_referral_code", data.referralCode, {
         expires: 7,
       });
-
-      Cookies.set("sweepstouch_referral_token", data.token, {
-        expires: 7,
-      });
+      Cookies.set("sweepstouch_referral_slug", slug, { expires: 7 });
       setIsRegistered(true);
-      router.push("/win-a-car/thank-you");
+      router.push(
+        `/win-a-car/thank-you?referralcode=${encodeURIComponent(
+          data.referralCode
+        )}&slug=${encodeURIComponent(slugName)}`
+      );
     },
+
     onError: (error: any) => {
       setBackendError(error?.error || "Unknown error");
       setIsRegistered(false);
@@ -90,7 +87,7 @@ export default function WinACarFormWithThankYou({
 
   const isLoadingState = isLoading || mutation.isPending;
   if (isRegistred) {
-    return <></>
+    return <></>;
   }
   return (
     <Box
