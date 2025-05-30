@@ -302,8 +302,9 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
                 bgcolor: "#fff",
                 opacity: 0.85,
                 height: "2px",
-                width: "100%",
+                width: "80%",
                 my: 2,
+                mx:"auto"
               }}
             />
 
