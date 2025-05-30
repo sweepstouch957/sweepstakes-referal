@@ -77,6 +77,19 @@ export default function Navbar() {
 
           {!isLoading && (
             <Box display="flex" alignItems="center" gap={2}>
+              <Button
+                variant="contained"
+                onClick={handleScrollToForm}
+                sx={{
+                  display: { xs: "none", sm: "inline-flex" },
+                  backgroundColor: "#ff4b9b",
+                  borderRadius: "20px",
+                  textTransform: "none",
+                  "&:hover": { backgroundColor: "#e93d89" },
+                }}
+              >
+                Participate
+              </Button>
               {!user ? (
                 <Button
                   variant="contained"
@@ -121,22 +134,6 @@ export default function Navbar() {
                     handleLogout={handleLogout}
                   />
                 </>
-              )}
-
-              {!user && (
-                <Button
-                  variant="contained"
-                  onClick={handleScrollToForm}
-                  sx={{
-                    display: { xs: "none", sm: "inline-flex" },
-                    backgroundColor: "#ff4b9b",
-                    borderRadius: "20px",
-                    textTransform: "none",
-                    "&:hover": { backgroundColor: "#e93d89" },
-                  }}
-                >
-                  Participate
-                </Button>
               )}
             </Box>
           )}

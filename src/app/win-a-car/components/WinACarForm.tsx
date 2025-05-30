@@ -99,6 +99,7 @@ export default function WinACarFormWithThankYou({
       alignItems="center"
       justifyContent="center"
       bgcolor="#fff"
+      id="form"
     >
       {isLoadingState ? (
         <Fade in>

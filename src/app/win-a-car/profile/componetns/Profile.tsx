@@ -31,8 +31,6 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import LinkIcon from "@mui/icons-material/Link";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import ParticipationImage from "@public/referral-illustration.webp";
 import { Coupon } from "@/services/sweeptake.service";
 import { formatPhone } from "@/utils/formatPhone";
 import { shareOnFacebook, shareOnWhatsApp } from "@/utils/formatText";
@@ -194,7 +192,7 @@ export default function ProfileContent({
                         color={accent}
                         sx={{ fontWeight: 700 }}
                       >
-                        Cupón
+                        Participacion
                       </Typography>
                       <Chip
                         label={coupon.method.toUpperCase()}
@@ -270,25 +268,32 @@ export default function ProfileContent({
             alignItems: "center",
             gap: 2,
             mb: 2,
-            justifyContent: { xs: "flex-start", md: "flex-end" },
+            justifyContent: {
+              xs: "flex-start",
+              md: stores.length === 1 ? "center" : "flex-end",
+            },
             flexDirection: { xs: "column", sm: "row" },
           }}
         >
-          <Typography
-            variant="h4"
-            fontWeight={700}
-            color={accent}
-            sx={{
-              letterSpacing: 1.2,
-              textShadow: isDark
-                ? "0 2px 16px #ff4b9b50"
-                : "0 2px 16px #ff4b9b18",
-              fontSize: { xs: "1.13rem", sm: "1.45rem" },
-              mb: 0,
-            }}
-          >
-            {stores?.length > 1 ? "Tienda" : "Tienda de participación"}
-          </Typography>
+          {stores?.length > 1 ? (
+            <Typography
+              variant="h4"
+              fontWeight={700}
+              sx={{
+                letterSpacing: 1.2,
+                textShadow: isDark
+                  ? "0 2px 16px #ff4b9b50"
+                  : "0 2px 16px #ff4b9b18",
+                fontSize: { xs: "1rem", sm: "1.25rem" },
+                mb: 0,
+              }}
+            >
+              Tienda
+            </Typography>
+          ) : (
+            <></>
+          )}
+
           {stores?.length > 1 ? (
             <Select
               labelId="store-select-label"
@@ -339,11 +344,10 @@ export default function ProfileContent({
                 alignItems: "center",
                 ml: 2,
                 fontWeight: 700,
-                color: accent,
-                fontSize: "1.13rem",
+                color: isDark ? accent : "#000000",
+                fontSize: "0.8rem",
               }}
             >
-              <StoreIcon sx={{ mr: 1, color: accent }} />
               {storeName}
             </Box>
           )}
@@ -355,15 +359,15 @@ export default function ProfileContent({
           fontWeight={900}
           color={accent}
           sx={{
-            fontSize: { xs: "2rem", sm: "2.7rem" },
-            mt: 2,
+            fontSize: { xs: "1.8rem", sm: "2.7rem" },
+            mt: 4,
             mb: 1,
             textShadow: isDark
               ? "0 4px 32px #ff4b9b44"
               : "0 4px 32px #ff4b9b19",
           }}
         >
-          ¡Invita, comparte y gana!
+          ¡Gracias por participar!🎉
         </Typography>
         <Typography
           variant="h6"
@@ -371,19 +375,7 @@ export default function ProfileContent({
           fontWeight={600}
           sx={{ mb: 2 }}
         >
-          Comparte tu enlace exclusivo y multiplica tus oportunidades.
-        </Typography>
-        <Typography
-          variant="body1"
-          color={isDark ? "#fff" : "#232323"}
-          fontWeight={400}
-          sx={{ mb: 2, fontSize: "1.08rem" }}
-        >
-          Mientras más amigos se registren con tu link,{" "}
-          <b style={{ color: accent }}>más cupones ganas</b> y{" "}
-          <span style={{ color: accent }}>
-            más cerca estarás de ganar el carro!
-          </span>
+          Comparte este Link con tus amigos y familiares
         </Typography>
 
         {/* LINK de referido DESTACADO */}
@@ -408,24 +400,30 @@ export default function ProfileContent({
                   : "0 2px 32px #ff4b9b12",
                 fontWeight: 700,
               }}
+              onClick={() =>
+                copyToClipboard(mainReferralLink, "¡Enlace copiado!")
+              }
             >
               <MuiLink
                 underline="hover"
-                href={mainReferralLink}
                 target="_blank"
                 rel="noopener"
                 sx={{
                   wordBreak: "break-all",
                   color: accent,
                   fontWeight: 700,
-                  fontSize: { xs: "1rem", sm: "1.13rem" },
+                  fontSize: { xs: "1rem", sm: "1.5rem" },
                   flex: 1,
                   letterSpacing: 0.1,
                   mx: 1,
                 }}
               >
-                {mainReferralLink}
+                {/* Solo mostrar los primeros 30 caracteres, luego ... */}
+                {mainReferralLink.length > 30
+                  ? mainReferralLink.slice(0, 30) + "..."
+                  : mainReferralLink}
               </MuiLink>
+
               <Tooltip title="Copiar enlace">
                 <IconButton
                   size="medium"
@@ -453,12 +451,14 @@ export default function ProfileContent({
                     borderRadius: 3,
                     mx: 1,
                     ":hover": { bgcolor: "#e8ffe6" },
+                    width: 60,
+                    height: 60,
                   }}
                   onClick={() =>
                     shareOnWhatsApp(storeName, referralLinks[0].text)
                   }
                 >
-                  <WhatsAppIcon fontSize="medium" />
+                  <WhatsAppIcon fontSize="large" />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Compartir en Facebook, cada persona que se registre te da una participación extra">
@@ -468,6 +468,8 @@ export default function ProfileContent({
                     color: "#1877f3",
                     boxShadow: "0 0 8px #1877f340",
                     borderRadius: 3,
+                    width: 60,
+                    height: 60,
                     mx: 1,
                     ":hover": { bgcolor: "#e7f0fd" },
                   }}
@@ -475,7 +477,7 @@ export default function ProfileContent({
                     shareOnFacebook(storeName, referralLinks[0].text)
                   }
                 >
-                  <FacebookRoundedIcon fontSize="medium" />
+                  <FacebookRoundedIcon fontSize="large" />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Copiar link">
@@ -485,6 +487,8 @@ export default function ProfileContent({
                     color: accent,
                     boxShadow: "0 0 8px #ff4b9b40",
                     borderRadius: 3,
+                    width: 60,
+                    height: 60,
                     mx: 1,
                     ":hover": { bgcolor: "#ffe6f3" },
                   }}
@@ -492,23 +496,23 @@ export default function ProfileContent({
                     copyToClipboard(mainReferralLink, "¡Enlace copiado!")
                   }
                 >
-                  <LinkIcon fontSize="medium" />
+                  <LinkIcon fontSize="large" />
                 </IconButton>
               </Tooltip>
             </Stack>
             <Typography
               variant="body2"
               sx={{
-                mb: 1,
+                mb: 4,
                 color: isDark ? accentSoft : accent,
                 fontWeight: 500,
                 textShadow: isDark
                   ? "0 2px 8px #ff4b9b28"
                   : "0 2px 8px #ff4b9b12",
+                fontSize: "10px ",
               }}
             >
-              ¡Copia el link y mándalo por WhatsApp, Messenger, Facebook, SMS,
-              donde quieras!
+              ¡Copia el link y mándalo por WhatsApp, Facebook, o donde quieras!
             </Typography>
           </>
         )}
@@ -597,7 +601,7 @@ export default function ProfileContent({
               color: accent,
             }}
           >
-            Aún no tienes referidos registrados. ¡Comparte tu link para sumar
+            Aún no tienes amigos registrados con tu link. ¡Compartelo para sumar
             más oportunidades!
           </Alert>
         ) : (
@@ -650,25 +654,6 @@ export default function ProfileContent({
           />
         </Divider>
         <CouponCards />
-
-        <Box my={4}>
-          <Image
-            src={ParticipationImage.src}
-            alt="Referral Illustration"
-            width={380}
-            height={370}
-            style={{
-              borderRadius: "18px",
-              maxWidth: "100%",
-              height: "auto",
-              margin: "auto",
-              boxShadow: isDark
-                ? "0 2px 48px #ff4b9b44"
-                : "0 2px 32px #ff4b9b12",
-              background: "#fff",
-            }}
-          />
-        </Box>
 
         <Divider sx={{ my: 3 }}>
           <Chip
