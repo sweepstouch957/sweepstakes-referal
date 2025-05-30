@@ -12,7 +12,6 @@ import {
   Typography,
 } from "@mui/material";
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import { getReferralLinkByStore } from "@/services/sweeptake.service";
 import { ThankYouModern } from "@/components/ThankYouNew";
 
@@ -152,7 +151,6 @@ export default function ThankYouPage() {
       <Suspense fallback={<CenteredLoader text="Cargando la página..." />}>
         <ThankYouPageInner />
       </Suspense>
-      <Footer />
     </Box>
   );
 }

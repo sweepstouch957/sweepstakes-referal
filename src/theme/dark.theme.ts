@@ -2,6 +2,13 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
+   typography: {
+    fontFamily: [
+      'Gotham',
+      'Arial',
+      'sans-serif',
+    ].join(','),
+  },
   components: {
     MuiOutlinedInput: {
       styleOverrides: {

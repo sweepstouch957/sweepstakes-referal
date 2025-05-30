@@ -1,4 +1,7 @@
 // /app/layout.tsx
+// src/app/layout.tsx
+import '../styles/fonts.css';
+// ...el resto del layout
 import { Layout } from "@/provider/document";
 
 export const metadata = {
