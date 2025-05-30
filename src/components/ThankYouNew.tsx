@@ -97,7 +97,7 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
           elevation={4}
           sx={{
             borderRadius: "16px",
-            maxWidth: 440,
+            maxWidth: {xs:400,sm:600},
             width: "100%",
             mx: "auto",
             background: "#fff",
