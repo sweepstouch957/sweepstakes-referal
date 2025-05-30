@@ -97,7 +97,7 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
           elevation={4}
           sx={{
             borderRadius: "16px",
-            maxWidth: {xs:400,sm:600},
+            maxWidth: { xs: 400, sm: 600 },
             width: "100%",
             mx: "auto",
             background: "#fff",
@@ -153,7 +153,8 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
                 lineHeight: { xs: "26px", sm: "30px" },
               }}
             >
-              {name ? name + ", " : ""}Tu número de participación es: <br />
+              {name ? <b>{name + ", "}</b> : ""}Tu número de participación es:{" "}
+              <br />
               <span style={{ fontWeight: 700 }}>{participantCode}</span>
             </Typography>
             <Typography
@@ -304,7 +305,7 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
                 height: "2px",
                 width: "80%",
                 my: 2,
-                mx:"auto"
+                mx: "auto",
               }}
             />
 
