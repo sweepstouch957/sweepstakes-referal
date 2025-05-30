@@ -13,7 +13,6 @@ export default function WinACarLoginPage() {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        background: "#18181B", // Tu color de fondo
       }}
     >
       <Navbar />
