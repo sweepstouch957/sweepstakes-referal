@@ -11,7 +11,7 @@ export const metadata = {
     siteName: "Sweepstouch",
     images: [
       {
-        url: "https://sweepstouch.tech-touch.com/bg-mobile.webp", // Pon aquí tu imagen real
+        url: "https://res.cloudinary.com/dg9gzic4s/image/upload/v1748571073/referral-illustration_lhw77k.webp", // Pon aquí tu imagen real
         width: 1200,
         height: 630,
         alt: "Participa en el sorteo de un carro con Sweepstouch",
@@ -26,7 +26,7 @@ export const metadata = {
     title: "Win a Car | Sweepstouch",
     description: "Invita a tus amigos y gana más participaciones para el sorteo del carro. ¡Comparte tu link y aumenta tus oportunidades de ganar!",
     images: [
-      "https://sweepstouch.tech-touch.com/bg-mobile.webp", // Igual aquí la misma imagen
+      "https://res.cloudinary.com/dg9gzic4s/image/upload/v1748571073/referral-illustration_lhw77k.webp", // Igual aquí la misma imagen
     ],
   },
 };
