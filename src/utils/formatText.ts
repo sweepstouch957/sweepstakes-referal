@@ -9,7 +9,7 @@ export function generateReferralCopy(storeName: string, referralLink: string) {
   // Arma el texto bonito
   return (
     `¡${storeEmoji} ${storeName} te invita a participar!\n\n` +
-    `Regístrate con mi código *${code}* y gana más oportunidades de ganar un auto nuevo.\n\n` +
+    `Regístrate con mi código *${code}* y participa para ganar un Nissan Versa 2025.\n\n` +
     `🔗 Link de registro: ${referralLink}`
   );
 }
@@ -22,7 +22,7 @@ export function shareOnWhatsApp(storeName: string, referralLink: string) {
 
 export function shareOnFacebook(storeName: string, referralLink: string) {
   const quote = encodeURIComponent(
-    `¡Participa en el sorteo de ${storeName}! Regístrate con este link para ganar un auto de ultimo modelo!.`
+    `¡Participa en el sorteo de ${storeName}! Regístrate con este link para ganar un Nissan Versa 2025!.`
   );
   const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
     referralLink
