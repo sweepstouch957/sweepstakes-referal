@@ -46,7 +46,7 @@ export default function PersonalInfoStep({
       {isLoading ? skeletonField : (
         <TextField
           {...register("phone")}
-          label="Phone"
+          label="Phone Number"
           error={!!errors.phone}
           helperText={errors.phone?.message}
           onChange={(e) => setValue("phone", formatPhone(e.target.value))}
