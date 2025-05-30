@@ -140,9 +140,6 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
               }}
             >
               ¡Suerte!
-              <span role="img" aria-label="celebración">
-                🎉
-              </span>
             </Typography>
 
             {/* Código de participante */}
