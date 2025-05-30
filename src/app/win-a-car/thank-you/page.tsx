@@ -16,6 +16,60 @@ import Footer from "../components/Footer";
 import { getReferralLinkByStore } from "@/services/sweeptake.service";
 import { ThankYouModern } from "@/components/ThankYouNew";
 
+// --- Loader centrado, re-usable ---
+function CenteredLoader({ text = "Cargando información..." }) {
+  return (
+    <Container
+      maxWidth="sm"
+      sx={{
+        minHeight: "70vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        bgcolor: "#fdf6fb",
+      }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "40vh",
+        }}
+      >
+        <CircularProgress
+          size={56}
+          thickness={4}
+          sx={{ color: "#ff4b9b", mb: 3 }}
+        />
+        <Typography
+          variant="h6"
+          fontWeight={700}
+          color="#ff4b9b"
+          mb={2}
+          sx={{
+            letterSpacing: 0.5,
+            textShadow: "0 2px 16px #ff4b9b22",
+          }}
+        >
+          {text}
+        </Typography>
+        {/* Skeleton visual hint */}
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={50}
+          sx={{ borderRadius: 2, mb: 2, maxWidth: 320 }}
+        />
+        <Skeleton variant="text" width="60%" height={24} />
+      </Box>
+    </Container>
+  );
+}
+
 function ThankYouPageInner() {
   const params = useSearchParams();
   const router = useRouter();
@@ -25,7 +79,9 @@ function ThankYouPageInner() {
   // Si no hay params, redirige con un mensaje
   useEffect(() => {
     if (!referralCode || !slug) {
-      const timeout = setTimeout(() => {}, 2200);
+      const timeout = setTimeout(() => {
+        router.replace("/win-a-car/login");
+      }, 2200);
       return () => clearTimeout(timeout);
     }
   }, [referralCode, slug, router]);
@@ -40,28 +96,7 @@ function ThankYouPageInner() {
   // Si no hay parámetros, mostrar error antes de redirigir
   if (!referralCode || !slug) {
     return (
-      <Container
-        maxWidth="sm"
-        sx={{
-          minHeight: "70vh",
-          pt: 10,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          bgcolor: "#fdf6fb",
-        }}
-      >
-        <Box textAlign="center">
-          <Typography variant="h5" color="error" fontWeight={700} mb={2}>
-            Ocurrió un error al cargar tu información.
-          </Typography>
-          <Typography variant="body1" color="#ff4b9b">
-            Serás redirigido a la página principal...
-          </Typography>
-          <CircularProgress sx={{ mt: 4, color: "#ff4b9b" }} />
-        </Box>
-      </Container>
+      <CenteredLoader text="Ocurrió un error al cargar tu información. Serás redirigido..." />
     );
   }
 
@@ -79,30 +114,16 @@ function ThankYouPageInner() {
     >
       {/* Loader Skeleton */}
       {isLoading ? (
-        <Box sx={{ width: "100%", mt: 4 }}>
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            height={300}
-            sx={{ borderRadius: 4, mb: 3 }}
-          />
-          <Skeleton variant="text" width="60%" height={40} />
-          <Skeleton variant="text" width="40%" height={32} />
-          <Skeleton
-            variant="circular"
-            width={80}
-            height={80}
-            sx={{ mx: "auto", my: 2 }}
-          />
-          <Skeleton
-            variant="text"
-            width="50%"
-            height={30}
-            sx={{ mx: "auto", mb: 2 }}
-          />
-        </Box>
+        <CenteredLoader text="Cargando tu información de invitación..." />
       ) : isError ? (
-        <Box sx={{ mt: 10, color: "error.main", textAlign: "center" }}>
+        <Box
+          sx={{
+            mt: 10,
+            color: "error.main",
+            textAlign: "center",
+            width: "100%",
+          }}
+        >
           <Typography variant="h6" color="error" fontWeight={700}>
             Ocurrió un error cargando tus datos. Intenta de nuevo.
           </Typography>
@@ -117,7 +138,7 @@ function ThankYouPageInner() {
           />
         </Box>
       ) : (
-        <CircularProgress sx={{ mt: 10, color: "#ff4b9b" }} />
+        <CenteredLoader text="Preparando tu información..." />
       )}
     </Container>
   );
@@ -128,13 +149,7 @@ export default function ThankYouPage() {
   return (
     <Box bgcolor="#fdf6fb">
       <Navbar />
-      <Suspense
-        fallback={
-          <Container maxWidth="sm" sx={{ my: 8 }}>
-            <CircularProgress sx={{ color: "#ff4b9b" }} />
-          </Container>
-        }
-      >
+      <Suspense fallback={<CenteredLoader text="Cargando la página..." />}>
         <ThankYouPageInner />
       </Suspense>
       <Footer />

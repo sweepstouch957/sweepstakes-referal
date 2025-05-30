@@ -40,7 +40,7 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
   // Copy súper llamativo para WhatsApp y social
   const shareText =
     `🎉¡Estoy participando para GANAR un Nissan Versa 2025 en ${storeName}!` +
-    `🚗\n\n¡Súmate al sorteo usando este link! Cada amigo que se registre me da una oportunidad extra de ganar. 👀👇\n${referralLink}`;
+    `🚗\n\n¡Súmate al sorteo usando este link! Cada amigo que se registre nos dara una oportunidad extra de ganar. 👀👇\n${referralLink}`;
 
   // Utils para compartir
   const shareOnWhatsApp = () => {
