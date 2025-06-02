@@ -17,6 +17,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import ReferralStepper from "@/components/RefferralForm";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/libs/context/LanguageContext";
 
 interface Props {
   showExtendedFields?: boolean;
@@ -40,10 +42,12 @@ export default function WinACarFormWithThankYou({
   campaignId = "",
 }: Props) {
   const theme = useTheme();
+  const {language}=useLanguage()
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [backendError, setBackendError] = useState<string | null>(null);
   const [isRegistred, setIsRegistered] = useState(false);
   const router = useRouter();
+  const { t } = useTranslation();
 
   const mutation = useMutation({
     mutationFn: registerParticipant,
@@ -82,6 +86,7 @@ export default function WinACarFormWithThankYou({
       zipCode: data.zip,
       customerPhone: cleanPhone,
       method: "referral",
+      language
     });
   };
 
@@ -91,7 +96,6 @@ export default function WinACarFormWithThankYou({
   }
   return (
     <Box
-      minHeight="100vh"
       display="flex"
       alignItems="center"
       justifyContent="center"
@@ -103,7 +107,7 @@ export default function WinACarFormWithThankYou({
           <Box textAlign="center">
             <CircularProgress size={60} thickness={5} color="secondary" />
             <Typography mt={2} variant="body1" color="text.secondary">
-              Processing your registration...
+               {t("referralStep.proccesing")}
             </Typography>
           </Box>
         </Fade>
@@ -117,7 +121,7 @@ export default function WinACarFormWithThankYou({
               color="#ff4b9b"
               mb={4}
             >
-              Win a 2025 Nissan Versa!
+              {t("referralStep.title")}
             </Typography>
             <ReferralStepper
               onSubmit={handleFormSubmit}

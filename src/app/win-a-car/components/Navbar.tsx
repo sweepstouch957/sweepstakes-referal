@@ -23,6 +23,8 @@ import LoginIcon from "@mui/icons-material/Login";
 import MenuIcon from "@mui/icons-material/Menu";
 import UserMenu from "./UserMenu";
 import { Person } from "@mui/icons-material";
+import LanguageSwitcher from "@/components/Languaje";
+import { useTranslation } from "react-i18next";
 
 export default function Navbar() {
   const router = useRouter();
@@ -36,6 +38,8 @@ export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useTranslation();
+
   const pathName = usePathname();
   useEffect(() => {
     setIsLoading(true);
@@ -93,10 +97,16 @@ export default function Navbar() {
     >
       <Container maxWidth="lg">
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Image src={Logo} alt="Sweepstouch" width={200} height={48} />
+          <Image
+            src={Logo}
+            alt="Sweepstouch"
+            width={isMobile ? 180 : 200}
+            height={isMobile ? 42 : 48}
+          />
 
           {!isLoading && (
             <Box display="flex" alignItems="center" gap={2}>
+              <LanguageSwitcher />
               {/* Desktop */}
               {!isMobile && (
                 <>
@@ -110,7 +120,7 @@ export default function Navbar() {
                       "&:hover": { backgroundColor: "#e93d89" },
                     }}
                   >
-                    Participate
+                    {t("navbar.participate")}
                   </Button>
                   {!user ? (
                     <Button
@@ -125,7 +135,7 @@ export default function Navbar() {
                       }}
                       startIcon={<LoginIcon />}
                     >
-                      Login
+                      {t("navbar.login")}
                     </Button>
                   ) : (
                     <>
@@ -197,7 +207,7 @@ export default function Navbar() {
                         handleScrollToForm();
                       }}
                     >
-                      Participate
+                      {t("navbar.participate")}
                     </MenuItem>
                     {!user ? (
                       <MenuItem
@@ -206,7 +216,7 @@ export default function Navbar() {
                           handleLogin();
                         }}
                       >
-                        <LoginIcon sx={{ mr: 1 }} /> Login
+                        <LoginIcon sx={{ mr: 1 }} /> {t("navbar.login")}
                       </MenuItem>
                     ) : (
                       <MenuItem
@@ -215,7 +225,7 @@ export default function Navbar() {
                           handleLogout();
                         }}
                       >
-                        <Person sx={{ mr: 1 }} /> Logout
+                        <Person sx={{ mr: 1 }} /> {t("navbar.logout")}
                       </MenuItem>
                     )}
                   </Menu>

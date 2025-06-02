@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import { useTranslation } from "react-i18next";
 import { Alert, Box, CircularProgress, TextField } from "@mui/material";
 import { UseFormReturn } from "react-hook-form";
 import { FormData } from "@/hooks/useReferralStepper";
@@ -23,6 +26,7 @@ export default function ReferralCodeStep({
   referralError,
   setReferralError,
 }: Props) {
+  const { t } = useTranslation();
   const {
     register,
     formState: { errors },
@@ -32,17 +36,20 @@ export default function ReferralCodeStep({
     <>
       <TextField
         {...register("referralCode")}
-        label="Referral Code"
+        label={t("form.referralCode")}
         error={!!errors.referralCode}
         defaultValue={defaultReferralCode}
         helperText={errors.referralCode?.message}
+        fullWidth
       />
 
       {showExtendedFields && (
         <TextField
-          label="Supermarket"
+          label={t("form.supermarket")}
           defaultValue={defaultStoreName}
           disabled
+          fullWidth
+          sx={{ mt: 2 }}
         />
       )}
 
@@ -55,9 +62,8 @@ export default function ReferralCodeStep({
       {referralError && (
         <Alert
           severity="error"
-          onClose={() => {
-            setReferralError(null);
-          }}
+          sx={{ mt: 2 }}
+          onClose={() => setReferralError(null)}
         >
           {referralError}
         </Alert>

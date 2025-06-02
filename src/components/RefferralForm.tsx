@@ -6,6 +6,7 @@ import OtpStep from "@/components/steps/OtpStep";
 import { FormData } from "@/hooks/useReferralStepper";
 import CustomReferralStepper from "@/app/win-a-car/components/ReferralStepper";
 import CustomButton from "@/app/win-a-car/components/Button";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   onSubmit: (data: FormData) => void;
@@ -46,8 +47,9 @@ export default function ReferralForm({
     handleFinalSubmit,
     setReferralError,
   } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit);
+  const { t } = useTranslation();
 
-  const nextStep = async () => {    
+  const nextStep = async () => {
     if (activeStep === 0) {
       const valid = await trigger([
         "firstName",
@@ -134,7 +136,7 @@ export default function ReferralForm({
         <Stack direction="row" justifyContent="center" spacing={2} mt={2}>
           {activeStep > 0 && activeStep < 2 && (
             <CustomButton onClick={prevStep} variant="outlined">
-              Back
+              {t("common.prev")}
             </CustomButton>
           )}
 
@@ -146,7 +148,7 @@ export default function ReferralForm({
               {isLoadingOtp ? (
                 <CircularProgress size={22} color="inherit" />
               ) : (
-                "Next"
+                <>{t("common.next")}</>
               )}
             </CustomButton>
           ) : (

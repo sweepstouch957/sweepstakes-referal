@@ -1,6 +1,7 @@
 import { formatTimer } from "@/utils/formatTimer";
 import { Box, FormControl, FormLabel, Typography } from "@mui/material";
 import OTPInput from "react-otp-input";
+import { useTranslation } from "react-i18next";
 
 export default function OtpStep({
   otp,
@@ -16,9 +17,11 @@ export default function OtpStep({
   error?: string;
   resendTimer: number;
   onResend: () => void;
-  phone?: string; 
+  phone?: string;
   isResending?: boolean;
 }) {
+  const { t } = useTranslation();
+
   return (
     <FormControl
       fullWidth
@@ -30,8 +33,7 @@ export default function OtpStep({
       }}
     >
       <FormLabel>
-        Enter the OTP sent to
-        {phone ? ` +1${phone}` : "phone number"}:
+        {t("otp.instruction")} {phone ? `+1${phone}` : t("otp.fallbackPhone")}
       </FormLabel>
 
       <OTPInput
@@ -52,22 +54,22 @@ export default function OtpStep({
         }}
       />
 
-      {error && <Typography color="error">{error}</Typography>}
+      {error && <Typography color="error">{t("otp.error")}</Typography>}
 
       {resendTimer > 0 ? (
         <Typography color="text.secondary">
-          You can try again in <strong>{formatTimer(resendTimer)}</strong>
+          {t("otp.resendIn")} <strong>{formatTimer(resendTimer)}</strong>
         </Typography>
       ) : (
         <Box>
           <Typography
             onClick={onResend}
             sx={{
-              textDecoration:"underline",
-              cursor:"pointer"
+              textDecoration: "underline",
+              cursor: "pointer",
             }}
           >
-            {isResending ? "Resending..." : "Resend OTP"}
+            {isResending ? t("otp.resending") : t("otp.resend")}
           </Typography>
         </Box>
       )}

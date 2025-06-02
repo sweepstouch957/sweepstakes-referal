@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import {
   Box,
@@ -16,9 +18,11 @@ import {
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { Email, X } from "@mui/icons-material";
+import { Email, X, Sms } from "@mui/icons-material";
 import Image from "next/image";
 import CarImage from "@public/Car.webp";
+import { useTranslation } from "react-i18next";
+
 const accent = "#ff4b9b";
 
 export interface ThankYouModernProps {
@@ -26,7 +30,7 @@ export interface ThankYouModernProps {
   participantCode: string;
   name?: string;
   referralLink: string;
-  dateText?: string; // Ej: "30 SEPT"
+  dateText?: string;
 }
 
 export const ThankYouModern: React.FC<ThankYouModernProps> = ({
@@ -36,21 +40,17 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
   name,
   dateText = "30 SEPT",
 }) => {
+  const { t } = useTranslation();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Copy súper llamativo para WhatsApp y social
-  const shareText =
-    `🎉¡Estoy participando para GANAR un Nissan Versa 2025 en ${storeName}!` +
-    `🚗\n\n¡Súmate al sorteo usando este link! Cada amigo que se registre nos dara una oportunidad extra de ganar. 👀👇\n${referralLink}`;
+  const shareText = t("thankyou.main", { storeName, referralLink });
 
-  // Utils para compartir
   const shareOnWhatsApp = () => {
     window.open(
       `https://wa.me/?text=${encodeURIComponent(shareText)}`,
-      "_blank",
-      "noopener"
+      "_blank"
     );
   };
   const shareOnFacebook = () => {
@@ -69,11 +69,14 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
   };
   const shareOnGmail = () => {
     window.open(
-      `https://mail.google.com/mail/?view=cm&fs=1&to=&su=¡Sorteo Nissan Versa 2025!&body=${encodeURIComponent(
+      `https://mail.google.com/mail/?view=cm&fs=1&to=&su=Sorteo&body=${encodeURIComponent(
         shareText
       )}`,
       "_blank"
     );
+  };
+  const shareBySMS = () => {
+    window.open(`sms:?body=${encodeURIComponent(shareText)}`, "_self");
   };
   const copyLink = () => {
     navigator.clipboard.writeText(referralLink);
@@ -107,27 +110,14 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
             alignItems: "center",
           }}
         >
-          {/* Tienda */}
-          <Stack
-            sx={{
-              px: { xs: 1, sm: 5 },
-              pt: { xs: 2.5, sm: 3 },
-            }}
-          >
+          <Stack sx={{ px: { xs: 1, sm: 5 }, pt: { xs: 2.5, sm: 3 } }}>
             <Typography
               variant="subtitle1"
               align="center"
-              sx={{
-                fontWeight: 400,
-                fontSize: { xs: "14px", sm: "20px" },
-                mb: 2,
-                lineHeight: 1.25,
-              }}
+              sx={{ fontSize: { xs: "14px", sm: "20px" }, mb: 2 }}
             >
               {storeName}
             </Typography>
-
-            {/* Gracias por participar */}
             <Typography
               variant="h3"
               align="center"
@@ -136,58 +126,45 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
                 mb: { xs: 0.7, sm: 1 },
                 fontSize: { xs: "4rem", sm: "6rem" },
                 textShadow: "0 6px 32px #ff4b9b18",
-                lineHeight: 1.13,
               }}
             >
-              ¡Suerte!
+              {t("thankyou.title")}
             </Typography>
-
-            {/* Código de participante */}
             <Typography
               align="center"
               sx={{
                 mt: { xs: 1.2, sm: 3 },
                 mb: 2,
                 fontSize: { xs: 18, sm: 22 },
-                letterSpacing: 0.3,
-                lineHeight: { xs: "26px", sm: "30px" },
               }}
             >
-              {name ? <b>{name + ", "}</b> : ""}Tu número de participación es:{" "}
+              {name ? <b>{name}, </b> : ""}
+              {t("thankyou.registrationCode")}
               <br />
               <span style={{ fontWeight: 700 }}>{participantCode}</span>
             </Typography>
             <Typography
               align="center"
-              sx={{
-                fontWeight: 600,
-                fontSize: "14px",
-              }}
+              sx={{ fontWeight: 600, fontSize: "14px" }}
             >
-              Aumenta tus posibilidades de ganar,
+              {t("thankyou.description").split(",")[0]},
             </Typography>
             <Typography
               align="center"
-              sx={{
-                fontWeight: 400,
-                mb: 2,
-                letterSpacing: 0.08,
-                fontSize: "14px",
-              }}
+              sx={{ fontWeight: 400, mb: 2, fontSize: "14px" }}
             >
-              comparte con tus amigos y familiares
+              {t("thankyou.description").split(",")[1]}
             </Typography>
 
-            {/* Botón gigante WhatsApp */}
-            <Box
-              sx={{
-                my: 2,
-                display: "flex",
-                justifyContent: "center",
-                width: "100%",
-              }}
+            <Stack
+              direction={isMobile ? "column" : "row"}
+              spacing={2}
+              justifyContent="center"
+              width="100%"
+              alignItems="center"
+              mb={2}
             >
-              <Tooltip title="Compartir en WhatsApp">
+              <Tooltip title={t("thankyou.shareWhatsapp")}>
                 <Button
                   fullWidth={isMobile}
                   onClick={shareOnWhatsApp}
@@ -195,37 +172,48 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
                     bgcolor: "#25d366",
                     color: "#fff",
                     borderRadius: 4,
-                    width: isMobile ? "100%" : 80,
                     height: 60,
-                    minWidth: 0,
-                    minHeight: 0,
-                    p: 0,
                     fontSize: { xs: 18, sm: 24 },
                     boxShadow: "0 2px 32px #25d36630",
                     "&:hover": { bgcolor: "#24b758" },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
                   }}
-                  size={isMobile ? "large" : "medium"}
                 >
                   <WhatsAppIcon sx={{ fontSize: isMobile ? 36 : 48 }} />
                   {isMobile && (
-                    <span
-                      style={{ marginLeft: 12, fontWeight: 600, fontSize: 17 }}
-                    >
-                      Compartir por WhatsApp
+                    <span style={{ marginLeft: 12, fontWeight: 600 }}>
+                      {t("thankyou.shareWhatsapp")}
                     </span>
                   )}
                 </Button>
               </Tooltip>
-            </Box>
+
+              <Tooltip title="SMS">
+                <Button
+                  fullWidth={isMobile}
+                  onClick={shareBySMS}
+                  sx={{
+                    bgcolor: "#673ab7",
+                    color: "#fff",
+                    borderRadius: 4,
+                    height: 60,
+                    fontSize: { xs: 18, sm: 24 },
+                    boxShadow: "0 2px 32px #673ab730",
+                    "&:hover": { bgcolor: "#5e35b1" },
+                  }}
+                >
+                  <Sms sx={{ fontSize: isMobile ? 36 : 48 }} />
+                  {isMobile && (
+                    <span style={{ marginLeft: 12, fontWeight: 600 }}>SMS</span>
+                  )}
+                </Button>
+              </Tooltip>
+            </Stack>
           </Stack>
 
           <Stack
             bgcolor={accent}
-            width={"100%"}
-            borderRadius={"0px 0px 16px 16px"}
+            width="100%"
+            borderRadius="0px 0px 16px 16px"
             pb={2}
           >
             <Typography
@@ -233,71 +221,47 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
               sx={{
                 fontWeight: 500,
                 fontSize: { xs: 18, sm: 22 },
-                my: { xs: 2, sm: 1.5 },
-                letterSpacing: 0.1,
+                my: 2,
                 color: "white",
               }}
             >
-              Además compártelo en:
+              {t("thankyou.shareMore")}
             </Typography>
             <Stack direction="row" justifyContent="center" spacing={3} mb={1}>
-              <Tooltip title="Facebook">
+              <Tooltip title={t("thankyou.shareFacebook")}>
                 <IconButton
                   onClick={shareOnFacebook}
-                  sx={{
-                    bgcolor: "transparent",
-                    color: "#fff",
-                    width: 44,
-                    height: 44,
-                    "&:hover": { bgcolor: "#fff1", color: "#fff" },
-                  }}
+                  sx={{ color: "#fff", "&:hover": { bgcolor: "#fff1" } }}
                 >
                   <FacebookRoundedIcon sx={{ fontSize: 36 }} />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="X">
+              <Tooltip title={t("thankyou.shareX")}>
                 <IconButton
                   onClick={shareOnX}
-                  sx={{
-                    bgcolor: "transparent",
-                    color: "#fff",
-                    width: 44,
-                    height: 44,
-                    "&:hover": { bgcolor: "#fff1", color: "#fff" },
-                  }}
+                  sx={{ color: "#fff", "&:hover": { bgcolor: "#fff1" } }}
                 >
                   <X sx={{ fontSize: 36 }} />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Gmail">
+              <Tooltip title={t("thankyou.shareGmail")}>
                 <IconButton
                   onClick={shareOnGmail}
-                  sx={{
-                    bgcolor: "transparent",
-                    color: "#fff",
-                    width: 44,
-                    height: 44,
-                    "&:hover": { bgcolor: "#fff1", color: "#fff" },
-                  }}
+                  sx={{ color: "#fff", "&:hover": { bgcolor: "#fff1" } }}
                 >
                   <Email sx={{ fontSize: 36 }} />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Copiar link">
+              <Tooltip title={t("thankyou.copyLink")}>
                 <IconButton
                   onClick={copyLink}
-                  sx={{
-                    bgcolor: "transparent",
-                    color: "#fff",
-                    width: 44,
-                    height: 44,
-                    "&:hover": { bgcolor: "#fff1", color: "#fff" },
-                  }}
+                  sx={{ color: "#fff", "&:hover": { bgcolor: "#fff1" } }}
                 >
                   <ContentCopyIcon sx={{ fontSize: 36 }} />
                 </IconButton>
               </Tooltip>
             </Stack>
+
             <Divider
               sx={{
                 bgcolor: "#fff",
@@ -309,20 +273,18 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
               }}
             />
 
-            {/* Fecha grande */}
             <Typography
               align="center"
               sx={{
                 color: "#fff",
                 fontWeight: 900,
-                fontSize: { xs: "4rem", sm: "6rem " },
+                fontSize: { xs: "4rem", sm: "6rem" },
                 textShadow: "0 8px 24px #ff4b9b18",
               }}
             >
               {dateText}
             </Typography>
 
-            {/* Imagen del carro */}
             <Box
               sx={{
                 width: "100%",
@@ -336,9 +298,7 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
                 alt="Nissan Versa"
                 width={isMobile ? 140 : 260}
                 height={isMobile ? 70 : 120}
-                style={{
-                  objectFit: "contain",
-                }}
+                style={{ objectFit: "contain" }}
               />
             </Box>
 
@@ -347,18 +307,19 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
               sx={{
                 color: "#fff",
                 fontWeight: 400,
-                fontSize: { xs: "14px", sm: "20px " },
+                fontSize: { xs: "14px", sm: "20px" },
               }}
             >
-              &copy; {new Date().getFullYear()} Sweepstouch. Todos los derechos
-              reservados.
+              &copy; {new Date().getFullYear()} Sweepstouch.{" "}
+              {t("thankyou.copyright")}.
             </Typography>
           </Stack>
         </Paper>
+
         <Snackbar
           open={snackbarOpen}
           onClose={() => setSnackbarOpen(false)}
-          message="¡Link copiado!"
+          message={t("thankyou.copySuccess")}
           autoHideDuration={1200}
         />
       </Box>

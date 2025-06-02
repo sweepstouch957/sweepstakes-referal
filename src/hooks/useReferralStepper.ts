@@ -3,38 +3,44 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { OtpService } from "@/services/otp.service";
 import { validateReferalCode } from "@/services/referrer.service";
 
-const schema = z.object({
+import { z } from "zod";
+import i18n from "@/libs/i18n"; // o donde tengas tu i18n
+
+const t = i18n.t.bind(i18n); // para usar fuera de hooks
+
+export const schema = z.object({
   firstName: z
     .string()
-    .min(1, { message: "First name is required" })
-    .max(50, { message: "First name must be less than 50 characters" }),
+    .min(1, { message: t("form.errors.firstName.required") })
+    .max(50, { message: t("form.errors.firstName.max") }),
 
   lastName: z
     .string()
-    .min(1, { message: "Last name is required" })
-    .max(50, { message: "Last name must be less than 50 characters" }),
+    .min(1, { message: t("form.errors.lastName.required") })
+    .max(50, { message: t("form.errors.lastName.max") }),
 
   phone: z.string().regex(/\(\d{3}\) \d{3}-\d{4}/, {
-    message: "Phone number must be in format (123) 456-7890",
+    message: t("form.errors.phone.format"),
   }),
 
-  email: z.string().email({ message: "Enter a valid email address" }),
+  email: z.string().email({ message: t("form.errors.email") }),
 
-  zip: z.string().regex(/^\d{5}$/, { message: "ZIP code must be 5 digits" }),
+  zip: z.string().regex(/^\d{5}$/, {
+    message: t("form.errors.zip"),
+  }),
 
   referralCode: z.string().optional(),
 
   supermarket: z.string().optional(),
 
-  otp: z.string().length(6, { message: "OTP must be exactly 6 digits" }),
+  otp: z.string().length(6, {
+    message: t("form.errors.otp"),
+  }),
 });
-
-export default schema;
 
 export type FormData = z.infer<typeof schema>;
 
@@ -111,7 +117,7 @@ export function useReferralStepper(
       setResendTimer(OTP_COOLDOWN);
     } catch (err: any) {
       console.log(err);
-      
+
       setResendError(err?.response?.data?.error || "OTP validation failed");
     }
     setIsLoadingOtp(false);
@@ -135,7 +141,7 @@ export function useReferralStepper(
     }
     setIsValidatingOtp(false);
   };
-  
+
   useEffect(() => {
     if (resendTimer > 0) {
       timerRef.current = setInterval(() => {

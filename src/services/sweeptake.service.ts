@@ -15,6 +15,7 @@ export interface RegisterPayload {
   email?: string;
   zipCode?: string;
   campaignId?: string;
+  language: "es" | "en";
 }
 
 export interface Coupon {

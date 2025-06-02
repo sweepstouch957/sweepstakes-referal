@@ -1,32 +1,36 @@
 "use client";
 
 import { Box, useMediaQuery } from "@mui/material";
+import Image from "next/image";
 import BgMobile from "@public/bg-mobile.webp";
 import BgDesktop from "@public/big-image.webp";
 
 export default function Hero() {
   const isMobile = useMediaQuery("(max-width:600px)");
+  const selectedImage = isMobile ? BgMobile : BgDesktop;
+
   return (
-    <Box
-      sx={{
-        width: "100%",
-        backgroundImage: `
-          linear-gradient(to bottom, rgba(255,255,255,0) 90%, rgba(255,255,255,1)),
-          url(${isMobile ? BgMobile.src : BgDesktop.src})
-        `,
-        height: isMobile ? "80vh" : "100vh",
-        marginTop: { xs: "48px", sm: "64px" },
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: isMobile ? "top center" : "center",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        textAlign: "center",
-        color: "#fff",
-        px: 2,
-      }}
-    ></Box>
+    <Box sx={{ width: "100%", position: "relative", mt: { xs: 6, sm: 8 } }}>
+      {/* Imagen responsiva */}
+      <Image
+        src={selectedImage}
+        alt="Hero"
+        style={{ width: "100%", height: "auto", display: "block" }}
+        priority
+      />
+
+      {/* Sombra inferior */}
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          height: "15%",
+          background:
+            "linear-gradient(to bottom, rgba(255,255,255,0) 0%, #fff 100%)",
+          pointerEvents: "none",
+        }}
+      />
+    </Box>
   );
 }
