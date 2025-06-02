@@ -10,7 +10,7 @@ import { validateReferalCode } from "@/services/referrer.service";
 import { z } from "zod";
 import i18n from "@/libs/i18n"; // o donde tengas tu i18n
 
-const t = i18n.t.bind(i18n); // para usar fuera de hooks
+const t = i18n.t.bind(i18n); // para usar fuera de language
 
 export const schema = z.object({
   firstName: z
