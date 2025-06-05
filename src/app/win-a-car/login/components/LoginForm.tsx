@@ -10,14 +10,19 @@ import {
   CircularProgress,
   Fade,
 } from "@mui/material";
-import OTPInput from "react-otp-input";
 import { useState, useRef, useEffect } from "react";
 import CustomButton from "../../components/Button";
-import { OtpService } from "@/services/otp.service"; // Ajusta el path si tu archivo está en otro lugar
+import { OtpService } from "@/services/otp.service";
 import { useMutation } from "@tanstack/react-query";
 import { loginParticipant } from "@/services/sweeptake.service";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+// IMPORTA TU COMPONENTE
+import OtpStep from "@/components/steps/OtpStep";
+import { useForm } from "react-hook-form";
+
+// Timer para reenviar OTP (en segundos)
+const OTP_TIMER = 120;
 
 export default function LoginWithOTP() {
   const [step, setStep] = useState<"phone" | "otp">("phone");
@@ -25,8 +30,18 @@ export default function LoginWithOTP() {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isResending, setIsResending] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+  const [resendLeft, setResendLeft] = useState<number | undefined>(undefined);
+  const [attemptsLeft, setAttemptsLeft] = useState<number | undefined>();
+  const [locked, setLocked] = useState<boolean>();
+  const [success, setSuccess] = useState(false);
+
   const router = useRouter();
   const [userInfo, setUserInfo] = useState<any>(null);
+
+  // Referencias para focus
+  const phoneInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (userInfo) {
@@ -34,20 +49,36 @@ export default function LoginWithOTP() {
         Cookies.set("sweepstakes_user", JSON.stringify(userInfo.user));
         Cookies.set("sweepstakes_stores", JSON.stringify(userInfo.stores));
         Cookies.set("sweepstakes_token", userInfo.token);
-        router.push("/win-a-car/profile")
+        router.push("/win-a-car/profile");
       } catch (err: any) {
         setError("No se pudo guardar la sesión.");
       }
     }
   }, [userInfo, router]);
 
-  // Refs para enfocar los campos
-  const phoneInputRef = useRef<HTMLInputElement>(null);
-  const otpInputRef = useRef<HTMLInputElement>(null);
+  // Timer de reenvío OTP
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    if (resendTimer > 0) {
+      timer = setInterval(() => {
+        setResendTimer((prev) => {
+          if (prev <= 1 && timer) {
+            clearInterval(timer);
+            timer = null;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [resendTimer]);
 
   // Mutation para loginParticipant
   const loginMutation = useMutation({
-    mutationFn: async () => {
+    // Ahora recibe un objeto con phone y otp
+    mutationFn: async ({ phone, otp }: { phone: string; otp: string }) => {
       const onlyDigits = phone.replace(/\D/g, "");
       return await loginParticipant({
         phone: onlyDigits,
@@ -59,11 +90,8 @@ export default function LoginWithOTP() {
         setError("Error: Respuesta inesperada del servidor");
         return;
       }
-      try {
-        setUserInfo(data);
-      } catch (err: any) {
-        setError("No se pudo guardar la sesión.");
-      }
+      setSuccess(true);
+      setUserInfo(data);
     },
     onError: (err: any) => {
       setError(
@@ -72,18 +100,10 @@ export default function LoginWithOTP() {
           err?.message ||
           "Unexpected error logging in"
       );
-      setTimeout(() => {
-        // FOCUS OTP input
-        if (otpInputRef.current) otpInputRef.current.focus();
-        else {
-          const el = document.querySelector(".react-otp-input input");
-          if (el instanceof HTMLInputElement) el.focus();
-        }
-      }, 50);
+      setSuccess(false);
     },
   });
 
-  // Instanciar el servicio sólo una vez
   const otpService = new OtpService();
 
   const formatPhone = (value: string) => {
@@ -93,17 +113,31 @@ export default function LoginWithOTP() {
       ? `(${match[1]}) ${match[2]}${match[3] ? `-${match[3]}` : ""}`
       : cleaned;
   };
+  const handleSetOtp = (val: string) => {
+    setOtp(val);
+  };
 
+  // Enviar OTP al número
   const handlePhoneSubmit = async () => {
     setIsLoading(true);
     setError(null);
+    setOtp("");
+    setSuccess(false);
+    setAttemptsLeft(undefined);
+    setLocked(false);
     try {
       const onlyDigits = phone.replace(/\D/g, "");
-      await otpService.sendOtp({ phone: onlyDigits });
+      const { data } = await otpService.sendOtp({
+        phone: onlyDigits,
+        channel: "sms",
+      });
       setStep("otp");
+      setResendTimer(OTP_TIMER);
+      setResendLeft(data?.resendLeft);
+      setAttemptsLeft(data?.attemptsLeft);
+      setLocked(data?.locked);
     } catch (err: any) {
       setError(err?.response?.data?.error || "Unexpected error");
-      // FOCUS input phone
       setTimeout(() => {
         phoneInputRef.current?.focus();
       }, 50);
@@ -112,13 +146,40 @@ export default function LoginWithOTP() {
     }
   };
 
-  const handleOtpSubmit = async () => { 
+  // Resend OTP handler
+  const handleResend = async () => {
+    setIsResending(true);
+    setError(null);
+    setSuccess(false);
+    setAttemptsLeft(undefined);
+    setLocked(false);
+    try {
+      const onlyDigits = phone.replace(/\D/g, "");
+      const { data } = await otpService.sendOtp({
+        phone: onlyDigits,
+        channel: "sms",
+      });
+      setResendTimer(OTP_TIMER);
+      setResendLeft(data?.resendLeft);
+      setAttemptsLeft(data?.attemptsLeft);
+      setLocked(data?.locked);
+    } catch (err: any) {
+      setError(err?.response?.data?.error || "Error reenviando el código");
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  // Cuando termina el código OTP, dispara el login directo
+  const handleOtpComplete = async (otpValue: string) => {
     setIsLoading(true);
     setError(null);
-
+    setSuccess(false);
     try {
-      // Usamos directamente la mutación
-      await loginMutation.mutateAsync();
+      await loginMutation.mutateAsync({
+        phone,
+        otp: otpValue,
+      });
     } catch (err: any) {
       setError(
         err?.response?.data?.error ||
@@ -126,33 +187,16 @@ export default function LoginWithOTP() {
           err?.message ||
           "Unexpected error"
       );
-
-      // FOCUS OTP input
-      setTimeout(() => {
-        if (otpInputRef.current) {
-          otpInputRef.current.focus();
-        } else {
-          const el = document.querySelector(".react-otp-input input");
-          if (el instanceof HTMLInputElement) el.focus();
-        }
-      }, 50);
+      setSuccess(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Cuando cambias de step a 'phone', enfoca el input phone
   useEffect(() => {
     if (step === "phone") {
       setTimeout(() => {
         phoneInputRef.current?.focus();
-      }, 100);
-    }
-    if (step === "otp") {
-      setTimeout(() => {
-        // fallback: enfoca el primer input del OTP si existe
-        const el = document.querySelector(".react-otp-input input");
-        if (el instanceof HTMLInputElement) el.focus();
       }, 100);
     }
   }, [step]);
@@ -172,7 +216,6 @@ export default function LoginWithOTP() {
           <Typography variant="h4" fontWeight={700} mb={2} color="#ff4b9b">
             Login with your Phone
           </Typography>
-
           {step === "phone" ? (
             <>
               <TextField
@@ -201,57 +244,38 @@ export default function LoginWithOTP() {
               </CustomButton>
             </>
           ) : (
-            <>
-              <Typography variant="subtitle1" gutterBottom>
-                Enter the OTP sent to <strong>+1 {phone}</strong>
-              </Typography>
-              <OTPInput
-                value={otp}
-                onChange={setOtp}
-                numInputs={6}
-                renderInput={(props, idx) => (
-                  <input
-                    {...props}
-                    ref={idx === 0 ? otpInputRef : undefined}
-                    // autofocus solo en el primer input (mejora UX)
-                  />
-                )}
-                inputStyle={{
-                  width: "3rem",
-                  height: "3.5rem",
-                  fontSize: "1.5rem",
-                  borderRadius: 8,
-                  border: "1px solid #ccc",
-                }}
-                containerStyle={{
-                  justifyContent: "center",
-                  gap: 12,
-                  marginBottom: 20,
-                }}
+            <Box>
+              <OtpStep
+                otp={otp}
+                setOtp={handleSetOtp}
+                phone={phone.replace(/\D/g, "")}
+                resendTimer={resendTimer}
+                onResend={handleResend}
+                isResending={isResending}
+                isVerifying={isLoading}
+                attemptsLeft={attemptsLeft}
+                locked={locked}
+                resendLeft={resendLeft}
+                errorSend={error}
+                success={success}
+                onSubmit={handleOtpComplete}
               />
-              {error && <Typography color="error">{error}</Typography>}
-              <CustomButton
-                variant="contained"
-                fullWidth
-                sx={{ py: 1.5, fontWeight: 600 }}
-                onClick={handleOtpSubmit}
-                disabled={isLoading || otp.length < 6}
-              >
-                {isLoading ? <CircularProgress size={24} /> : "Verify OTP"}
-              </CustomButton>
               <CustomButton
                 onClick={() => {
                   setStep("phone");
                   setOtp("");
+                  setError(null);
+                  setSuccess(false);
                 }}
                 color="secondary"
                 variant="outlined"
                 sx={{ mt: 2 }}
                 fullWidth
+                disabled={isLoading || isResending}
               >
                 Change phone number
               </CustomButton>
-            </>
+            </Box>
           )}
         </Box>
       </Fade>
