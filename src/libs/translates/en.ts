@@ -120,12 +120,18 @@ const en = {
       logout: "Logout",
     },
     otp: {
-      instruction: "Enter the OTP sent to",
-      fallbackPhone: "your phone number",
+      title: "Verify your identity",
+      instruction: "Enter the 6-digit code sent to",
+      fallbackPhone: "your number",
+      verified: "Code verified!",
+      locked: "Too many attempts. Try again later.",
+      attemptsLeft: "{{count}} attempts left",
       resendIn: "You can try again in",
-      resend: "Resend OTP",
-      resending: "Resending...",
-      error: "Invalid OTP",
+      resendsLeft: "({{count}} left)",
+      resending: "Sending...",
+      resend: "Resend code",
+      notReceived:
+        "Didn't receive the code? Check your number and your spam folder.",
     },
   },
 };

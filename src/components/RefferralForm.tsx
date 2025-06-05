@@ -46,6 +46,12 @@ export default function ReferralForm({
     referralError,
     handleFinalSubmit,
     setReferralError,
+    attemptsLeft,
+    isResending,
+    resendLeft,
+    locked,
+
+    success,
   } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit);
   const { t } = useTranslation();
 
@@ -118,12 +124,19 @@ export default function ReferralForm({
           <OtpStep
             otp={otp}
             setOtp={handeSetOtp}
-            error={form.formState.errors.otp?.message}
             resendTimer={resendTimer}
             phone={getValues("phone")}
             onResend={() => {
               handleSendOtp();
             }}
+            onComplete={form.handleSubmit(handleFinalSubmit)}
+            attemptsLeft={attemptsLeft}
+            locked={locked}
+            resendLeft={resendLeft}
+            isResending={isResending}
+            success={success}
+            errorSend={resendError}
+            isVerifying={isValidatingOtp}
           />
         )}
 
@@ -134,13 +147,13 @@ export default function ReferralForm({
         )}
 
         <Stack direction="row" justifyContent="center" spacing={2} mt={2}>
-          {activeStep > 0 && activeStep < 2 && (
+          {activeStep > 0 && (
             <CustomButton onClick={prevStep} variant="outlined">
               {t("common.prev")}
             </CustomButton>
           )}
 
-          {activeStep < 2 ? (
+          {activeStep < 2 && (
             <CustomButton
               onClick={nextStep}
               disabled={isLoading || isLoadingOtp}
@@ -151,23 +164,8 @@ export default function ReferralForm({
                 <>{t("common.next")}</>
               )}
             </CustomButton>
-          ) : (
-            <CustomButton
-              disabled={isValidatingOtp || isLoading}
-              onClick={form.handleSubmit(handleFinalSubmit)}
-            >
-              {isValidatingOtp ? (
-                <CircularProgress size={22} color="inherit" />
-              ) : (
-                "Submit"
-              )}
-            </CustomButton>
           )}
         </Stack>
-
-        {resendError && activeStep === 2 && (
-          <Alert severity="error">{resendError}</Alert>
-        )}
       </Stack>
     </Box>
   );

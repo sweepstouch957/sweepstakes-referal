@@ -19,7 +19,6 @@ interface Props {
 
 export default function ReferralCodeStep({
   form,
-  showExtendedFields,
   defaultStoreName,
   isValidatingReferral,
   defaultReferralCode = "",
@@ -43,15 +42,13 @@ export default function ReferralCodeStep({
         fullWidth
       />
 
-      {showExtendedFields && (
-        <TextField
-          label={t("form.supermarket")}
-          defaultValue={defaultStoreName}
-          disabled
-          fullWidth
-          sx={{ mt: 2 }}
-        />
-      )}
+      <TextField
+        label={t("form.supermarket")}
+        defaultValue={defaultStoreName || "Sweepstouch"}
+        disabled
+        fullWidth
+        sx={{ mt: 2 }}
+      />
 
       {isValidatingReferral && (
         <Box display="flex" justifyContent="center" py={2}>

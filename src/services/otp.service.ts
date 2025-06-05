@@ -1,15 +1,16 @@
 import { api } from "../http/client";
 
-interface SendOtpDto {
+export interface SendOtpDto {
   phone: string;
+  channel: "sms" | "whatsapp";
 }
 
-interface VerifyOtpDto {
+export interface VerifyOtpDto {
   phone: string;
   code: string;
 }
 
-interface OtpStatus {
+export interface OtpStatus {
   phone: string;
   verified: boolean;
   resendCount: number;
@@ -18,7 +19,16 @@ interface OtpStatus {
   lockUntil?: string;
 }
 
-interface ApiResponse<T> {
+export interface SendOtpResponseData {
+  channel: "sms";
+  secondsLeft: number;
+  attemptsLeft: number;
+  resendLeft: number;
+  locked: boolean;
+  // Otros campos del backend si hay...
+}
+
+export interface ApiResponse<T> {
   success: boolean;
   message: string;
   data?: T;
@@ -27,13 +37,19 @@ interface ApiResponse<T> {
 export class OtpService {
   private basePath = "/otp";
 
-  async sendOtp(dto: SendOtpDto): Promise<ApiResponse<null>> {
-    const { data } = await api.post<ApiResponse<null>>(`${this.basePath}/send`, dto);
+  async sendOtp(dto: SendOtpDto): Promise<ApiResponse<SendOtpResponseData>> {
+    const { data } = await api.post<ApiResponse<SendOtpResponseData>>(
+      `${this.basePath}/send`,
+      dto!
+    );
     return data;
   }
 
   async verifyOtp(dto: VerifyOtpDto): Promise<ApiResponse<null>> {
-    const { data } = await api.post<ApiResponse<null>>(`${this.basePath}/verify`, dto);
+    const { data } = await api.post<ApiResponse<null>>(
+      `${this.basePath}/verify`,
+      dto
+    );
     return data;
   }
 

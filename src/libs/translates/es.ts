@@ -121,12 +121,18 @@ const es = {
       logout: "Cerrar sesión",
     },
     otp: {
-      instruction: "Ingresa el código OTP enviado a",
-      fallbackPhone: "número de teléfono",
-      error: "Código inválido",
+      title: "Verifica tu identidad",
+      instruction: "Ingresa el código de 6 dígitos enviado a",
+      fallbackPhone: "tu número",
+      verified: "¡Código verificado!",
+      locked: "Demasiados intentos. Intenta más tarde.",
+      attemptsLeft: "{{count}} intentos restantes",
       resendIn: "Puedes intentar de nuevo en",
-      resend: "Reenviar OTP",
-      resending: "Reenviando...",
+      resendsLeft: "({{count}} restantes)",
+      resending: "Enviando...",
+      resend: "Reenviar código",
+      notReceived:
+        "¿No recibiste el código? Revisa tu número y la carpeta de spam.",
     },
   },
 };
