@@ -38,7 +38,7 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
   participantCode,
   referralLink,
   name,
-  dateText = "30 SEPT",
+  dateText = "30 DEC",
 }) => {
   const { t } = useTranslation();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
