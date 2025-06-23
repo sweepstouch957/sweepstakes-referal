@@ -104,7 +104,7 @@ const es = {
       description:
         "Aumenta tus posibilidades de ganar, comparte con tus amigos y familiares.",
       main: "¡Estoy participando para GANAR un Nissan Versa 2025 en {{storeName}}! 🚗\n\n¡Súmate al sorteo usando este link! Cada amigo que se registre nos dará una oportunidad extra de ganar. 👀👇\n{{referralLink}}",
-      registrationCode: "Tu número de participación es:",
+      registrationCode: "Tu número de referido es:",
       copySuccess: "¡Link copiado!",
       shareMore:
         "¡Copia el link y mándalo por WhatsApp, Facebook, o donde quieras!",
