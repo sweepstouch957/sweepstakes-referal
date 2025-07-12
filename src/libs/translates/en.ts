@@ -33,7 +33,7 @@ const en = {
       phone: "Phone",
       email: "Email",
       zip: "ZIP Code",
-      referralCode: "Referral Code",
+      referralCode: "Referral Code (Optional)",
       supermarket: "Supermarket",
       errors: {
         firstName: {
