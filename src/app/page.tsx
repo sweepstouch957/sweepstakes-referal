@@ -92,7 +92,7 @@ function HomeFormContainer() {
 export default function Home() {
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Navbar hideActions />
+      <Navbar hideActions hideMobileMenu />
 
       {/* Spacer bajo el navbar */}
       <Box sx={{ height: { xs: 72, md: 96 } }} />
@@ -108,6 +108,10 @@ export default function Home() {
         <StoreInfo />
       </Suspense>
 
+
+
+
+
       <Box
         component="main"
         sx={{
@@ -118,6 +122,19 @@ export default function Home() {
           mt: { xs: 2, md: 3 },
         }}
       >
+        <Typography
+          variant="h4"
+
+          sx={{
+            fontWeight: 700,
+            lineHeight: 1.2,
+            color: "#ff07a0ff",
+            minWidth: 0,
+            textAlign: "center"
+          }}
+        >
+          Registrate en nuestra Tienda
+        </Typography>
         <Suspense
           fallback={
             <Container maxWidth="sm" sx={{ my: 6 }}>
