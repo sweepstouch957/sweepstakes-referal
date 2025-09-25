@@ -7,9 +7,7 @@ import StepLabel from "@mui/material/StepLabel";
 import PersonIcon from "@mui/icons-material/Person";
 import LinkIcon from "@mui/icons-material/Link";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
-import StepConnector, {
-  stepConnectorClasses,
-} from "@mui/material/StepConnector";
+import StepConnector, { stepConnectorClasses } from "@mui/material/StepConnector";
 import { StepIconProps } from "@mui/material/StepIcon";
 import { useTranslation } from "react-i18next";
 
@@ -17,15 +15,11 @@ const CustomConnector = styled(StepConnector)(() => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
     top: 22,
   },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      backgroundColor: "#d7006e",
-    },
+  [`&.${stepConnectorClasses.active} .${stepConnectorClasses.line}`]: {
+    backgroundColor: "#d7006e",
   },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      backgroundColor: "#d7006e",
-    },
+  [`&.${stepConnectorClasses.completed} .${stepConnectorClasses.line}`]: {
+    backgroundColor: "#d7006e",
   },
   [`& .${stepConnectorClasses.line}`]: {
     height: 3,
@@ -66,10 +60,7 @@ function CustomStepIcon(props: StepIconProps) {
   };
 
   return (
-    <CustomStepIconRoot
-      ownerState={{ completed, active }}
-      className={className}
-    >
+    <CustomStepIconRoot ownerState={{ completed, active }} className={className}>
       {icons[String(props.icon)]}
     </CustomStepIconRoot>
   );
@@ -77,23 +68,21 @@ function CustomStepIcon(props: StepIconProps) {
 
 export default function CustomReferralStepper({
   activeStep = 0,
+  variant = "full",
 }: {
   activeStep: number;
+  variant?: "full" | "personalOnly";
 }) {
   const { t } = useTranslation();
 
-  const steps = [
-    t("referralStep.step1"), // Your Info
-    t("referralStep.step2"), // Referral Code
-    t("referralStep.step3"), // Verify OTP
-  ];
+  const steps =
+    variant === "personalOnly"
+      ? [t("referralStep.step1")]
+      : [t("referralStep.step1"), t("referralStep.step2"), t("referralStep.step3")];
+
   return (
     <Stack sx={{ width: "100%" }} spacing={4}>
-      <Stepper
-        alternativeLabel
-        activeStep={activeStep}
-        connector={<CustomConnector />}
-      >
+      <Stepper alternativeLabel activeStep={activeStep} connector={<CustomConnector />}>
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel StepIconComponent={CustomStepIcon}>{label}</StepLabel>

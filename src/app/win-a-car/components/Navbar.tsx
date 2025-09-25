@@ -26,7 +26,8 @@ import { Person } from "@mui/icons-material";
 import LanguageSwitcher from "@/components/Languaje";
 import { useTranslation } from "react-i18next";
 
-export default function Navbar() {
+interface NavbarProps { hideActions?: boolean }
+export default function Navbar({ hideActions = false }: NavbarProps) {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -108,7 +109,7 @@ export default function Navbar() {
             <Box display="flex" alignItems="center" gap={2}>
               <LanguageSwitcher />
               {/* Desktop */}
-              {!isMobile && (
+              {!isMobile && !hideActions && (
                 <>
                   <Button
                     variant="contained"

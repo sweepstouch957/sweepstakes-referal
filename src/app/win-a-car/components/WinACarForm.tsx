@@ -29,6 +29,8 @@ interface Props {
   storeId?: string;
   campaignId?: string;
   slug?: string;
+  hideTitle?: boolean;
+  stepperVariant?: 'full' | 'personalOnly';
 }
 
 export default function WinACarFormWithThankYou({
@@ -40,6 +42,8 @@ export default function WinACarFormWithThankYou({
   storeId = "",
   slug = "",
   campaignId = "",
+  hideTitle = false,
+  stepperVariant = 'full',
 }: Props) {
   const theme = useTheme();
   const {language}=useLanguage()
@@ -121,9 +125,9 @@ export default function WinACarFormWithThankYou({
               color="#ff4b9b"
               mb={4}
             >
-              {t("referralStep.title")}
+              {!hideTitle && t("referralStep.title")}
             </Typography>
-            <ReferralStepper
+            <ReferralStepper stepperVariant={stepperVariant}
               onSubmit={handleFormSubmit}
               isLoading={mutation.isPending}
               backendError={backendError}

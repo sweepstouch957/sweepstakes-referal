@@ -16,6 +16,7 @@ interface Props {
   isLoading?: boolean;
   backendError?: string | null;
   onClearError?: () => void;
+
   showExtendedFields?: boolean;
 }
 
@@ -26,8 +27,8 @@ export default function ReferralForm({
   isLoading = false,
   backendError,
   onClearError,
+  stepperVariant = "full",
   showExtendedFields = false,
-  stepperVariant = 'full',
 }: Props) {
   const {
     activeStep,
@@ -169,7 +170,7 @@ export default function ReferralForm({
               {isLoadingOtp ? (
                 <CircularProgress size={22} color="inherit" />
               ) : (
-                <>{stepperVariant === 'personalOnly' ? t('common.submit') : t('common.next')}</>
+                <>{t("common.next")}</>
               )}
             </CustomButton>
           )}
