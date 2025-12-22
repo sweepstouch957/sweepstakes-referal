@@ -16,10 +16,6 @@ const en = {
       title: "Win a 2025 Nissan Versa!",
       proccesing: "Processing your registration...",
     },
-    winATv: {
-      title: "Win a 55'' TV December 25",
-      notConfigured: "This giveaway isn't configured yet. Please check back soon.",
-    },
     login: {
       title: "Login with your phone",
       phoneLabel: "Phone number",

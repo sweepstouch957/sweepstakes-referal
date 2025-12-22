@@ -17,7 +17,6 @@ interface Props {
   backendError?: string | null;
   onClearError?: () => void;
   showExtendedFields?: boolean;
-  disabled?: boolean;
 }
 
 export default function ReferralForm({
@@ -28,7 +27,6 @@ export default function ReferralForm({
   backendError,
   onClearError,
   showExtendedFields = false,
-  disabled = false,
   stepperVariant = 'full',
 }: Props) {
   const {
@@ -60,7 +58,6 @@ export default function ReferralForm({
   const { t } = useTranslation();
 
   const nextStep = async () => {
-    if (disabled) return;
     if (activeStep === 0) {
       const valid = await trigger([
         "firstName",
@@ -159,7 +156,7 @@ export default function ReferralForm({
 
         <Stack direction="row" justifyContent="center" spacing={2} mt={2}>
           {activeStep > 0 && (
-            <CustomButton onClick={prevStep} variant="outlined" disabled={disabled || isLoading || isLoadingOtp}>
+            <CustomButton onClick={prevStep} variant="outlined">
               {t("common.prev")}
             </CustomButton>
           )}
@@ -167,7 +164,7 @@ export default function ReferralForm({
           {activeStep < 2 && (
             <CustomButton
               onClick={nextStep}
-              disabled={disabled || isLoading || isLoadingOtp}
+              disabled={isLoading || isLoadingOtp}
             >
               {isLoadingOtp ? (
                 <CircularProgress size={22} color="inherit" />
