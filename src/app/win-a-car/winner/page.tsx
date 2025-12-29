@@ -1,6 +1,5 @@
 import WinnerReveal from "@/components/WinnerReveal";
 import Navbar from "../components/Navbar";
-import Hero from "../components/Hero";
 import { Suspense } from "react";
 import Footer from "../components/Footer";
 import { Container, Skeleton } from "@mui/material";
