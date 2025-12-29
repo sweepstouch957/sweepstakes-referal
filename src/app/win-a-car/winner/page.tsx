@@ -9,7 +9,6 @@ export default function Page({ params }: { params: { id: string } }) {
   return (
     <>
       <Navbar />
-      <Hero />
 
       <Suspense
         fallback={
