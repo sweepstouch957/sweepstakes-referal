@@ -18,7 +18,7 @@ export default function Page() {
         }
       >
         <WinnerTombola
-          sweepstakeId={process.env.NEXT_PUBLIC_SWEEPSTAKE_NEW_YEAR || ""}
+          sweepstakeId={process.env.NEXT_PUBLIC_SWEEPSTAKE_ID || ""}
         />
       </Suspense>
     </>

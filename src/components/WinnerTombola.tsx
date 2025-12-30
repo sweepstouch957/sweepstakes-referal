@@ -364,9 +364,9 @@ export default function WinnerTombola({
                         {displayPhoneFinal}
                       </Typography>
                     ) : (
-                      <Stack spacing={0.75} alignItems="center">
+                      <Stack spacing={0.75} alignItems="center" mt={4}>
                         <Typography
-                          sx={{ color: "white", fontWeight: 900, fontSize: 18 }}
+                          sx={{ color: "white", fontWeight: 900, fontSize: 32 }}
                         >
                           Listo para iniciar la tómbola
                         </Typography>
