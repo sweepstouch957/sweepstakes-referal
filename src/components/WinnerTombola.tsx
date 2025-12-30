@@ -19,6 +19,7 @@ import {
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import StopRoundedIcon from "@mui/icons-material/StopRounded";
 import LocalActivityRoundedIcon from "@mui/icons-material/LocalActivityRounded";
+import Image from "next/image";
 
 type Props = {
   sweepstakeId: string;
@@ -251,7 +252,7 @@ export default function WinnerTombola({
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55 }}
-            style={{ width: "100%", }}
+            style={{ width: "100%" }}
           >
             <Box
               sx={{
@@ -301,25 +302,26 @@ export default function WinnerTombola({
                       width: "100%",
                       textAlign: "center",
                       borderRadius: 999,
-                      px: 2,
-                      py: 1,
+                      pb: 0.5,
                       border: "1px solid rgba(255,255,255,.16)",
                       bgcolor: "rgba(0,0,0,.22)",
                       backdropFilter: "blur(10px)",
                     }}
                   >
                     <Typography
-                      sx={{ color: "rgba(255,255,255,.85)", fontSize: 13 }}
+                      sx={{ color: "#000", fontSize: 38 }}
+                      fontWeight={700}
                     >
                       Total de participantes
                     </Typography>
                     <Typography
                       sx={{
-                        color: "white",
+                        color: "black",
                         fontWeight: 900,
-                        fontSize: { xs: 20, sm: 24, md: 26 },
-                        letterSpacing: 0.2,
+                        fontSize: { xs: 20, sm: 24, md: 58 },
                       }}
+                      lineHeight={"52px"}
+                      marginBottom={0}
                     >
                       {isLoading ? "Cargando…" : formattedParticipants}
                     </Typography>
@@ -358,24 +360,33 @@ export default function WinnerTombola({
                           fontWeight: 900,
                           fontSize: { xs: 28, sm: 36, md: 72 },
                           letterSpacing: 0.6,
-                          mt :{ xs: 0.5, md: 4}
+                          p: "0px",
                         }}
                       >
                         {displayPhoneFinal}
                       </Typography>
                     ) : (
-                      <Stack spacing={0.75} alignItems="center" mt={4}>
+                      <Stack spacing={0.75} alignItems="center">
                         <Typography
-                          sx={{ color: "white", fontWeight: 900, fontSize: 32 }}
+                          sx={{
+                            color: "white",
+                            fontWeight: 900,
+                            fontSize: 48,
+                            lineHeight: "40px",
+                          }}
                         >
-                          Listo para iniciar la tómbola
+                          Sorteo Nissan Versa 2025
                         </Typography>
-                        <Typography
-                          sx={{ color: "rgba(255,255,255,.8)", fontSize: 13 }}
-                        >
-                          Usa <b>Iniciar sorteo</b> para girar y <b>Stop</b>{" "}
-                          para revelar el ganador.
-                        </Typography>
+
+                        <Image
+                          width={240}
+                          height={80}
+                          src="/blanco.png"
+                          alt="Nissan Logo"
+                          style={{
+                            objectFit: "contain",
+                          }}
+                        />
                       </Stack>
                     )}
                   </Box>
@@ -396,11 +407,12 @@ export default function WinnerTombola({
                         flex: mdUp ? "0 0 auto" : 1,
                         px: 3,
                         py: 1.4,
+                        fontSize: 24,
                         borderRadius: 999,
                         fontWeight: 900,
                         textTransform: "none",
-                        bgcolor: "#FF0F6E",
-                        "&:hover": { bgcolor: "rgba(255,15,110,.90)" },
+                        color: "#FF0F6E",
+                        bgcolor: "white",
                       }}
                     >
                       Iniciar sorteo
@@ -417,21 +429,15 @@ export default function WinnerTombola({
                         py: 1.4,
                         borderRadius: 999,
                         fontWeight: 900,
+                        fontSize: 24,
                         textTransform: "none",
-                        color: "white",
-                        borderColor: "rgba(255,255,255,.35)",
-                        bgcolor: "rgba(0,0,0,.20)",
-                        "&:hover": {
-                          bgcolor: "rgba(0,0,0,.28)",
-                          borderColor: "rgba(255,255,255,.55)",
-                        },
+                        color: "#FF0F6E",
+                        bgcolor: "white",
                       }}
                     >
                       Stop
                     </Button>
                   </Stack>
-
-                  
                 </Stack>
               </Box>
             </Box>
