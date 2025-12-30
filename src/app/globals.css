@@ -41,7 +41,9 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
-
+body{
+  scroll-behavior: smooth !important
+}
 :root {
   --primary: #FF0F6E;
   --primary-foreground: #FFFFFF;
