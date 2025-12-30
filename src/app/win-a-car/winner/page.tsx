@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Container, Skeleton } from "@mui/material";
-import WinnerTombola from "@/components/WinnerTombola";
+import WinnerTombola from "@/components/tombola/WinnerTombola";
 import "./styles.css";
 export default function Page() {
   return (
