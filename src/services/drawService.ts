@@ -42,7 +42,7 @@ export async function createGlobalDraw(
   payload: CreateDrawPayload = { count: 3 }
 ): Promise<CreateDrawResponse> {
   try {
-    const res = await api.post<CreateDrawResponse>(`/draws/${sweepstakeId}`, payload);
+    const res = await api.post<CreateDrawResponse>(`/sweepstakes/draws/${sweepstakeId}`, payload);
     return res.data;
   } catch (error: any) {
     console.error("❌ Error creando sorteo:", error?.response?.data || error.message);
@@ -52,7 +52,7 @@ export async function createGlobalDraw(
 
 export async function getLatestGlobalDraw(sweepstakeId: string): Promise<LatestDrawResponse> {
   try {
-    const res = await api.get<LatestDrawResponse>(`/draws/${sweepstakeId}/latest`);
+    const res = await api.get<LatestDrawResponse>(`/sweepstakes/draws/${sweepstakeId}/latest`);
     return res.data;
   } catch (error: any) {
     console.error("❌ Error obteniendo último sorteo:", error?.response?.data || error.message);
@@ -62,7 +62,7 @@ export async function getLatestGlobalDraw(sweepstakeId: string): Promise<LatestD
 
 export async function confirmWinner(drawId: string, rank: 1 | 2 | 3) {
   try {
-    const res = await api.post(`/draws/${drawId}/winners/${rank}/confirm`);
+    const res = await api.post(`/sweepstakes/draws/${drawId}/winners/${rank}/confirm`);
     return res.data;
   } catch (error: any) {
     console.error("❌ Error confirmando ganador:", error?.response?.data || error.message);
@@ -72,7 +72,7 @@ export async function confirmWinner(drawId: string, rank: 1 | 2 | 3) {
 
 export async function declineAndPromote(drawId: string, rank: 1 | 2 | 3) {
   try {
-    const res = await api.post(`/draws/${drawId}/winners/${rank}/decline-and-promote`);
+    const res = await api.post(`/sweepstakes/draws/${drawId}/winners/${rank}/decline-and-promote`);
     return res.data;
   } catch (error: any) {
     console.error("❌ Error declinando y promoviendo:", error?.response?.data || error.message);

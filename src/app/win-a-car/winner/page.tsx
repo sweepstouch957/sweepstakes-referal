@@ -1,14 +1,10 @@
-import WinnerReveal from "@/components/WinnerReveal";
-import Navbar from "../components/Navbar";
 import { Suspense } from "react";
-import Footer from "../components/Footer";
 import { Container, Skeleton } from "@mui/material";
-
-export default function Page({ params }: { params: { id: string } }) {
+import WinnerTombola from "@/components/WinnerTombola";
+import "./styles.css";
+export default function Page() {
   return (
     <>
-      <Navbar />
-
       <Suspense
         fallback={
           <Container maxWidth="sm" sx={{ my: 6 }}>
@@ -21,10 +17,10 @@ export default function Page({ params }: { params: { id: string } }) {
           </Container>
         }
       >
-        <WinnerReveal  />
+        <WinnerTombola
+          sweepstakeId={process.env.NEXT_PUBLIC_SWEEPSTAKE_NEW_YEAR || ""}
+        />
       </Suspense>
-
-      <Footer />
     </>
   );
 }

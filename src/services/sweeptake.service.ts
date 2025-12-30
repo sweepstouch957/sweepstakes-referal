@@ -152,6 +152,88 @@ export async function getReferralLinkByStore(
       error?.response?.data || {
         error: "Error al obtener el link de referido por tienda",
       }
+      
+    );
+  }
+}
+
+export  async function getParticipants(sweepstakeId: string, storeId?: string): Promise<any[]> {
+    const res = await api.get(`/sweepstakes/participants/${sweepstakeId}/participants`, {
+      params: storeId ? { storeId } : {},
+    });
+    return res.data;
+  }
+
+
+
+  export interface ParticipantPhoneSample {
+  phoneNumber: string;
+  storeName: string;
+}
+
+export async function getParticipantsSamplePhones(
+  sweepstakeId: string,
+  storeId?: string
+): Promise<ParticipantPhoneSample[]> {
+  try {
+    const res = await api.get<ParticipantPhoneSample[]>(
+      `/sweepstakes/participants/${sweepstakeId}/participants/sample-phones`,
+      {
+        params: storeId ? { storeId } : {},
+      }
+    );
+
+    return res.data;
+  } catch (error: any) {
+    console.error(
+      "❌ Error al obtener sample de participantes (phones):",
+      error?.response?.data || error.message
+    );
+    throw (
+      error?.response?.data || {
+        error: "Error al obtener sample de participantes (phones)",
+      }
+    );
+  }
+}
+
+
+export interface SweepstakeRegistrationsCountResponse {
+  sweepstakeId: string;
+  totalRegistrations: number;
+}
+
+/**
+ * ✅ Count de participantes (registrations) por sweepstake
+ * Endpoint: GET /sweepstakes/participants/count-by-sweepstake
+ * Query:
+ *  - sweepstakeId (obligatorio)
+ *  - startDate, endDate (opcionales, pero si usas uno, usa ambos)
+ *  - promotorId (opcional)
+ *  - method (opcional)
+ */
+export async function getSweepstakeRegistrationsCount(params: {
+  sweepstakeId: string;
+  startDate?: string;
+  endDate?: string;
+  promotorId?: string;
+  method?: "qr" | "pinpad" | "tablet" | "web" | "referral" | "promotor";
+}): Promise<SweepstakeRegistrationsCountResponse> {
+  try {
+    const response = await api.get<SweepstakeRegistrationsCountResponse>(
+      "/sweepstakes/participants/count-by-sweepstake",
+      { params }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "❌ Error al obtener count de participantes por sweepstake:",
+      error?.response?.data || error.message
+    );
+    throw (
+      error?.response?.data || {
+        error: "Error al obtener count de participantes por sweepstake",
+      }
     );
   }
 }
