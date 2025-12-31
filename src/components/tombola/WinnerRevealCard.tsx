@@ -186,17 +186,7 @@ export function WinnerRevealCard({
             </Typography>
           </motion.div>
 
-          {!!winner?.storeName && (
-            <Typography
-              sx={{
-                color: "rgba(255,255,255,.85)",
-                fontSize: 14,
-                maxWidth: 760,
-              }}
-            >
-              {winner.storeName}
-            </Typography>
-          )}
+          
         </Stack>
       </Box>
     </motion.div>
