@@ -185,8 +185,6 @@ export function WinnerRevealCard({
               {displayPhoneFinal}
             </Typography>
           </motion.div>
-
-          
         </Stack>
       </Box>
     </motion.div>
