@@ -22,8 +22,9 @@ import EmojiEventsRoundedIcon from "@mui/icons-material/EmojiEventsRounded";
 
 const MotionBox = motion(Box);
 
-// 🎨 Sweepstouch pink (ajusta al tuyo)
-const SWEEP_PINK = "#ff0080";
+// 🎨 Sweepstouch pink (mismo tono usado en el resto del proyecto)
+const SWEEP_PINK = "#ff4b9b";
+const SWEEP_PINK_DARK = "#d7006e";
 
 // ---------- Mock helpers ----------
 function randInt(min: number, max: number) {
@@ -112,17 +113,17 @@ function pickWinners(pool: Ticket[]): Winner[] {
 function statusChipSx(status: "pending" | "confirmed") {
   if (status === "confirmed") {
     return {
-      bgcolor: "rgba(255,0,128,0.14)",
-      border: "1px solid rgba(255,0,128,0.30)",
-      color: SWEEP_PINK,
+      bgcolor: "rgba(255,75,155,0.14)",
+      border: "1px solid rgba(255,75,155,0.30)",
+      color: SWEEP_PINK_DARK,
       fontWeight: 900,
       borderRadius: 2,
     } as const;
   }
   return {
-    bgcolor: "rgba(255,255,255,0.06)",
-    border: "1px solid rgba(255,255,255,0.12)",
-    color: "rgba(255,255,255,0.90)",
+    bgcolor: "rgba(255,75,155,0.08)",
+    border: "1px solid rgba(255,75,155,0.22)",
+    color: "rgba(215,0,110,0.90)",
     fontWeight: 900,
     borderRadius: 2,
   } as const;
@@ -264,8 +265,9 @@ export default function WinnerRaffleMUI({
         display: "grid",
         placeItems: "center",
         px: 2,
+        bgcolor: "#fff",
         background:
-          "radial-gradient(1100px 600px at 50% 0%, rgba(255,0,128,0.16), transparent 60%), radial-gradient(900px 600px at 15% 20%, rgba(255,0,128,0.10), transparent 60%), linear-gradient(180deg, #05060a 0%, #06010a 70%, #020205 100%)",
+          "radial-gradient(1100px 600px at 50% 0%, rgba(255,75,155,0.18), transparent 62%), radial-gradient(900px 600px at 15% 22%, rgba(255,75,155,0.12), transparent 62%), linear-gradient(180deg, #ffffff 0%, #ffffff 100%)",
       }}
     >
       <Paper
@@ -276,10 +278,9 @@ export default function WinnerRaffleMUI({
           position: "relative",
           overflow: "hidden",
           borderRadius: 5,
-          border: "1px solid rgba(255,0,128,0.20)",
-          bgcolor: "rgba(8,10,16,0.62)",
-          backdropFilter: "blur(18px)",
-          boxShadow: "0 30px 120px rgba(0,0,0,0.65)",
+          border: "1px solid rgba(255,75,155,0.22)",
+          bgcolor: "#fff",
+          boxShadow: "0 18px 70px rgba(255,75,155,0.18)",
         }}
       >
         {/* glow */}
@@ -297,7 +298,7 @@ export default function WinnerRaffleMUI({
               top: -320,
               left: "50%",
               transform: "translateX(-50%)",
-              background: "rgba(255,0,128,0.16)",
+              background: "rgba(255,75,155,0.14)",
               filter: "blur(90px)",
             },
             "&:after": {
@@ -308,7 +309,7 @@ export default function WinnerRaffleMUI({
               borderRadius: 999,
               bottom: -300,
               right: -160,
-              background: "rgba(255,0,128,0.10)",
+              background: "rgba(255,75,155,0.10)",
               filter: "blur(90px)",
             },
           }}
@@ -327,7 +328,7 @@ export default function WinnerRaffleMUI({
               sx={{
                 letterSpacing: "0.30em",
                 textTransform: "uppercase",
-                color: "rgba(255,0,128,0.9)",
+                color: "rgba(255,75,155,0.90)",
                 fontWeight: 900,
               }}
             >
@@ -335,7 +336,7 @@ export default function WinnerRaffleMUI({
             </Typography>
             <Typography
               variant="h6"
-              sx={{ color: "white", fontWeight: 950, mt: 0.2 }}
+              sx={{ color: SWEEP_PINK_DARK, fontWeight: 950, mt: 0.2 }}
             >
               {title}
             </Typography>
@@ -351,11 +352,11 @@ export default function WinnerRaffleMUI({
                 py: 1,
                 fontWeight: 900,
                 textTransform: "none",
-                borderColor: "rgba(255,0,128,0.45)",
+                borderColor: "rgba(255,75,155,0.45)",
                 color: SWEEP_PINK,
                 "&:hover": {
-                  borderColor: "rgba(255,0,128,0.70)",
-                  bgcolor: "rgba(255,0,128,0.06)",
+                  borderColor: "rgba(255,75,155,0.70)",
+                  bgcolor: "rgba(255,75,155,0.08)",
                 },
               }}
             >
@@ -373,7 +374,7 @@ export default function WinnerRaffleMUI({
                 fontWeight: 950,
                 textTransform: "none",
                 bgcolor: SWEEP_PINK,
-                "&:hover": { bgcolor: "rgba(255,0,128,0.85)" },
+                "&:hover": { bgcolor: "rgba(255,75,155,0.85)" },
               }}
             >
               Confirmar ganador
@@ -381,7 +382,7 @@ export default function WinnerRaffleMUI({
           </Stack>
         </Stack>
 
-        <Divider sx={{ borderColor: "rgba(255,255,255,0.08)" }} />
+        <Divider sx={{ borderColor: "rgba(255,75,155,0.16)" }} />
 
         {/* body */}
         <Box sx={{ p: 3, position: "relative" }}>
@@ -392,8 +393,9 @@ export default function WinnerRaffleMUI({
               sx={{
                 flex: 1,
                 borderRadius: 5,
-                border: "1px solid rgba(255,255,255,0.10)",
-                bgcolor: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,75,155,0.18)",
+                bgcolor: "#fff",
+                boxShadow: "0 12px 40px rgba(255,75,155,0.10)",
                 p: 2.5,
                 position: "relative",
                 overflow: "hidden",
@@ -405,7 +407,7 @@ export default function WinnerRaffleMUI({
                   sx={{
                     letterSpacing: "0.24em",
                     textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.65)",
+                    color: "rgba(215,0,110,0.75)",
                     fontWeight: 900,
                   }}
                 >
@@ -431,7 +433,7 @@ export default function WinnerRaffleMUI({
                       </Typography>
                       <Typography
                         sx={{
-                          color: "rgba(255,255,255,0.75)",
+                          color: "rgba(215,0,110,0.75)",
                           fontWeight: 800,
                         }}
                         variant="body2"
@@ -461,44 +463,57 @@ export default function WinnerRaffleMUI({
                       borderLeft: "10px solid transparent",
                       borderRight: "10px solid transparent",
                       borderBottom: `18px solid ${SWEEP_PINK}`,
-                      filter: "drop-shadow(0 6px 18px rgba(255,0,128,0.45))",
+                      filter: "drop-shadow(0 6px 18px rgba(255,75,155,0.40))",
                       zIndex: 2,
                     }}
                   />
 
                   <MotionBox
+                    aria-label="ruleta"
                     animate={
                       phase === "spinning" ? { rotate: 360 } : { rotate: 0 }
                     }
                     transition={
                       phase === "spinning"
-                        ? { repeat: Infinity, duration: 0.9, ease: "linear" }
+                        ? { repeat: Infinity, duration: 0.85, ease: "linear" }
                         : { duration: 0.4 }
                     }
                     sx={{
                       width: 210,
                       height: 210,
                       borderRadius: "50%",
-                      border: "1px solid rgba(255,0,128,0.28)",
+                      border: "1px solid rgba(255,75,155,0.28)",
+                      // Ruleta con secciones (tipo wheel) para que la animación se sienta
+                      // como una ruleta real. Mantiene el look & feel rosado.
                       background:
-                        "radial-gradient(circle at 50% 50%, rgba(255,0,128,0.18), transparent 55%), radial-gradient(circle at 50% 10%, rgba(255,255,255,0.10), transparent 40%)",
-                      boxShadow: "0 20px 80px rgba(0,0,0,0.55)",
+                        // 1) Secciones alternadas (12 segmentos)
+                        "repeating-conic-gradient(from -90deg, rgba(255,75,155,0.96) 0deg 15deg, rgba(255,140,200,0.94) 15deg 30deg), "
+                        // 2) Separadores finos blancos
+                        + "repeating-conic-gradient(from -90deg, rgba(255,255,255,0.92) 0deg 1.25deg, rgba(255,255,255,0) 1.25deg 30deg), "
+                        // 3) Sombra/viñeta para profundidad
+                        + "radial-gradient(circle at 50% 55%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.03) 66%, rgba(0,0,0,0.06) 100%), "
+                        // 4) Brillo superior
+                        + "radial-gradient(circle at 50% 18%, rgba(255,255,255,0.70), rgba(255,255,255,0) 52%)",
+                      boxShadow:
+                        "0 14px 48px rgba(255,75,155,0.22), 0 0 30px rgba(255,75,155,0.28)",
                       position: "relative",
                       "&:before": {
                         content: '""',
                         position: "absolute",
-                        inset: 10,
+                        inset: 8,
                         borderRadius: "50%",
-                        border: "1px dashed rgba(255,0,128,0.35)",
-                        opacity: 0.9,
+                        border: "2px solid rgba(255,255,255,0.75)",
+                        opacity: 0.95,
+                        boxShadow: "inset 0 0 0 1px rgba(255,75,155,0.20)",
                       },
                       "&:after": {
                         content: '""',
                         position: "absolute",
                         inset: 54,
                         borderRadius: "50%",
-                        background: "rgba(0,0,0,0.35)",
-                        border: "1px solid rgba(255,255,255,0.12)",
+                        background: "rgba(255,255,255,0.92)",
+                        border: "1px solid rgba(255,75,155,0.22)",
+                        boxShadow: "0 10px 22px rgba(255,75,155,0.10)",
                       },
                     }}
                   />
@@ -512,14 +527,14 @@ export default function WinnerRaffleMUI({
                     >
                       <AutoAwesomeRoundedIcon sx={{ color: SWEEP_PINK }} />
                       <Typography
-                        sx={{ color: "white", fontWeight: 950 }}
+                        sx={{ color: SWEEP_PINK_DARK, fontWeight: 950 }}
                         variant="subtitle1"
                       >
                         {phase === "reveal" ? "Resultado" : "Sorteando…"}
                       </Typography>
                     </Stack>
                     <Typography
-                      sx={{ color: "rgba(255,255,255,0.70)" }}
+                      sx={{ color: "rgba(215,0,110,0.70)" }}
                       variant="caption"
                     >
                       {phase === "spinning" ? "Mezclando tickets" : "Listo"}
@@ -531,8 +546,8 @@ export default function WinnerRaffleMUI({
                 <Box
                   sx={{
                     borderRadius: 4,
-                    border: "1px solid rgba(255,255,255,0.10)",
-                    bgcolor: "rgba(0,0,0,0.25)",
+                    border: "1px solid rgba(255,75,155,0.18)",
+                    bgcolor: "#fff",
                     overflow: "hidden",
                   }}
                 >
@@ -540,14 +555,14 @@ export default function WinnerRaffleMUI({
                     sx={{
                       px: 2,
                       py: 1.2,
-                      borderBottom: "1px solid rgba(255,255,255,0.08)",
+                      borderBottom: "1px solid rgba(255,75,155,0.14)",
                       display: "flex",
                       justifyContent: "space-between",
                     }}
                   >
                     <Typography
                       variant="caption"
-                      sx={{ color: "rgba(255,255,255,0.65)", fontWeight: 900 }}
+                      sx={{ color: "rgba(215,0,110,0.75)", fontWeight: 900 }}
                     >
                       Ticket actual
                     </Typography>
@@ -569,13 +584,13 @@ export default function WinnerRaffleMUI({
                       sx={{ px: 2, py: 1.6 }}
                     >
                       <Typography
-                        sx={{ color: "white", fontWeight: 950 }}
+                        sx={{ color: SWEEP_PINK_DARK, fontWeight: 950 }}
                         variant="body1"
                       >
                         {currentTicket?.customerName ?? "—"}
                       </Typography>
                       <Typography
-                        sx={{ color: "rgba(255,255,255,0.72)" }}
+                        sx={{ color: "rgba(215,0,110,0.72)" }}
                         variant="body2"
                       >
                         {maskPhone(currentTicket?.customerPhone)}
@@ -592,8 +607,9 @@ export default function WinnerRaffleMUI({
               sx={{
                 flex: 1.15,
                 borderRadius: 5,
-                border: "1px solid rgba(255,0,128,0.18)",
-                bgcolor: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,75,155,0.18)",
+                bgcolor: "#fff",
+                boxShadow: "0 12px 40px rgba(255,75,155,0.10)",
                 p: 2.5,
                 position: "relative",
                 overflow: "hidden",
@@ -604,7 +620,7 @@ export default function WinnerRaffleMUI({
                 sx={{
                   letterSpacing: "0.24em",
                   textTransform: "uppercase",
-                  color: "rgba(255,0,128,0.85)",
+                  color: "rgba(215,0,110,0.85)",
                   fontWeight: 1000,
                 }}
               >
@@ -623,12 +639,12 @@ export default function WinnerRaffleMUI({
                     >
                       <Typography
                         variant="h5"
-                        sx={{ color: "white", fontWeight: 950 }}
+                        sx={{ color: SWEEP_PINK_DARK, fontWeight: 950 }}
                       >
                         Esperando resultado…
                       </Typography>
                       <Typography
-                        sx={{ color: "rgba(255,255,255,0.70)", mt: 0.8 }}
+                        sx={{ color: "rgba(215,0,110,0.72)", mt: 0.8 }}
                       >
                         La ruleta está mezclando los tickets.
                       </Typography>
@@ -639,15 +655,15 @@ export default function WinnerRaffleMUI({
                             height: 10,
                             borderRadius: 999,
                             overflow: "hidden",
-                            bgcolor: "rgba(255,255,255,0.08)",
-                            border: "1px solid rgba(255,0,128,0.16)",
+                            bgcolor: "rgba(255,75,155,0.10)",
+                            border: "1px solid rgba(255,75,155,0.22)",
                           }}
                         >
                           <MotionBox
                             sx={{
                               height: "100%",
                               width: "35%",
-                              bgcolor: "rgba(255,0,128,0.65)",
+                              bgcolor: "rgba(255,75,155,0.70)",
                             }}
                             initial={{ x: "-120%" }}
                             animate={{ x: "320%" }}
@@ -672,12 +688,12 @@ export default function WinnerRaffleMUI({
                         elevation={0}
                         sx={{
                           borderRadius: 5,
-                          border: "1px solid rgba(255,0,128,0.26)",
-                          bgcolor: "rgba(255,0,128,0.06)",
+                          border: "1px solid rgba(255,75,155,0.26)",
+                          bgcolor: "rgba(255,75,155,0.06)",
                           p: 2.4,
                           position: "relative",
                           overflow: "hidden",
-                          boxShadow: "0 20px 80px rgba(0,0,0,0.55)",
+                          boxShadow: "0 14px 55px rgba(255,75,155,0.18)",
                         }}
                       >
                         <Box
@@ -686,7 +702,7 @@ export default function WinnerRaffleMUI({
                             position: "absolute",
                             inset: 0,
                             background:
-                              "radial-gradient(520px 220px at 50% 0%, rgba(255,0,128,0.22), transparent 60%)",
+                              "radial-gradient(520px 220px at 50% 0%, rgba(255,75,155,0.22), transparent 60%)",
                           }}
                         />
                         <Stack direction="row" spacing={1} alignItems="center">
@@ -694,7 +710,7 @@ export default function WinnerRaffleMUI({
                           <Typography
                             variant="h5"
                             sx={{
-                              color: "white",
+                              color: SWEEP_PINK_DARK,
                               fontWeight: 1000,
                               lineHeight: 1.1,
                             }}
@@ -704,7 +720,7 @@ export default function WinnerRaffleMUI({
                         </Stack>
 
                         <Typography
-                          sx={{ color: "rgba(255,255,255,0.78)", mt: 0.9 }}
+                          sx={{ color: "rgba(215,0,110,0.75)", mt: 0.9 }}
                         >
                           {maskPhone(winner1.ticket.customerPhone)}
                         </Typography>
@@ -743,15 +759,16 @@ export default function WinnerRaffleMUI({
                             sx={{
                               flex: 1,
                               borderRadius: 5,
-                              border: "1px solid rgba(255,255,255,0.10)",
-                              bgcolor: "rgba(255,255,255,0.03)",
+                              border: "1px solid rgba(255,75,155,0.16)",
+                              bgcolor: "#fff",
+                              boxShadow: "0 10px 30px rgba(255,75,155,0.10)",
                               p: 2,
                             }}
                           >
                             <Typography
                               variant="caption"
                               sx={{
-                                color: "rgba(255,255,255,0.65)",
+                                color: "rgba(215,0,110,0.75)",
                                 fontWeight: 950,
                               }}
                             >
@@ -759,12 +776,12 @@ export default function WinnerRaffleMUI({
                             </Typography>
                             <Typography
                               variant="h6"
-                              sx={{ color: "white", fontWeight: 950, mt: 0.8 }}
+                              sx={{ color: SWEEP_PINK_DARK, fontWeight: 950, mt: 0.8 }}
                             >
                               {w?.ticket.customerName ?? "—"}
                             </Typography>
                             <Typography
-                              sx={{ color: "rgba(255,255,255,0.72)", mt: 0.2 }}
+                              sx={{ color: "rgba(215,0,110,0.72)", mt: 0.2 }}
                             >
                               {maskPhone(w?.ticket.customerPhone)}
                             </Typography>
@@ -796,13 +813,14 @@ export default function WinnerRaffleMUI({
             position: "absolute",
             inset: 0,
             zIndex: 3,
-            bgcolor: "rgba(0,0,0,0.35)",
+            bgcolor: "rgba(255,255,255,0.65)",
+            backdropFilter: "blur(6px)",
           }}
         >
           <Stack alignItems="center" spacing={2}>
             <CircularProgress sx={{ color: SWEEP_PINK }} />
             <Typography
-              sx={{ color: "rgba(255,255,255,0.85)", fontWeight: 800 }}
+              sx={{ color: SWEEP_PINK_DARK, fontWeight: 800 }}
             >
               Procesando…
             </Typography>
