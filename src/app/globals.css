@@ -222,3 +222,133 @@ text-overflow: clip;
     }
   }
 }
+/* =============================
+   World Cup sweepstake extras
+   (preloader + custom cursor + back-to-top)
+   ============================= */
+
+.preloader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  --hue: 210;
+  --pink: hwb(327 1% 2%);
+  --hex: var(--pink);
+  --white: hsl(0, 0%, 100%);
+}
+
+.pl {
+  --dur: 3s;
+  display: block;
+  width: 14em;
+  height: auto;
+}
+
+.pl__ball,
+.pl__ball-shadow,
+.pl__ball-texture {
+  animation-duration: var(--dur);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.pl__ball {
+  animation-name: ball;
+}
+.pl__ball-shadow {
+  animation-name: ball-shadow;
+}
+.pl__ball-texture {
+  animation-name: ball-texture;
+}
+
+@keyframes ball {
+  from {
+    transform: rotate(0) translate(0, -15.75px);
+  }
+  to {
+    transform: rotate(1turn) translate(0, -15.75px);
+  }
+}
+
+@keyframes ball-shadow {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(-1turn);
+  }
+}
+
+@keyframes ball-texture {
+  from {
+    transform: translate(-16px, 0);
+  }
+  to {
+    transform: translate(48px, 0);
+  }
+}
+
+.cursor-outer {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--primary);
+  background-color: var(--primary);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  opacity: 0; display: none;
+  transition: all 0.4s ease-out;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-inner {
+  position: fixed;
+  width: 26px;
+  height: 26px;
+  background-color: transparent;
+  border-radius: 0;
+  pointer-events: none;
+  z-index: 10001;
+  transition: all 0.24s ease-out;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cursor-inner::before {
+  content: "⚽";
+  font-size: 20px;
+  line-height: 1;
+}
+
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}

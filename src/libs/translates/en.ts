@@ -16,6 +16,11 @@ const en = {
       title: "Win a 2025 Nissan Versa!",
       proccesing: "Processing your registration...",
     },
+    weeklyTv: {
+      form: {
+        title: "Win a TV",
+      },
+    },
     winATv: {
       title: "Win a 55'' TV December 25",
       notConfigured: "This giveaway isn't configured yet. Please check back soon.",
@@ -137,6 +142,27 @@ const en = {
       notReceived:
         "Didn't receive the code? Check your number and your spam folder.",
     },
+
+    worldcup: {
+      hero: {
+        topBanner: "FIFA WORLD CUP 2026 SWEEPSTAKE",
+        win: "WIN 6",
+        worldCup: "WORLD CUP",
+        year: "2026™",
+        ticketsFree: "TICKETS FOR FREE",
+        prizeBreakdown: "PRIZE BREAKDOWN:",
+        prize1: "4 tickets — MATCH",
+        prize1Detail: "(Brazil vs Morocco)",
+        prize2: "2 tickets — FINAL MATCH",
+        prize3: "Teams & dates TBA",
+        cta: "Enter Now",
+        secondaryCta: "Learn More",
+      },
+      form: {
+        title: "Win 6 WORLD CUP 2026 tickets",
+      },
+    },
+
   },
 };
 
