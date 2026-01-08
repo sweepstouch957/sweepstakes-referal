@@ -2,17 +2,31 @@
 
 import { Box } from "@mui/material";
 import Image from "next/image";
-import WeeklyTvHero from "@public/win-a-weekly-tv-hero.png";
+import WeeklyTvHeroDesktop from "@public/win-a-weekly-tv-hero.jpg";
+import WeeklyTvHeroMobile from "@public/win-a-weekly-tv-hero-movil.png";
 
 export default function Hero() {
   return (
     <Box sx={{ position: "relative", width: "100%", overflow: "hidden" }}>
-      <Image
-        src={WeeklyTvHero}
-        alt="Win a Weekly TV"
-        style={{ width: "100%", height: "auto", display: "block" }}
-        priority
-      />
+      {/* Desktop image */}
+      <Box sx={{ display: { xs: "none", md: "block" } }}>
+        <Image
+          src={WeeklyTvHeroDesktop}
+          alt="Win a Weekly TV"
+          style={{ width: "100%", height: "auto", display: "block" }}
+          priority
+        />
+      </Box>
+
+      {/* Mobile image */}
+      <Box sx={{ display: { xs: "block", md: "none" } }}>
+        <Image
+          src={WeeklyTvHeroMobile}
+          alt="Win a Weekly TV"
+          style={{ width: "100%", height: "auto", display: "block" }}
+          priority
+        />
+      </Box>
 
       {/* Sombra inferior */}
       <Box

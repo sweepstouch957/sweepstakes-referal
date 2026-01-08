@@ -111,18 +111,6 @@ export default function Navbar({ hideActions = false, hideMobileMenu = false }: 
               {/* Desktop */}
               {!isMobile && !hideActions && (
                 <>
-                  <Button
-                    variant="contained"
-                    onClick={handleScrollToForm}
-                    sx={{
-                      backgroundColor: "#ff4b9b",
-                      borderRadius: "20px",
-                      textTransform: "none",
-                      "&:hover": { backgroundColor: "#e93d89" },
-                    }}
-                  >
-                    {t("navbar.participate")}
-                  </Button>
                   {!user ? (
                     <Button
                       variant="contained"
@@ -202,14 +190,6 @@ export default function Navbar({ hideActions = false, hideMobileMenu = false }: 
                       horizontal: "right",
                     }}
                   >
-                    <MenuItem
-                      onClick={() => {
-                        handleMenuClose();
-                        handleScrollToForm();
-                      }}
-                    >
-                      {t("navbar.participate")}
-                    </MenuItem>
                     {!user ? (
                       <MenuItem
                         onClick={() => {

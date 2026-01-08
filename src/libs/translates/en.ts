@@ -18,7 +18,7 @@ const en = {
     },
     weeklyTv: {
       form: {
-        title: "Win a TV",
+        title: "Win a 55\" 4K TV",
       },
     },
     winATv: {
@@ -142,7 +142,6 @@ const en = {
       notReceived:
         "Didn't receive the code? Check your number and your spam folder.",
     },
-
     worldcup: {
       hero: {
         topBanner: "FIFA WORLD CUP 2026 SWEEPSTAKE",
@@ -163,7 +162,7 @@ const en = {
       },
     },
 
-  },
+    },
 };
 
 export default en;

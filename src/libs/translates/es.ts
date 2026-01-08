@@ -18,7 +18,7 @@ const es = {
     },
     weeklyTv: {
       form: {
-        title: "Gana una TV",
+        title: "Gana una TV 55\" 4K",
       },
     },
     winATv: {
@@ -163,7 +163,7 @@ const es = {
       },
     },
 
-  },
+    },
 };
 
 export default es;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
@@ -42,7 +42,30 @@ export default function Hero({ start = false }: HeroProps) {
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
-  const handleScrollToForm = () => {
+  
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 30 }, (_, i) => {
+        const variant = i % 3;
+        return {
+          id: i,
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+          size: 6 + Math.random() * 6,
+          color:
+            variant === 0
+              ? "bg-yellow-400"
+              : variant === 1
+                ? "bg-yellow-300"
+                : "bg-amber-500",
+          duration: 3 + Math.random() * 2,
+          delay: Math.random() * 2,
+        };
+      }),
+    []
+  );
+
+const handleScrollToForm = () => {
     const el = document.getElementById("contact");
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -55,13 +78,15 @@ export default function Hero({ start = false }: HeroProps) {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700"
+      // Mobile: show the full composition without cropping.
+      // Desktop: keep the immersive full-bleed look.
+      className="relative min-h-[100svh] sm:min-h-screen overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700"
     >
       {/* Background layers */}
       <motion.div
         // Make the background slightly larger than the viewport so parallax
         // transforms never expose empty edges (especially on mobile).
-        className="absolute -inset-24"
+        className="absolute -inset-24 z-0"
         style={{ y: backgroundY, opacity }}
       >
         {/* 1) Gradiente base */}
@@ -79,7 +104,7 @@ export default function Hero({ start = false }: HeroProps) {
           alt=""
           fill
           priority
-          className="object-cover opacity-70 pointer-events-none"
+          className="object-contain object-center sm:object-cover opacity-70 pointer-events-none scale-[1.06] sm:scale-100"
         />
 
         {/* 4) Overlay suave para legibilidad */}
@@ -87,7 +112,12 @@ export default function Hero({ start = false }: HeroProps) {
       </motion.div>
 
       {/* Capas animadas (jugadores + copa) */}
-      <div className="absolute -inset-24 z-[5] pointer-events-none origin-center scale-[0.65] translate-y-4 sm:scale-100 sm:translate-y-0">
+      {/* On mobile we scale down a bit more so the full composition (players + trophy) fits */}
+      {/*
+        Mobile: the artwork is landscape, so `object-contain` leaves extra vertical space.
+        We slightly zoom the whole scene so the left/right players are always visible.
+      */}
+      <div className="absolute inset-0 sm:-inset-24 z-[5] pointer-events-none origin-bottom scale-[1.08] sm:scale-100 -translate-y-2 sm:translate-y-0">
         {/* Jugador izquierda */}
         <motion.div
           className="absolute inset-0"
@@ -100,7 +130,7 @@ export default function Hero({ start = false }: HeroProps) {
             alt=""
             fill
             priority
-            className="object-cover"
+            className="object-contain object-center sm:object-cover"
           />
         </motion.div>
 
@@ -116,7 +146,7 @@ export default function Hero({ start = false }: HeroProps) {
             alt=""
             fill
             priority
-            className="object-cover"
+            className="object-contain object-center sm:object-cover"
           />
         </motion.div>
 
@@ -132,13 +162,45 @@ export default function Hero({ start = false }: HeroProps) {
             alt=""
             fill
             priority
-            className="object-cover"
+            className="object-contain object-center sm:object-cover"
           />
         </motion.div>
       </div>
 
+
+      {/* Floating particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+        {particles.map((p) => (
+          <motion.div
+            key={p.id}
+            className={`absolute rounded-sm ${p.color}`}
+            style={{
+              left: p.left,
+              top: p.top,
+              width: p.size,
+              height: p.size,
+            }}
+            animate={
+              start
+                ? {
+                    y: [0, -18, 0],
+                    rotate: [0, 180, 360],
+                    opacity: [0.55, 1, 0.55],
+                  }
+                : { opacity: 0 }
+            }
+            transition={{
+              duration: p.duration,
+              repeat: Infinity,
+              delay: p.delay,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+      <div className="relative z-20 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-16">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={introDone ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}

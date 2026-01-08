@@ -53,12 +53,18 @@ export default function SoccerPreloader({
           } catch {
             // si sigue bloqueado, ya no se puede forzar sin un gesto válido
           } finally {
-            window.removeEventListener("pointerdown", resumeOnUserGesture);
-            window.removeEventListener("keydown", resumeOnUserGesture);
+            window.removeEventListener("touchstart", resumeOnUserGesture as any);
+            window.removeEventListener("touchend", resumeOnUserGesture as any);
+            window.removeEventListener("pointerdown", resumeOnUserGesture as any);
+            window.removeEventListener("click", resumeOnUserGesture as any);
+            window.removeEventListener("keydown", resumeOnUserGesture as any);
           }
         };
 
+        window.addEventListener("touchstart", resumeOnUserGesture, { once: true, passive: true });
+        window.addEventListener("touchend", resumeOnUserGesture, { once: true, passive: true });
         window.addEventListener("pointerdown", resumeOnUserGesture, { once: true });
+        window.addEventListener("click", resumeOnUserGesture, { once: true });
         window.addEventListener("keydown", resumeOnUserGesture, { once: true });
       }
     };
