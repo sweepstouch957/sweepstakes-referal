@@ -8,7 +8,7 @@ import Footer from "./components/Footer";
 import { useQuery } from "@tanstack/react-query";
 import { getStoreBySlug } from "@/services/store.service";
 import { Suspense, useEffect } from "react";
-import { Container, Skeleton } from "@mui/material";
+import { Container, Skeleton, Toolbar } from "@mui/material";
 import Cookies from "js-cookie";
 function WinACarFormContainer() {
   const searchParams = useSearchParams();
@@ -61,6 +61,8 @@ export default function WinACarPage() {
   return (
     <>
       <Navbar />
+      {/* Spacer for fixed AppBar so hero is not hidden behind the navbar (especially on mobile). */}
+      <Toolbar />
       <Hero />
 
       <Suspense
