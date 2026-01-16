@@ -8,7 +8,8 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: "es",
+    // Default language when no cookie/localStorage value exists
+    fallbackLng: "en",
     resources: {
       en,
       es,
@@ -17,8 +18,9 @@ i18n
       escapeValue: false,
     },
     detection: {
-      order: ["cookie", "localStorage", "navigator", "htmlTag"],
-      caches: ["cookie"],
+      // Only rely on stored preference; otherwise use fallbackLng (English)
+      order: ["cookie", "localStorage"],
+      caches: ["cookie", "localStorage"],
       cookieMinutes: 60 * 24 * 30, // 30 días
       cookieDomain:
         typeof window !== "undefined" ? window.location.hostname : "localhost",

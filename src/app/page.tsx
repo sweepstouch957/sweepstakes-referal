@@ -10,8 +10,10 @@ import PlaceIcon from "@mui/icons-material/Place";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getStoreBySlug } from "@/services/store.service";
+import { useTranslation } from "react-i18next";
 
 function StoreInfo() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const slug = searchParams.get("slug") || "";
 
@@ -66,7 +68,7 @@ function StoreInfo() {
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Abrir en Google Maps"
+                aria-label={t("store.openInMaps")}
                 sx={{
                   border: "1px solid #ff07a0ff",
                   bgcolor: "transparent",
@@ -90,6 +92,7 @@ function HomeFormContainer() {
 }
 
 export default function Home() {
+  const { t } = useTranslation();
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Navbar hideActions hideMobileMenu />
@@ -133,7 +136,7 @@ export default function Home() {
             textAlign: "center"
           }}
         >
-          Registrate en nuestra Tienda
+          {t("home.registerInStore")}
         </Typography>
         <Suspense
           fallback={

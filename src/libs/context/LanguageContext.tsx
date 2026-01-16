@@ -12,14 +12,14 @@ interface LanguageContextProps {
 }
 
 const LanguageContext = createContext<LanguageContextProps>({
-  language: "es",
+  language: "en",
   changeLanguage: () => {},
 });
 
 export const useLanguage = () => useContext(LanguageContext);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<Lang>("es");
+  const [language, setLanguage] = useState<Lang>("en");
 
   useEffect(() => {    
     const cookieLang = Cookies.get("lang") as Lang | undefined;
@@ -27,9 +27,10 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       setLanguage(cookieLang);
       i18n.changeLanguage(cookieLang);
     } else {
-      Cookies.set("lang", "es");
-      setLanguage("es");
-      i18n.changeLanguage("es");
+      // Default language on first visit
+      Cookies.set("lang", "en");
+      setLanguage("en");
+      i18n.changeLanguage("en");
     }
   }, []);
 

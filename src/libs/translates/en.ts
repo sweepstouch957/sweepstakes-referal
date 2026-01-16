@@ -36,6 +36,12 @@ const en = {
       errorInvalidOtp: "Invalid OTP",
       loading: "Loading...",
     },
+    home: {
+      registerInStore: "Register in our store",
+    },
+    store: {
+      openInMaps: "Open in Google Maps",
+    },
     form: {
       firstName: "First Name",
       lastName: "Last Name",
