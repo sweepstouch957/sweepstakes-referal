@@ -79,9 +79,13 @@ export default function WinACarFormWithThankYou({
   const handleFormSubmit = async (data: any) => {
     const cleanPhone = data.phone.replace(/[^\d]/g, "");
 
+    // If opened without a slug, allow using the selected supermarket value
+    // from the form (stored as a storeId).
+    const resolvedStoreId = storeId || data.supermarket;
+
     mutation.mutate({
       sweepstakeId,
-      storeId,
+      storeId: resolvedStoreId,
       campaignId,
       referralCode: data.referralCode,
       firstName: data.firstName,
@@ -135,6 +139,7 @@ export default function WinACarFormWithThankYou({
               defaultReferralCode={tokenValue}
               defaultStoreName={storeName}
               showExtendedFields={showExtendedFields}
+              sweepstakeId={sweepstakeId}
             />
           </Container>
         </Fade>

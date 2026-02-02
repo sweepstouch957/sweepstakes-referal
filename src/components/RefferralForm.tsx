@@ -13,6 +13,7 @@ interface Props {
   onSubmit: (data: FormData) => void;
   defaultReferralCode?: string;
   defaultStoreName?: string;
+  sweepstakeId?: string;
   isLoading?: boolean;
   backendError?: string | null;
   onClearError?: () => void;
@@ -24,6 +25,7 @@ export default function ReferralForm({
   onSubmit,
   defaultReferralCode = "",
   defaultStoreName = "",
+  sweepstakeId,
   isLoading = false,
   backendError,
   onClearError,
@@ -79,6 +81,18 @@ export default function ReferralForm({
       const valid = await trigger(["referralCode"]);
       if (!valid) return;
 
+      // If the user came without a slug, supermarket is required.
+      if (!showExtendedFields) {
+        const supermarket = (getValues("supermarket") || "").trim();
+        if (!supermarket) {
+          form.setError("supermarket", {
+            type: "required",
+            message: t("form.errors.supermarket.required"),
+          });
+          return;
+        }
+      }
+
       const code = getValues("referralCode");
       // Si hay código, intenta validarlo
       if (code) {
@@ -123,6 +137,7 @@ export default function ReferralForm({
             form={form}
             defaultStoreName={defaultStoreName}
             showExtendedFields={showExtendedFields}
+            sweepstakeId={sweepstakeId}
             referralValidation={referralValidation}
             isValidatingReferral={isValidatingReferral}
             referralError={referralError}

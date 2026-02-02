@@ -50,6 +50,7 @@ const es = {
       zip: "Código postal",
       referralCode: "Código de referido (Opcional)",
       supermarket: "Supermercado",
+      selectSupermarket: "Selecciona un supermercado",
       errors: {
         firstName: {
           required: "El nombre es obligatorio",
@@ -63,6 +64,10 @@ const es = {
         email: "Ingresa un correo electrónico válido",
         zip: "El código postal debe tener 5 dígitos",
         otp: "El código OTP debe tener exactamente 6 dígitos",
+        supermarket: {
+          required: "Selecciona un supermercado",
+          missingSweepstake: "Falta configuración del sorteo",
+        },
       },
     },
     profile: {

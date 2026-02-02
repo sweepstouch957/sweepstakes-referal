@@ -15,7 +15,7 @@ function WinACarFormContainer() {
   const token = searchParams.get("referralcode") || "";
   const slug = searchParams.get("slug") || "";
 
-   useEffect(() => {
+  useEffect(() => {
     if (searchParams.get("scrollTo") === "form") {
       // Esperar a que el DOM esté listo
       setTimeout(() => {
@@ -42,6 +42,10 @@ function WinACarFormContainer() {
   }
 
   const showExtendedFields = !!slug;
+  const weeklySweepstakeId = (
+    process.env.NEXT_PUBLIC_SWEEPSTAKE_ID_WEEKLY_TV ||
+    "69602f385c802998b858f084"
+  ).toString();
 
   return (
     <WinACarForm
@@ -50,8 +54,10 @@ function WinACarFormContainer() {
       storeName={store?.name || ""}
       isLoading={isLoading}
       slug={slug}
-      storeId={store?._id || Cookies.get("storeId") || ""}
-      sweepstakeId={(process.env.NEXT_PUBLIC_SWEEPSTAKE_ID_WEEKLY_TV || "").toString()}
+      // If no slug is provided, the user must pick a store from the dropdown.
+      // Avoid using a potentially stale cookie value in that case.
+      storeId={showExtendedFields ? store?._id || Cookies.get("storeId") || "" : ""}
+      sweepstakeId={weeklySweepstakeId}
       campaignId={(process.env.NEXT_PUBLIC_CAMPAIGN_ID || "").toString()}
     />
   );

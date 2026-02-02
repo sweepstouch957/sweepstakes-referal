@@ -50,6 +50,7 @@ const en = {
       zip: "ZIP Code",
       referralCode: "Referral Code (Optional)",
       supermarket: "Supermarket",
+      selectSupermarket: "Select a supermarket",
       errors: {
         firstName: {
           required: "First name is required",
@@ -63,6 +64,10 @@ const en = {
         email: "Enter a valid email address",
         zip: "ZIP code must be 5 digits",
         otp: "OTP must be exactly 6 digits",
+        supermarket: {
+          required: "Please select a supermarket",
+          missingSweepstake: "Missing sweepstake configuration",
+        },
       },
     },
     profile: {
