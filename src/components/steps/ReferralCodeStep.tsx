@@ -24,6 +24,7 @@ interface Props {
   defaultReferralCode?: string;
   setReferralError: (error: string | null) => void;
   referralError?: string | null;
+  referralCodeNotice?: string;
 }
 
 export default function ReferralCodeStep({
@@ -35,6 +36,7 @@ export default function ReferralCodeStep({
   defaultReferralCode = "",
   referralError,
   setReferralError,
+  referralCodeNotice,
 }: Props) {
   const { t } = useTranslation();
   const {
@@ -55,14 +57,31 @@ export default function ReferralCodeStep({
 
   return (
     <>
-      <TextField
-        {...register("referralCode")}
-        label={t("form.referralCode")}
-        error={!!errors.referralCode}
-        defaultValue={defaultReferralCode}
-        helperText={errors.referralCode?.message}
-        fullWidth
-      />
+      <Box>
+        <TextField
+          {...register("referralCode")}
+          label={t("form.referralCode")}
+          error={!!errors.referralCode}
+          defaultValue={defaultReferralCode}
+          helperText={errors.referralCode?.message}
+          fullWidth
+        />
+
+        {referralCodeNotice && (
+          <Box
+            component="p"
+            sx={{
+              mt: 1,
+              mb: 0,
+              color: "error.main",
+              fontSize: "0.875rem",
+              lineHeight: 1.4,
+            }}
+          >
+            {referralCodeNotice}
+          </Box>
+        )}
+      </Box>
 
       {showExtendedFields ? (
         <TextField
