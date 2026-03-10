@@ -11,118 +11,9 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 // --- MOCK DATA ---
-const MOCK_COUPONS = [
-    {
-        id: 1,
-        title: "15% Off Any Oil Change",
-        description: "Valid for synthetic and conventional oil changes.",
-        code: "OIL15OFF",
-        expiresAt: "2026-12-31",
-        color: "from-blue-500 to-cyan-400",
-    },
-    {
-        id: 2,
-        title: "Free Tire Rotation",
-        description: "With the purchase of any set of 4 new tires.",
-        code: "FREETIRES",
-        expiresAt: "2026-10-15",
-        color: "from-emerald-500 to-teal-400",
-    },
-    {
-        id: 3,
-        title: "$50 Off Brake Service",
-        description: "Includes front or rear pad replacement and rotor resurfacing.",
-        code: "BRAKE50",
-        expiresAt: "2026-11-30",
-        color: "from-rose-500 to-red-600",
-    },
-    {
-        id: 4,
-        title: "10% Off All Accessories",
-        description: "Floor mats, wipers, air fresheners, and more.",
-        code: "ACC10",
-        expiresAt: "2026-09-01",
-        color: "from-violet-500 to-purple-500",
-    },
-];
+// Removed mock data for now.
 
 // --- COMPONENTS ---
-
-function CouponCard({ coupon }: { coupon: typeof MOCK_COUPONS[0] }) {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            whileHover={{ y: -8, scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className={`relative overflow-hidden rounded-2xl shadow-xl transition-shadow hover:shadow-2xl bg-gradient-to-br ${coupon.color} text-white p-1`}
-        >
-            <div className="relative h-full w-full rounded-xl bg-black/10 backdrop-blur-sm p-6 flex flex-col justify-between">
-                {/* Decorative Circles */}
-                <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/20 rounded-full blur-2xl"></div>
-                <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-black/20 rounded-full blur-2xl"></div>
-
-                <div className="relative z-10">
-                    <Typography
-                        variant="overline"
-                        className="font-bold tracking-widest text-white/80"
-                    >
-                        Limited Time Offer
-                    </Typography>
-                    <Typography
-                        variant="h5"
-                        className="font-extrabold mt-1 mb-2 leading-tight drop-shadow-md text-[28px]"
-                    >
-                        {coupon.title}
-                    </Typography>
-                    <Typography variant="body2" className="text-white/90 mb-6 font-medium">
-                        {coupon.description}
-                    </Typography>
-                </div>
-
-                <div className="relative z-10 mt-auto pt-4 border-t border-white/20 flex items-center justify-between">
-                    <div>
-                        <Typography variant="caption" className="block text-white/70 uppercase">
-                            Promo Code
-                        </Typography>
-                        <Typography
-                            variant="subtitle1"
-                            className="font-mono font-bold tracking-widest bg-black/20 px-3 py-1 rounded-md inline-block mt-1"
-                        >
-                            {coupon.code}
-                        </Typography>
-                    </div>
-                    <div className="text-right">
-                        <Typography variant="caption" className="block text-white/70 uppercase">
-                            Expires
-                        </Typography>
-                        <Typography variant="subtitle2" className="font-semibold">
-                            {new Date(coupon.expiresAt).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                            })}
-                        </Typography>
-                    </div>
-                </div>
-
-                {/* Perforated Edge Effect (CSS) */}
-                <div className="absolute top-0 bottom-0 -left-3 w-6 flex flex-col justify-evenly">
-                    {[...Array(6)].map((_, i) => (
-                        <div key={`l-${i}`} className="w-4 h-4 rounded-full bg-white shadow-inner"></div>
-                    ))}
-                </div>
-                <div className="absolute top-0 bottom-0 -right-3 w-6 flex flex-col justify-evenly">
-                    {[...Array(6)].map((_, i) => (
-                        <div key={`r-${i}`} className="w-4 h-4 rounded-full bg-white shadow-inner"></div>
-                    ))}
-                </div>
-
-            </div>
-        </motion.div>
-    );
-}
 
 function CouponContent() {
     const searchParams = useSearchParams();
@@ -159,17 +50,17 @@ function CouponContent() {
                         ) : store ? (
                             <>
                                 {store.image ? (
-                                    <div className="relative w-32 h-32 mb-6 rounded-2xl overflow-hidden shadow-lg border-4 border-white z-10">
+                                    <div className="relative w-48 h-48 mb-6 rounded-full overflow-hidden shadow-2xl ring-8 ring-indigo-50 border-4 border-white z-10 flex items-center justify-center bg-white">
                                         <Image
                                             src={store.image}
                                             alt={`${store.name} logo`}
                                             fill
-                                            style={{ objectFit: "cover" }}
+                                            style={{ objectFit: "contain", padding: "16px" }}
                                         />
                                     </div>
                                 ) : (
-                                    <div className="w-32 h-32 mb-6 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg border-4 border-white z-10">
-                                        <Typography variant="h3" className="text-white font-bold">
+                                    <div className="w-48 h-48 mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-2xl ring-8 ring-indigo-50 border-4 border-white z-10">
+                                        <Typography variant="h2" className="text-white font-bold">
                                             {store.name.charAt(0).toUpperCase()}
                                         </Typography>
                                     </div>
@@ -192,26 +83,29 @@ function CouponContent() {
                         )}
                     </motion.div>
 
-                    {/* Coupons Grid Section */}
+                    {/* Coming Soon Section */}
                     {(store || !slug) && (
-                        <Box>
-                            <div className="flex items-center justify-between mb-8">
-                                <Typography variant="h4" className="font-bold text-gray-800">
-                                    Available Offers
-                                </Typography>
-                                <span className="bg-indigo-100 text-indigo-800 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide">
-                                    {MOCK_COUPONS.length} Deals
-                                </span>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="flex flex-col items-center justify-center py-20 px-4 bg-white rounded-3xl shadow-sm border border-gray-100 text-center relative overflow-hidden"
+                        >
+                            <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+                                <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style={{ clipPath: "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)" }}></div>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
-                                {MOCK_COUPONS.map((coupon, index) => (
-                                    <div key={coupon.id}>
-                                        <CouponCard coupon={coupon} />
-                                    </div>
-                                ))}
+                            <div className="inline-flex items-center justify-center w-20 h-20 bg-indigo-50 text-indigo-500 rounded-full mb-6">
+                                <svg className="w-10 h-10 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
-                        </Box>
+
+                            <Typography variant="h3" className="font-extrabold text-gray-900 tracking-tight sm:text-4xl mb-4">
+                                ¡Los cupones están llegando!
+                            </Typography>
+                            <Typography variant="h6" className="text-gray-500 font-medium max-w-2xl mx-auto">
+                                Estamos trabajando para traerte las mejores ofertas y descuentos exclusivos para tu tienda favorita. Vuelve pronto para descubrirlos.
+                            </Typography>
+                        </motion.div>
                     )}
 
                 </Container>
