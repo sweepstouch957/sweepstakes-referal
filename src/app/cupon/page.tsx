@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getStoreBySlug } from "@/services/store.service";
 import Navbar from "../win-a-car/components/Navbar"; // Reusing navbar
 import Footer from "../win-a-car/components/Footer"; // Reusing footer
-import { Container, Skeleton, Box, Typography, Grid } from "@mui/material";
+import { Container, Skeleton, Box, Typography } from "@mui/material";
 import { Suspense } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
