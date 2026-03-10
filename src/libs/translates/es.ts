@@ -49,6 +49,7 @@ const es = {
       email: "Correo electrónico",
       zip: "Código postal",
       referralCode: "Código de referido (Opcional)",
+      referralCodeNotice: "Si no tienes un codigo de referido puedes darle a siguiente",
       supermarket: "Supermercado",
       selectSupermarket: "Selecciona un supermercado",
       errors: {

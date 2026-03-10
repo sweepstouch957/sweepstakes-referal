@@ -19,6 +19,7 @@ interface Props {
   onClearError?: () => void;
   showExtendedFields?: boolean;
   disabled?: boolean;
+  referralCodeNotice?: string;
 }
 
 export default function ReferralForm({
@@ -32,6 +33,7 @@ export default function ReferralForm({
   showExtendedFields = false,
   disabled = false,
   stepperVariant = 'full',
+  referralCodeNotice,
 }: Props) {
   const {
     activeStep,
@@ -143,6 +145,7 @@ export default function ReferralForm({
             referralError={referralError}
             defaultReferralCode={defaultReferralCode}
             setReferralError={setReferralError}
+            referralCodeNotice={referralCodeNotice}
           />
         )}
 

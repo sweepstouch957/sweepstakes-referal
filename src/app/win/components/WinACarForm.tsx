@@ -64,7 +64,7 @@ export default function WinACarFormWithThankYou({
       Cookies.set("sweepstouch_referral_slug", slug, { expires: 7 });
       setIsRegistered(true);
       router.push(
-        `/win-a-car/thank-you?referralcode=${encodeURIComponent(
+        `/win/thank-you?referralcode=${encodeURIComponent(
           data.referralCode
         )}&slug=${encodeURIComponent(slugName)}`
       );
@@ -129,7 +129,7 @@ export default function WinACarFormWithThankYou({
               color="#ff4b9b"
               mb={4}
             >
-              {!hideTitle && t("weeklyTv.form.title")}
+              {!hideTitle && "nombre del sorteo"}
             </Typography>
             <ReferralStepper stepperVariant={stepperVariant}
               onSubmit={handleFormSubmit}

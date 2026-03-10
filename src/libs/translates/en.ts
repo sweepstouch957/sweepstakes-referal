@@ -49,6 +49,7 @@ const en = {
       email: "Email",
       zip: "ZIP Code",
       referralCode: "Referral Code (Optional)",
+      referralCodeNotice: "If you do not have a referral code, you can click next",
       supermarket: "Supermarket",
       selectSupermarket: "Select a supermarket",
       errors: {
