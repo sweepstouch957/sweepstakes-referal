@@ -80,9 +80,9 @@ function StoreBanner({
             src={store.image || undefined}
             alt={shortName || store.name}
             sx={{
-              width: { xs: 108, sm: 116 },
+              width: { xs: 120, sm: 130 },
               height: "auto",
-              maxHeight: { xs: 46, sm: 50 },
+              maxHeight: { xs: 56, sm: 60 },
               objectFit: "contain",
               objectPosition: "center",
               flexShrink: 0,
