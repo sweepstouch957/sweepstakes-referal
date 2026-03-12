@@ -18,7 +18,9 @@ const en = {
     },
     weeklyTv: {
       form: {
-        title: "Win a 55\" 4K TV",
+        title: "Weekly Smart TV Sweepstake",
+        subtitle: 'Win a brand new 55" Smart TV - Enter now for your chance!',
+        note: "All fields are required. US phone & ZIP code only.",
       },
     },
     winATv: {
@@ -48,10 +50,13 @@ const en = {
       phone: "Phone",
       email: "Email",
       zip: "ZIP Code",
-      referralCode: "Referral Code (Optional)",
-      referralCodeNotice: "If you do not have a referral code, you can click next",
+      referralCode: "Referral code",
+      referralCodeNotice: "If not, you can click next step button.",
       supermarket: "Supermarket",
-      selectSupermarket: "Select a supermarket",
+      selectSupermarket: "Enter supermarket name",
+      referralInfoTitle: "Referral Information",
+      referralInfoSubtitle: "Help us track your referral",
+      referralCodePlaceholder: "HAVE A REFERRAL CODE? ADD IT HERE",
       errors: {
         firstName: {
           required: "First name is required",
@@ -120,11 +125,10 @@ const en = {
       },
     },
     thankyou: {
-      title: "Good Luck!",
-      description:
-        "Increase your chances of winning by sharing with friends and family.",
+      successTitle: "You're All Set!",
+      successDescription:
+        "Congratulations! You've been successfully entered into the Sweepstake.",
       main: "I'm participating to WIN a 2025 Nissan Versa at {{storeName}}! 🚗\n\nJoin the giveaway using this link! Each friend who registers gives us another chance to win. 👀👇\n{{referralLink}}",
-      registrationCode: "Your entry number is:",
       copySuccess: "Link copied!",
       shareMore:
         "Copy the link and send it via WhatsApp, Facebook, or wherever you want!",
@@ -141,16 +145,20 @@ const en = {
       logout: "Logout",
     },
     otp: {
-      title: "Verify your identity",
+      title: "Verify Your Code",
       instruction: "Enter the 6-digit code sent to",
       fallbackPhone: "your number",
+      noteStrong: "Check your messages!",
+      note: "Enter the 6-digit code we sent you.",
+      enterLabel: "Enter Verification Code",
       verified: "Code verified!",
       locked: "Too many attempts. Try again later.",
       attemptsLeft: "{{count}} attempts left",
-      resendIn: "You can try again in",
+      resendIn: "You can resend in",
       resendsLeft: "({{count}} left)",
       resending: "Sending...",
       resend: "Resend code",
+      resendInline: "Didn't receive a code? Resend",
       notReceived:
         "Didn't receive the code? Check your number and your spam folder.",
     },
@@ -174,7 +182,7 @@ const en = {
       },
     },
 
-    },
+  },
 };
 
 export default en;

@@ -3,11 +3,7 @@ import { Button } from "@mui/material";
 type CustomButtonProps = React.ComponentProps<typeof Button>;
 
 export default function CustomButton(props: CustomButtonProps) {
-  const {
-    variant = "contained",
-    sx,
-    ...rest
-  } = props;
+  const { variant = "contained", sx, ...rest } = props;
 
   return (
     <Button
@@ -15,22 +11,29 @@ export default function CustomButton(props: CustomButtonProps) {
       size="large"
       sx={[
         {
-          borderRadius: "20px",
+          minWidth: 190,
+          minHeight: 58,
+          px: 5.5,
+          borderRadius: "14px",
           textTransform: "none",
+          fontWeight: 800,
+          fontSize: 16,
+          boxShadow: variant === "contained" ? "0 12px 26px rgba(255, 20, 147, 0.28)" : "none",
           ...(variant === "contained" && {
-            backgroundColor: "#ff4b9b",
+            background: "linear-gradient(180deg, #ff1493 0%, #ff007f 100%)",
             color: "#fff",
             "&:hover": {
-              backgroundColor: "#e93d89",
+              background: "linear-gradient(180deg, #f5128f 0%, #ea0077 100%)",
+              boxShadow: "0 14px 30px rgba(255, 20, 147, 0.34)",
             },
           }),
           ...(variant === "outlined" && {
             backgroundColor: "#fff",
-            color: "#ff4b9b",
-            border: "2px solid #ff4b9b",
+            color: "#ff1493",
+            border: "2px solid #ff1493",
             "&:hover": {
-              backgroundColor: "#eeeeee",
-              border: "2px solid #ff4b9b",
+              backgroundColor: "#fff5fa",
+              border: "2px solid #ff1493",
             },
           }),
         },

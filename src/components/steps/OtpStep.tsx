@@ -8,10 +8,10 @@ import {
   Fade,
 } from "@mui/material";
 import OTPInput from "react-otp-input";
-import SmsIcon from "@mui/icons-material/Sms";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import { formatTimer } from "@/utils/formatTimer";
 import { useTranslation } from "react-i18next";
 
@@ -28,7 +28,7 @@ interface OtpStepProps {
   errorSend: string | null;
   locked?: boolean;
   resendLeft?: number;
-  onComplete?: () => void; // <- NUEVO
+  onComplete?: () => void;
   onSubmit?: (val: string) => void;
 }
 
@@ -51,7 +51,6 @@ export default function OtpStep({
   const { t } = useTranslation();
   const theme = useTheme();
 
-  // Cuando el input llega a 6 dígitos, dispara onComplete
   const handleChange = (val: string) => {
     setOtp(val);
     if (val.length === 6 && onComplete) {
@@ -64,59 +63,68 @@ export default function OtpStep({
   };
 
   return (
-    <Stack spacing={2} alignItems="center" width="100%">
-      <Fade in>
-        <Box>
-          <SmsIcon
-            sx={{
-              fontSize: 56,
-              color: "#0058CB",
-              filter: "drop-shadow(0 2px 6px #0058cb22)",
-            }}
-          />
-        </Box>
-      </Fade>
+    <Stack spacing={2.25} alignItems="center" width="100%" sx={{ pt: 0.5 }}>
+
       <Typography
-        variant="h5"
+        variant="h4"
         fontWeight={800}
-        color="text.primary"
+        color="#182033"
         textAlign="center"
-        gutterBottom
-        letterSpacing={-1}
+        letterSpacing={-0.6}
+        sx={{ fontSize: { xs: 22, sm: 28 }, lineHeight: 1.05 }}
       >
-        {t("otp.title", "Verifica tu identidad")}
+        {t("otp.title")}
       </Typography>
+
       <Typography
-        variant="body2"
-        color="text.secondary"
+        variant="body1"
+        color="#5b6474"
         textAlign="center"
         sx={{
-          mb: "8px !important",
+          maxWidth: 320,
+          mt: "-2px !important",
+          lineHeight: 1.45,
+          fontSize: { xs: 16, sm: 18 },
         }}
       >
-        {t("otp.instruction", "Ingresa el código de 6 dígitos enviado a")}{" "}
-        <b>
-          {phone ? (
-            <>
-              <SmsIcon
-                sx={{
-                  color: "#0058CB",
-                  verticalAlign: "middle",
-                  mr: 0.3,
-                }}
-                fontSize="inherit"
-              />
-              +1{phone}
-            </>
-          ) : (
-            t("otp.fallbackPhone", "tu número")
-          )}
-        </b>
+        {t("otp.instruction")} <br />
+        <Box component="span" sx={{ color: "#ff1493", fontWeight: 700 }}>
+          +1{phone || t("otp.fallbackPhone")}
+        </Box>
+      </Typography>
+
+      <Box
+        sx={{
+          width: "100%",
+          borderRadius: 2.5,
+          bgcolor: "#f7eaf1",
+          borderLeft: "4px solid #ff1493",
+          px: 2,
+          py: 1.4,
+          mt: "6px !important",
+        }}
+      >
+        <Typography sx={{ color: "#4b5565", fontSize: 16, lineHeight: 1.45 }}>
+          <Box component="span" sx={{ fontWeight: 700 }}>
+            {t("otp.noteStrong")}
+          </Box>{" "}
+          {t("otp.note")}
+        </Typography>
+      </Box>
+
+      <Typography
+        variant="subtitle1"
+        fontWeight={700}
+        color="#374151"
+        textAlign="center"
+        sx={{ mt: "2px !important" }}
+      >
+        {t("otp.enterLabel")}
       </Typography>
 
       <OTPInput
         value={otp}
-        onChange={handleChange} // <--- CAMBIADO!
+        onChange={handleChange}
         numInputs={6}
         inputType="tel"
         renderInput={(props, idx) => (
@@ -139,7 +147,6 @@ export default function OtpStep({
             }}
             onPaste={(e) => {
               const pasted = e.clipboardData.getData("Text").replace(/\D/g, "");
-
               handleChange(pasted);
               e.preventDefault();
             }}
@@ -157,7 +164,7 @@ export default function OtpStep({
         <Stack direction="row" alignItems="center" spacing={1} mt={0.5}>
           <CheckCircleIcon color="success" fontSize="small" />
           <Typography color="success.main" variant="body2">
-            {t("otp.verified", "¡Código verificado!")}
+            {t("otp.verified")}
           </Typography>
         </Stack>
       )}
@@ -165,88 +172,51 @@ export default function OtpStep({
       {errorSend && (
         <Stack direction="row" alignItems="center" spacing={1} mt={0.5}>
           <ErrorOutlineIcon color="error" fontSize="small" />
-          <Typography color="error" variant="body2">
+          <Typography color="error" variant="body2" textAlign="center">
             {errorSend}
             {locked
-              ? " " + t("otp.locked", "Demasiados intentos. Intenta más tarde.")
+              ? " " + t("otp.locked")
               : attemptsLeft !== undefined && attemptsLeft <= 2
-              ? ` (${t("otp.attemptsLeft", { count: attemptsLeft })})`
-              : ""}
+                ? ` (${t("otp.attemptsLeft", { count: attemptsLeft })})`
+                : ""}
           </Typography>
         </Stack>
       )}
+
       {attemptsLeft !== undefined && !locked && attemptsLeft > 0 && (
         <Typography color="warning.main" variant="caption">
           {t("otp.attemptsLeft", {
             count: attemptsLeft,
-            defaultValue: "{{count}} intentos restantes",
+            defaultValue: "{{count}} attempts left",
           })}
         </Typography>
       )}
 
-      {/* Resend timer o botón */}
-      <Box mt={2}>
+      <Box mt={0.5}>
         {resendTimer > 0 ? (
           <Stack
             direction="row"
             alignItems="center"
             justifyContent="center"
-            spacing={1.1}
+            spacing={1}
             sx={{
-              bgcolor: theme.palette.mode === "dark" ? "#181d26" : "#f1f4f8",
-              borderRadius: 3,
-              px: 2.2,
-              py: 1.1,
-              minWidth: 240,
-              boxShadow: "0 1px 8px 0 rgba(0,0,0,.03)",
-              mt: 1,
-              fontWeight: 500,
+              color: "#ff1493",
+              fontWeight: 700,
+              fontSize: 15,
               flexWrap: "wrap",
             }}
           >
-            <AutorenewIcon color="action" fontSize="small" />
-            <Typography
-              color="text.primary"
-              sx={{
-                fontWeight: 700,
-                fontSize: 16,
-                mr: 0.8,
-                letterSpacing: 0.2,
-                whiteSpace: "nowrap",
-              }}
-            >
-              {t("otp.resendIn", "Puedes intentar de nuevo en")}
+            <Typography sx={{ color: "#ff1493", fontWeight: 700, fontSize: 15 }}>
+              {t("otp.resendIn")}
             </Typography>
-            <Box
-              sx={{
-                display: "inline-flex",
-                alignItems: "center",
-                bgcolor: "#0058CB",
-                color: "#fff",
-                fontWeight: 900,
-                fontSize: 18,
-                px: 2,
-                borderRadius: 2.5,
-                minWidth: 54,
-                justifyContent: "center",
-                letterSpacing: 1,
-              }}
-            >
+            <Typography sx={{ color: "#ff1493", fontWeight: 800, fontSize: 15 }}>
               {formatTimer(resendTimer)}
-            </Box>
+            </Typography>
             {typeof resendLeft === "number" && (
-              <Typography
-                color="text.secondary"
-                fontSize={13}
-                sx={{
-                  ml: 2,
-                  fontWeight: 400,
-                  whiteSpace: "nowrap",
-                }}
-              >
+              <Typography sx={{ color: "#8b93a5", fontSize: 13 }}>
                 {t("otp.resendsLeft", {
                   count: resendLeft,
-                  defaultValue: "({{count}} restantes)",
+                  defaultValue: "({{count}} left)",
                 })}
               </Typography>
             )}
@@ -254,38 +224,25 @@ export default function OtpStep({
         ) : (
           <Button
             onClick={onResend}
-            variant="outlined"
+            variant="text"
             color="primary"
-            startIcon={
-              isResending ? <CircularProgress size={16} /> : <AutorenewIcon />
-            }
+            startIcon={isResending ? <CircularProgress size={16} /> : <AutorenewIcon />}
             disabled={isResending || resendLeft === 0 || isVerifying}
             sx={{
               borderRadius: 6,
               fontWeight: 700,
-              px: 2.5,
+              px: 1,
               boxShadow: "none",
               textTransform: "none",
               mt: 0.5,
+              color: "#ff1493",
+              '&:hover': { backgroundColor: 'transparent', textDecoration: 'underline' },
             }}
           >
-            {isResending
-              ? t("otp.resending", "Enviando...")
-              : t("otp.resend", "Reenviar código")}
+            {isResending ? t("otp.resending") : t("otp.resendInline")}
           </Button>
         )}
       </Box>
-
-      <Typography
-        color="text.secondary"
-        variant="caption"
-        sx={{ mt: 3, mb: 1, textAlign: "center" }}
-      >
-        {t(
-          "otp.notReceived",
-          "¿No recibiste el código? Revisa tu número y la carpeta de spam."
-        )}
-      </Typography>
     </Stack>
   );
 }

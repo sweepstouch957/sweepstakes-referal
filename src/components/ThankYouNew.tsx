@@ -13,17 +13,14 @@ import {
   Fade,
   useMediaQuery,
   useTheme,
-  Divider,
 } from "@mui/material";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { Email, X, Sms } from "@mui/icons-material";
-import Image from "next/image";
-import CarImage from "@public/Car.webp";
+import { CheckCircle, Email, X, Sms } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 
-const accent = "#ff4b9b";
+const accent = "#ff1493";
 
 export interface ThankYouModernProps {
   storeName: string;
@@ -114,46 +111,55 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
             <Typography
               variant="subtitle1"
               align="center"
-              sx={{ fontSize: { xs: "14px", sm: "20px" }, mb: 2 }}
+              sx={{ fontSize: { xs: "14px", sm: "20px" }, mb: 1.5 }}
             >
               {storeName}
             </Typography>
+
+            <Box
+              sx={{
+                width: 88,
+                height: 88,
+                borderRadius: "50%",
+                bgcolor: "#ff1493",
+                color: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mx: "auto",
+                mb: 2,
+                boxShadow: "0 12px 28px rgba(0,0,0,0.12)",
+              }}
+            >
+              <CheckCircle sx={{ fontSize: 54 }} />
+            </Box>
+
             <Typography
-              variant="h3"
               align="center"
               sx={{
                 fontWeight: 900,
-                mb: { xs: 0.7, sm: 1 },
-                fontSize: { xs: "4rem", sm: "6rem" },
-                textShadow: "0 6px 32px #ff4b9b18",
+                color: "#ff1493",
+                mb: 1.25,
+                fontSize: { xs: "2.2rem", sm: "3rem" },
+                lineHeight: 1.05,
               }}
             >
-              {t("thankyou.title")}
+              {t("thankyou.successTitle")}
             </Typography>
+
             <Typography
               align="center"
               sx={{
-                mt: { xs: 1.2, sm: 3 },
-                mb: 2,
-                fontSize: { xs: 18, sm: 22 },
+                color: "#3f4a5a",
+                fontWeight: 400,
+                mb: 2.5,
+                fontSize: { xs: 16, sm: 20 },
+                lineHeight: 1.45,
+                maxWidth: 420,
+                mx: "auto",
               }}
             >
-              {name ? <b>{name}, </b> : ""}
-              {t("thankyou.registrationCode")}
-              <br />
-              <span style={{ fontWeight: 700 }}>{participantCode}</span>
-            </Typography>
-            <Typography
-              align="center"
-              sx={{ fontWeight: 600, fontSize: "14px" }}
-            >
-              {t("thankyou.description").split(",")[0]},
-            </Typography>
-            <Typography
-              align="center"
-              sx={{ fontWeight: 400, mb: 2, fontSize: "14px" }}
-            >
-              {t("thankyou.description").split(",")[1]}
+              {t("thankyou.successDescription")}
             </Typography>
 
             <Stack
@@ -261,53 +267,13 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
                 </IconButton>
               </Tooltip>
             </Stack>
-
-            <Divider
-              sx={{
-                bgcolor: "#fff",
-                opacity: 0.85,
-                height: "2px",
-                width: "80%",
-                my: 2,
-                mx: "auto",
-              }}
-            />
-
-            <Typography
-              align="center"
-              sx={{
-                color: "#fff",
-                fontWeight: 900,
-                fontSize: { xs: "4rem", sm: "6rem" },
-                textShadow: "0 8px 24px #ff4b9b18",
-              }}
-            >
-              {dateText}
-            </Typography>
-
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                mb: 2,
-              }}
-            >
-              <Image
-                src={CarImage.src}
-                alt="Nissan Versa"
-                width={isMobile ? 140 : 260}
-                height={isMobile ? 70 : 120}
-                style={{ objectFit: "contain" }}
-              />
-            </Box>
-
             <Typography
               align="center"
               sx={{
                 color: "#fff",
                 fontWeight: 400,
                 fontSize: { xs: "14px", sm: "20px" },
+                mt: 2,
               }}
             >
               &copy; {new Date().getFullYear()} Sweepstouch.{" "}

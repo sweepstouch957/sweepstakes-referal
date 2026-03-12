@@ -16,7 +16,7 @@ export default function Footer() {
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Box sx={{ backgroundColor: "#ff4b9b", color: "#fff", pt: 4, pb: 3 }}>
+    <Box sx={{ backgroundColor: "#ff1493", color: "#fff", pt: 4, pb: 3, mt: "auto" }}>
       <Container maxWidth="lg">
         <Stack
           direction={isSmall ? "column" : "row"}

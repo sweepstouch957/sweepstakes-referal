@@ -3,39 +3,6 @@ import { UseFormReturn } from "react-hook-form";
 import { FormData } from "@/hooks/useReferralStepper";
 import { useTranslation } from "react-i18next";
 
-const fieldSx = {
-  "& .MuiInputLabel-root": {
-    fontSize: "0.98rem",
-    fontWeight: 700,
-    color: "#374151",
-  },
-  "& .MuiOutlinedInput-root": {
-    borderRadius: "14px",
-    backgroundColor: "#f9fafb",
-    "& fieldset": {
-      borderColor: "#d7dbe3",
-    },
-    "&:hover fieldset": {
-      borderColor: "#c9ced8",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#d0d5dd",
-    },
-  },
-  "& .MuiInputBase-input": {
-    fontSize: "1rem",
-    color: "#111827",
-    py: 1.35,
-  },
-  "& .MuiInputBase-input::placeholder": {
-    color: "#8b9099",
-    opacity: 1,
-  },
-  "& .MuiFormHelperText-root": {
-    mx: 0.25,
-  },
-};
-
 export default function PersonalInfoStep({
   form,
   isLoading = false,
@@ -59,7 +26,7 @@ export default function PersonalInfoStep({
       : cleaned;
   };
 
-  const skeletonField = <Skeleton height={62} variant="rounded" sx={{ borderRadius: 3 }} />;
+  const skeletonField = <Skeleton height={56} variant="rounded" />;
 
   return (
     <>
@@ -69,12 +36,8 @@ export default function PersonalInfoStep({
         <TextField
           {...register("firstName")}
           label={t("form.firstName")}
-
-          InputLabelProps={{ shrink: true }}
           error={!!errors.firstName}
           helperText={errors.firstName?.message}
-          fullWidth
-          sx={fieldSx}
         />
       )}
       {isLoading ? (
@@ -83,12 +46,8 @@ export default function PersonalInfoStep({
         <TextField
           {...register("lastName")}
           label={t("form.lastName")}
-
-          InputLabelProps={{ shrink: true }}
           error={!!errors.lastName}
           helperText={errors.lastName?.message}
-          fullWidth
-          sx={fieldSx}
         />
       )}
       {isLoading ? (
@@ -97,12 +56,8 @@ export default function PersonalInfoStep({
         <TextField
           {...register("phone")}
           label={t("form.phone")}
-
-          InputLabelProps={{ shrink: true }}
           error={!!errors.phone}
           helperText={errors.phone?.message}
-          fullWidth
-          sx={fieldSx}
           onChange={(e) => setValue("phone", formatPhone(e.target.value))}
         />
       )}
@@ -112,12 +67,8 @@ export default function PersonalInfoStep({
         <TextField
           {...register("email")}
           label={t("form.email")}
-
-          InputLabelProps={{ shrink: true }}
           error={!!errors.email}
           helperText={errors.email?.message}
-          fullWidth
-          sx={fieldSx}
         />
       )}
       {isLoading ? (
@@ -126,12 +77,8 @@ export default function PersonalInfoStep({
         <TextField
           {...register("zip")}
           label={t("form.zip")}
-
-          InputLabelProps={{ shrink: true }}
           error={!!errors.zip}
           helperText={errors.zip?.message}
-          fullWidth
-          sx={fieldSx}
           onChange={(e) =>
             setValue("zip", e.target.value.replace(/\D/g, "").slice(0, 5))
           }

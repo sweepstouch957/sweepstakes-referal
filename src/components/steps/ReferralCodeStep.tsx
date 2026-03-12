@@ -8,6 +8,7 @@ import {
   Box,
   CircularProgress,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Controller, UseFormReturn } from "react-hook-form";
 import { FormData } from "@/hooks/useReferralStepper";
@@ -26,6 +27,27 @@ interface Props {
   referralError?: string | null;
   referralCodeNotice?: string;
 }
+
+const grayInputSx = {
+  "& .MuiInputBase-input": {
+    fontSize: { xs: "0.92rem", sm: "0.95rem" },
+    color: "#9ca3af",
+    WebkitTextFillColor: "#9ca3af",
+  },
+  "& .MuiInputBase-input::placeholder": {
+    fontSize: { xs: "0.86rem", sm: "0.9rem" },
+    opacity: 1,
+    color: "#9ca3af",
+    WebkitTextFillColor: "#9ca3af",
+  },
+  "& .MuiInputLabel-root": {
+    color: "#4b5563",
+  },
+  "& .Mui-disabled": {
+    color: "#9ca3af !important",
+    WebkitTextFillColor: "#9ca3af !important",
+  },
+};
 
 export default function ReferralCodeStep({
   form,
@@ -57,14 +79,39 @@ export default function ReferralCodeStep({
 
   return (
     <>
-      <Box>
+      <Box sx={{ mb: 0.5 }}>
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 800,
+            textAlign: "center",
+            color: "#1f2937",
+            mb: 0.75,
+          }}
+        >
+          {t("form.referralInfoTitle")}
+        </Typography>
+        <Typography
+          sx={{
+            textAlign: "center",
+            color: "#6b7280",
+            fontSize: "1.02rem",
+            mb: 2.5,
+          }}
+        >
+          {t("form.referralInfoSubtitle")}
+        </Typography>
+
         <TextField
           {...register("referralCode")}
           label={t("form.referralCode")}
+          placeholder={t("form.referralCodePlaceholder")}
+          InputLabelProps={{ shrink: true }}
           error={!!errors.referralCode}
           defaultValue={defaultReferralCode}
           helperText={errors.referralCode?.message}
           fullWidth
+          sx={grayInputSx}
         />
 
         {referralCodeNotice && (
@@ -86,10 +133,12 @@ export default function ReferralCodeStep({
       {showExtendedFields ? (
         <TextField
           label={t("form.supermarket")}
+          placeholder={t("form.selectSupermarket")}
+          InputLabelProps={{ shrink: true }}
           value={defaultStoreName || ""}
           disabled
           fullWidth
-          sx={{ mt: 2 }}
+          sx={{ mt: 2, ...grayInputSx }}
         />
       ) : (
         <Controller
@@ -109,7 +158,7 @@ export default function ReferralCodeStep({
                   {...params}
                   label={t("form.supermarket")}
                   fullWidth
-                  sx={{ mt: 2 }}
+                  sx={{ mt: 2, ...grayInputSx }}
                   error={!!errors.supermarket}
                   helperText={
                     errors.supermarket?.message ||
@@ -118,6 +167,7 @@ export default function ReferralCodeStep({
                       : "")
                   }
                   placeholder={t("form.selectSupermarket")}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />

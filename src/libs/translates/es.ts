@@ -18,7 +18,9 @@ const es = {
     },
     weeklyTv: {
       form: {
-        title: "Gana una TV 55\" 4K",
+        title: "Sorteo semanal de Smart TV",
+        subtitle: 'Gana una Smart TV nueva de 55" - ¡Participa ahora para tener tu oportunidad!',
+        note: "Todos los campos son obligatorios. Solo teléfono y ZIP de EE. UU.",
       },
     },
     winATv: {
@@ -48,10 +50,13 @@ const es = {
       phone: "Teléfono",
       email: "Correo electrónico",
       zip: "Código postal",
-      referralCode: "Código de referido (Opcional)",
-      referralCodeNotice: "Si no tienes un codigo de referido puedes darle a siguiente",
+      referralCode: "Código de referido",
+      referralCodeNotice: "Si no tienes uno, puedes darle al siguiente paso.",
       supermarket: "Supermercado",
-      selectSupermarket: "Selecciona un supermercado",
+      selectSupermarket: "Ingresa el nombre del supermercado",
+      referralInfoTitle: "Información de referido",
+      referralInfoSubtitle: "Ayúdanos a rastrear tu referido",
+      referralCodePlaceholder: "¿TIENES UN CÓDIGO? AGRÉGALO AQUÍ",
       errors: {
         firstName: {
           required: "El nombre es obligatorio",
@@ -121,11 +126,10 @@ const es = {
       },
     },
     thankyou: {
-      title: "¡Suerte!",
-      description:
-        "Aumenta tus posibilidades de ganar, comparte con tus amigos y familiares.",
+      successTitle: "¡Ya estás dentro!",
+      successDescription:
+        "¡Felicidades! Tu participación en el sorteo se registró correctamente.",
       main: "¡Estoy participando para GANAR un Nissan Versa 2025 en {{storeName}}! 🚗\n\n¡Súmate al sorteo usando este link! Cada amigo que se registre nos dará una oportunidad extra de ganar. 👀👇\n{{referralLink}}",
-      registrationCode: "Tu número de referido es:",
       copySuccess: "¡Link copiado!",
       shareMore:
         "¡Copia el link y mándalo por WhatsApp, Facebook, o donde quieras!",
@@ -142,16 +146,20 @@ const es = {
       logout: "Cerrar sesión",
     },
     otp: {
-      title: "Verifica tu identidad",
+      title: "Verifica tu código",
       instruction: "Ingresa el código de 6 dígitos enviado a",
       fallbackPhone: "tu número",
+      noteStrong: "Revisa tus mensajes!",
+      note: "Ingresa el código de 6 dígitos que te enviamos.",
+      enterLabel: "Ingresa el código de verificación",
       verified: "¡Código verificado!",
       locked: "Demasiados intentos. Intenta más tarde.",
       attemptsLeft: "{{count}} intentos restantes",
-      resendIn: "Puedes intentar de nuevo en",
+      resendIn: "Puedes reenviar en",
       resendsLeft: "({{count}} restantes)",
       resending: "Enviando...",
       resend: "Reenviar código",
+      resendInline: "¿No recibiste un código? Reenviar",
       notReceived:
         "¿No recibiste el código? Revisa tu número y la carpeta de spam.",
     },
@@ -175,7 +183,7 @@ const es = {
       },
     },
 
-    },
+  },
 };
 
 export default es;

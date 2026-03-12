@@ -30,7 +30,7 @@ interface Props {
   campaignId?: string;
   slug?: string;
   hideTitle?: boolean;
-  stepperVariant?: 'full' | 'personalOnly';
+  stepperVariant?: "full" | "personalOnly";
 }
 
 export default function WinACarFormWithThankYou({
@@ -43,10 +43,10 @@ export default function WinACarFormWithThankYou({
   slug = "",
   campaignId = "",
   hideTitle = false,
-  stepperVariant = 'full',
+  stepperVariant = "full",
 }: Props) {
   const theme = useTheme();
-  const {language}=useLanguage()
+  const { language } = useLanguage();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [backendError, setBackendError] = useState<string | null>(null);
   const [isRegistred, setIsRegistered] = useState(false);
@@ -57,7 +57,7 @@ export default function WinACarFormWithThankYou({
     mutationFn: registerParticipant,
     onSuccess: (data) => {
       setBackendError(null);
-      const slugName = data.storeSlug || slug; // Ajusta esto según cómo lo tengas
+      const slugName = data.storeSlug || slug;
       Cookies.set("sweepstouch_referral_code", data.referralCode, {
         expires: 7,
       });
@@ -78,9 +78,6 @@ export default function WinACarFormWithThankYou({
 
   const handleFormSubmit = async (data: any) => {
     const cleanPhone = data.phone.replace(/[^\d]/g, "");
-
-    // If this page is opened without a store slug, the user must pick a store
-    // from the "Supermarket" dropdown (stored in data.supermarket).
     const resolvedStoreId = storeId || data.supermarket;
 
     mutation.mutate({
@@ -94,7 +91,7 @@ export default function WinACarFormWithThankYou({
       zipCode: data.zip,
       customerPhone: cleanPhone,
       method: "referral",
-      language
+      language,
     });
   };
 
@@ -102,46 +99,120 @@ export default function WinACarFormWithThankYou({
   if (isRegistred) {
     return <></>;
   }
+
   return (
     <Box
       display="flex"
       alignItems="center"
       justifyContent="center"
-      bgcolor="#fff"
       id="form"
+      sx={{
+        pt: { xs: 0.1, sm: 0.35 },
+        pb: { xs: 4, sm: 5 },
+        background: "linear-gradient(180deg, #ffffff 0%, #fff8fc 48%, #ffffff 100%)",
+      }}
     >
       {isLoadingState ? (
         <Fade in>
           <Box textAlign="center">
             <CircularProgress size={60} thickness={5} color="secondary" />
             <Typography mt={2} variant="body1" color="text.secondary">
-               {t("referralStep.proccesing")}
+              {t("referralStep.proccesing")}
             </Typography>
           </Box>
         </Fade>
       ) : (
         <Fade in timeout={400}>
-          <Container maxWidth="sm" sx={{ my: 6 }}>
-            <Typography
-              variant={isMobile ? "h4" : "h3"}
-              textAlign="center"
-              fontWeight={800}
-              color="#ff4b9b"
-              mb={4}
+          <Container maxWidth="sm" sx={{ mt: 0, mb: 0, px: { xs: 1.5, sm: 3 } }}>
+            {!hideTitle && (
+              <>
+                <Typography
+                  variant={isMobile ? "h3" : "h2"}
+                  textAlign="center"
+                  fontWeight={800}
+                  color="#ff1797"
+                  mb={0.8}
+                  sx={{
+                    lineHeight: 1.02,
+                    fontSize: { xs: "1.95rem", sm: "2.6rem" },
+                    letterSpacing: "-0.03em",
+                    mt: 0,
+                  }}
+                >
+                  {t("weeklyTv.form.title")}
+                </Typography>
+
+                <Typography
+                  textAlign="center"
+                  color="#3f485a"
+                  sx={{
+                    fontSize: { xs: 17, sm: 19 },
+                    lineHeight: 1.45,
+                    mb: 2.2,
+                    px: { xs: 0.4, sm: 2 },
+                  }}
+                >
+                  {t("weeklyTv.form.subtitle")}
+                </Typography>
+              </>
+            )}
+
+            <Box
+              sx={{
+                background: "linear-gradient(180deg, #fffafb 0%, #fff7fb 100%)",
+                borderRadius: { xs: 4, sm: 4.5 },
+                boxShadow: "0 12px 30px rgba(24, 32, 56, 0.12)",
+                px: { xs: 2.2, sm: 3.5 },
+                py: { xs: 2.5, sm: 3.25 },
+                border: "1px solid rgba(238, 238, 238, 0.95)",
+                '& .MuiStepper-root': {
+                  mb: 0.25,
+                },
+                '& .MuiStepLabel-label': {
+                  mt: 1.15,
+                  fontSize: { xs: 13.5, sm: 15 },
+                  fontWeight: 700,
+                  color: '#afb6c2',
+                },
+                '& .MuiStepLabel-label.Mui-active': {
+                  color: '#1f2937',
+                },
+                '& .MuiStepLabel-label.Mui-completed': {
+                  color: '#afb6c2',
+                },
+                '& .MuiInputBase-root': {
+                  borderRadius: 2.2,
+                  backgroundColor: '#fff',
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#d7dce4',
+                },
+                '& .MuiInputLabel-root': {
+                  color: '#475467',
+                  fontWeight: 700,
+                },
+                '& .MuiInputBase-input': {
+                  py: 1.7,
+                  fontSize: 16,
+                },
+                '& .MuiFormHelperText-root': {
+                  mx: 0.25,
+                },
+              }}
             >
-              {!hideTitle && t("weeklyTv.form.title")}
-            </Typography>
-            <ReferralStepper stepperVariant={stepperVariant}
-              onSubmit={handleFormSubmit}
-              isLoading={mutation.isPending}
-              backendError={backendError}
-              onClearError={() => setBackendError(null)}
-              defaultReferralCode={tokenValue}
-              defaultStoreName={storeName}
-              showExtendedFields={showExtendedFields}
-              sweepstakeId={sweepstakeId}
-              referralCodeNotice={t("form.referralCodeNotice")}
-            />
+              <ReferralStepper
+                stepperVariant={stepperVariant}
+                onSubmit={handleFormSubmit}
+                isLoading={mutation.isPending}
+                backendError={backendError}
+                onClearError={() => setBackendError(null)}
+                defaultReferralCode={tokenValue}
+                defaultStoreName={storeName}
+                showExtendedFields={showExtendedFields}
+                sweepstakeId={sweepstakeId}
+                referralCodeNotice={t("form.referralCodeNotice")}
+              />
+            </Box>
           </Container>
         </Fade>
       )}

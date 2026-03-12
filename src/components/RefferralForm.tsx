@@ -1,4 +1,4 @@
-import { Box, Stack, Alert, CircularProgress } from "@mui/material";
+import { Box, Stack, Alert, CircularProgress, Typography } from "@mui/material";
 import { useReferralStepper } from "@/hooks/useReferralStepper";
 import PersonalInfoStep from "@/components/steps/PersonalInfoStep";
 import ReferralCodeStep from "@/components/steps/ReferralCodeStep";
@@ -9,7 +9,7 @@ import CustomButton from "@/app/win-a-car/components/Button";
 import { useTranslation } from "react-i18next";
 
 interface Props {
-  stepperVariant?: 'full' | 'personalOnly';
+  stepperVariant?: "full" | "personalOnly";
   onSubmit: (data: FormData) => void;
   defaultReferralCode?: string;
   defaultStoreName?: string;
@@ -32,7 +32,7 @@ export default function ReferralForm({
   onClearError,
   showExtendedFields = false,
   disabled = false,
-  stepperVariant = 'full',
+  stepperVariant = "full",
   referralCodeNotice,
 }: Props) {
   const {
@@ -58,7 +58,6 @@ export default function ReferralForm({
     isResending,
     resendLeft,
     locked,
-
     success,
   } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit);
   const { t } = useTranslation();
@@ -66,24 +65,16 @@ export default function ReferralForm({
   const nextStep = async () => {
     if (disabled) return;
     if (activeStep === 0) {
-      const valid = await trigger([
-        "firstName",
-        "lastName",
-        "phone",
-        "email",
-        "zip",
-      ]);
+      const valid = await trigger(["firstName", "lastName", "phone", "email", "zip"]);
       if (!valid) return;
       setActiveStep(1);
       return;
     }
 
-    // Paso 2: Validación del código de referido
     if (activeStep === 1) {
       const valid = await trigger(["referralCode"]);
       if (!valid) return;
 
-      // If the user came without a slug, supermarket is required.
       if (!showExtendedFields) {
         const supermarket = (getValues("supermarket") || "").trim();
         if (!supermarket) {
@@ -96,21 +87,17 @@ export default function ReferralForm({
       }
 
       const code = getValues("referralCode");
-      // Si hay código, intenta validarlo
       if (code) {
         try {
           const validation = await validateReferralCodeMutation(code);
           if (!validation.valid) {
-            // Aquí podrías manejar el error (ej: setBackendError("Código inválido"))
             return;
           }
-          // Si es válido, avanza y manda el OTP
           setActiveStep(2);
           await handleSendOtp();
           return;
         } catch (err) {
           console.error("Validation error", err);
-          // Aquí podrías setear un estado de error visual si lo necesitas
           return;
         }
       }
@@ -123,7 +110,7 @@ export default function ReferralForm({
 
   return (
     <Box component="form">
-      {stepperVariant === 'full' ? (
+      {stepperVariant === "full" ? (
         <CustomReferralStepper activeStep={activeStep} variant="full" />
       ) : (
         <Stack alignItems="center" sx={{ mt: 2 }}>
@@ -131,7 +118,7 @@ export default function ReferralForm({
         </Stack>
       )}
 
-      <Stack spacing={3} mt={4}>
+      <Stack spacing={2.5} mt={3.5}>
         {activeStep === 0 && <PersonalInfoStep form={form} />}
 
         {activeStep === 1 && (
@@ -169,15 +156,36 @@ export default function ReferralForm({
           />
         )}
 
-        {backendError && (
-          <Alert severity="error" onClose={onClearError}>
-            {backendError}
-          </Alert>
+        {activeStep === 0 && (
+          <Box
+            sx={{
+              backgroundColor: "#f4e9ef",
+              borderLeft: "4px solid #ff1493",
+              borderRadius: 2,
+              px: 2,
+              py: 1.5,
+              mt: 0.75,
+            }}
+          >
+            <Typography sx={{ color: "#475467", fontSize: 15, lineHeight: 1.55 }}>
+              <Box component="span" sx={{ fontWeight: 700 }}>
+                Note:
+              </Box>{" "}
+              {t("weeklyTv.form.note")}
+            </Typography>
+          </Box>
         )}
+
+        {backendError && <Alert severity="error" onClose={onClearError}>{backendError}</Alert>}
 
         <Stack direction="row" justifyContent="center" spacing={2} mt={2}>
           {activeStep > 0 && (
-            <CustomButton onClick={prevStep} variant="outlined" disabled={disabled || isLoading || isLoadingOtp}>
+            <CustomButton
+              onClick={prevStep}
+              variant="outlined"
+              disabled={disabled || isLoading || isLoadingOtp}
+              sx={activeStep === 1 ? { minWidth: 138, px: 3.25 } : undefined}
+            >
               {t("common.prev")}
             </CustomButton>
           )}
@@ -186,12 +194,10 @@ export default function ReferralForm({
             <CustomButton
               onClick={nextStep}
               disabled={disabled || isLoading || isLoadingOtp}
+              endIcon={!isLoadingOtp ? <span style={{ fontSize: 22, lineHeight: 1 }}>→</span> : undefined}
+              sx={activeStep === 1 ? { minWidth: 126, px: 3.2 } : undefined}
             >
-              {isLoadingOtp ? (
-                <CircularProgress size={22} color="inherit" />
-              ) : (
-                <>{stepperVariant === 'personalOnly' ? t('common.submit') : t('common.next')}</>
-              )}
+              {isLoadingOtp ? <CircularProgress size={22} color="inherit" /> : <>{stepperVariant === "personalOnly" ? t("common.submit") : t("common.next")}</>}
             </CustomButton>
           )}
         </Stack>

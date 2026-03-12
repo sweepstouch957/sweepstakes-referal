@@ -4,9 +4,9 @@ import Stack from "@mui/material/Stack";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
-import PersonIcon from "@mui/icons-material/Person";
-import LinkIcon from "@mui/icons-material/Link";
-import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import KeyOutlinedIcon from "@mui/icons-material/KeyOutlined";
+import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import StepConnector, { stepConnectorClasses } from "@mui/material/StepConnector";
 import { StepIconProps } from "@mui/material/StepIcon";
 import { useTranslation } from "react-i18next";
@@ -32,21 +32,25 @@ const CustomConnector = styled(StepConnector)(() => ({
 const CustomStepIconRoot = styled("div")<{
   ownerState: { completed?: boolean; active?: boolean };
 }>(({ ownerState }) => ({
-  backgroundColor: "#ccc",
+  backgroundColor: "#d9d9d9",
   zIndex: 1,
-  color: "#fff",
-  width: 50,
-  height: 50,
+  color: "#ffffff",
+  width: 54,
+  height: 54,
   display: "flex",
   borderRadius: "50%",
   justifyContent: "center",
   alignItems: "center",
+  transition: "all 0.2s ease",
+  boxShadow: "0 8px 18px rgba(0,0,0,0.10)",
+  border: "4px solid transparent",
   ...(ownerState.active && {
-    backgroundColor: "#d7006e",
-    boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+    backgroundColor: "#e4007f",
+    borderColor: "#ffd200",
+    boxShadow: "0 10px 22px rgba(0,0,0,.18)",
   }),
   ...(ownerState.completed && {
-    backgroundColor: "#d7006e",
+    backgroundColor: "#e4007f",
   }),
 }));
 
@@ -54,9 +58,9 @@ function CustomStepIcon(props: StepIconProps) {
   const { active, completed, className } = props;
 
   const icons: { [index: string]: React.ReactElement } = {
-    1: <PersonIcon />,
-    2: <LinkIcon />,
-    3: <PhoneIphoneIcon />,
+    1: <AccountCircleOutlinedIcon sx={{ fontSize: 28 }} />,
+    2: <KeyOutlinedIcon sx={{ fontSize: 28 }} />,
+    3: <ShieldOutlinedIcon sx={{ fontSize: 28 }} />,
   };
 
   return (
