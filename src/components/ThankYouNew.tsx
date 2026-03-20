@@ -28,6 +28,8 @@ export interface ThankYouModernProps {
   name?: string;
   referralLink: string;
   dateText?: string;
+  /** Mensaje personalizado para WhatsApp/SMS/etc. Si no se pasa, usa la traducción genérica. */
+  shareMessage?: string;
 }
 
 export const ThankYouModern: React.FC<ThankYouModernProps> = ({
@@ -36,13 +38,14 @@ export const ThankYouModern: React.FC<ThankYouModernProps> = ({
   referralLink,
   name,
   dateText = "30 DEC",
+  shareMessage,
 }) => {
   const { t } = useTranslation();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const shareText = t("thankyou.main", { storeName, referralLink });
+  const shareText = shareMessage ?? t("thankyou.main", { storeName, referralLink });
 
   const shareOnWhatsApp = () => {
     window.open(

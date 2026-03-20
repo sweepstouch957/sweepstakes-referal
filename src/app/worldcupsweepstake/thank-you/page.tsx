@@ -134,6 +134,7 @@ function ThankYouPageInner() {
             participantCode={data.referralCode}
             name={data.firstName || ""}
             referralLink={data.referralLink}
+            shareMessage={`I'm participating to WIN 6 FIFA World Cup 2026 tickets at ${data.storeName}! ⚽🏆\n\nJoin the giveaway using this link! Each friend who registers gives us another chance to win. 👀👇\n${data.referralLink}`}
           />
         </Box>
       ) : (

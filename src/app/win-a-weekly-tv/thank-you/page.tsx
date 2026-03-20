@@ -79,7 +79,7 @@ function ThankYouPageInner() {
   useEffect(() => {
     if (!referralCode || !slug) {
       const timeout = setTimeout(() => {
-        router.replace("/win-a-car/login");
+        router.replace("/win-a-weekly-tv");
       }, 2200);
       return () => clearTimeout(timeout);
     }
@@ -128,12 +128,13 @@ function ThankYouPageInner() {
           </Typography>
         </Box>
       ) : data ? (
-        <Box sx={{ mt: 2, width: "100%" }}>
+      <Box sx={{ mt: 2, width: "100%" }}>
           <ThankYouModern
             storeName={data.storeName}
             participantCode={data.referralCode}
             name={data.firstName || ""}
             referralLink={data.referralLink}
+            shareMessage={`I'm participating to WIN a 55" Smart TV at ${data.storeName}! 📺\n\nJoin the weekly giveaway using this link! Each friend who registers gives us another chance to win. 👀👇\n${data.referralLink}`}
           />
         </Box>
       ) : (

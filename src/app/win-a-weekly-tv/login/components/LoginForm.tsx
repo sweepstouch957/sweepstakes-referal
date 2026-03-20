@@ -49,7 +49,7 @@ export default function LoginWithOTP() {
         Cookies.set("sweepstakes_user", JSON.stringify(userInfo.user));
         Cookies.set("sweepstakes_stores", JSON.stringify(userInfo.stores));
         Cookies.set("sweepstakes_token", userInfo.token);
-        router.push("/win-a-car/profile");
+        router.push("/win-a-weekly-tv/profile");
       } catch (err: any) {
         setError("No se pudo guardar la sesión.");
       }
