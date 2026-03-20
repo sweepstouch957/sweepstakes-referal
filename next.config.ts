@@ -22,6 +22,19 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      // S3 / sweepstouch CDN
+      {
+        protocol: 'https',
+        hostname: '**.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.sweepstouch.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

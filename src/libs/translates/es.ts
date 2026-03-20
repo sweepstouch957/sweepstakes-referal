@@ -183,6 +183,65 @@ const es = {
       },
     },
 
+    welcomeCoupon: {
+      banner: {
+        title: "Oferta exclusiva",
+        viewFull: "Ver Imagen Completa",
+        exclusiveLabel: "OFERTA POR TIEMPO LIMITADO",
+        defaultTitle: "DESCUENTO OFICIAL DE BIENVENIDA",
+        defaultMessage: "¡Bienvenido! Presenta este cupón en caja para tu beneficio exclusivo.",
+        note: "Válido solo la primera vez. Llena el formulario para obtener tu código.",
+        cta: "Regístrate ahora",
+        validity: "Validez",
+        minPurchase: "Compra Mínima",
+        fastProcess: "El registro toma menos de 30 segundos.",
+      },
+      form: {
+        title: "Obtén tu cupón de bienvenida",
+        subtitle: "Completa tus datos para recibir tu código promocional por SMS.",
+        firstName: "Nombre *",
+        lastName: "Apellido *",
+        phone: "Teléfono (10 dígitos) *",
+        email: "Email (opcional)",
+        zip: "Código postal (opcional)",
+        referral: "¿Tienes un código de referido? (opcional)",
+        referralHide: "Ocultar código de referido",
+        referralLabel: "Código de referido",
+        submit: "Obtener mi cupón",
+        privacy: "Al registrarte aceptas recibir comunicaciones de la tienda.",
+        errors: {
+          firstName: "El nombre es requerido",
+          lastName: "El apellido es requerido",
+          phone: "El teléfono es requerido",
+          phoneDigits: "Ingresa 10 dígitos sin espacios",
+          email: "Email no válido",
+        }
+      },
+      success: {
+        title: "¡Cupón Generado!",
+        welcome: "¡Bienvenido! 🎉",
+        alreadyKnow: "¡Ya te conocemos! 🥳",
+        partOfStore: "Ahora eres parte de {{storeName}}",
+        participating: "Ya estás participando en {{sweepstakeName}}",
+        alreadyRegistered: "Ya estás registrado en la tienda",
+        yourCouponCode: "Tu código de cupón",
+        yourParticipationNumber: "Tu número de participación",
+        copyCode: "Copiar código",
+        copied: "¡Copiado!",
+        noSweepstake: "Ya estás registrado en {{storeName}}. No hay sorteos activos en este momento, pero te avisaremos cuando comience uno. 🔔",
+        screenshotTitle: "📸 ¡Toma una captura de pantalla!",
+        screenshotNoteNew: "Muestra este cupón en caja para reclamar tu beneficio. También recibirás un mensaje de texto con tu código.",
+        screenshotNoteExisting: "Guarda tu número de participación. Recibirás un SMS con los detalles del sorteo.",
+        referralCodeLabel: "Tu código de referido: {{code}}",
+        referralNote: "Comparte tu código para ganar cupones extra cuando tus amigos se registren.",
+        close: "¡Entendido! 🎉",
+      },
+      errors: {
+        pageUnavailable: "Página no disponible",
+        noActiveCoupon: "Esta tienda no tiene cupones de bienvenida activos.",
+        goHome: "Volver al inicio",
+      }
+    }
   },
 };
 

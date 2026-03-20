@@ -182,6 +182,65 @@ const en = {
       },
     },
 
+    welcomeCoupon: {
+      banner: {
+        title: "Exclusive Offer",
+        viewFull: "View Full Image",
+        exclusiveLabel: "LIMITED TIME OFFER",
+        defaultTitle: "OFFICIAL WELCOME DISCOUNT",
+        defaultMessage: "Welcome! Present this coupon at the register for your exclusive benefit.",
+        note: "Valid for first-time customers only. Fill out the form to get your code.",
+        cta: "Register now",
+        validity: "Validity",
+        minPurchase: "Minimum Purchase",
+        fastProcess: "Registration takes less than 30 seconds.",
+      },
+      form: {
+        title: "Get your welcome coupon",
+        subtitle: "Fill out your details to receive your promo code via SMS.",
+        firstName: "First Name *",
+        lastName: "Last Name *",
+        phone: "Phone (10 digits) *",
+        email: "Email (optional)",
+        zip: "ZIP Code (optional)",
+        referral: "Have a referral code? (optional)",
+        referralHide: "Hide referral code",
+        referralLabel: "Referral code",
+        submit: "Get my coupon",
+        privacy: "By registering, you agree to receive communications from the store.",
+        errors: {
+          firstName: "First name is required",
+          lastName: "Last name is required",
+          phone: "Phone is required",
+          phoneDigits: "Enter 10 digits without spaces",
+          email: "Invalid email",
+        }
+      },
+      success: {
+        title: "Coupon Generated!",
+        welcome: "Welcome! 🎉",
+        alreadyKnow: "We know you! 🥳",
+        partOfStore: "You're now part of {{storeName}}",
+        participating: "You are already participating in {{sweepstakeName}}",
+        alreadyRegistered: "You're already registered at the store",
+        yourCouponCode: "Your coupon code",
+        yourParticipationNumber: "Your participation number",
+        copyCode: "Copy code",
+        copied: "Copied!",
+        noSweepstake: "You're already registered at {{storeName}}. There are no active sweepstakes right now, but we'll notify you when one starts. 🔔",
+        screenshotTitle: "📸 Take a screenshot!",
+        screenshotNoteNew: "Show this coupon at the register to claim your benefit. You'll also receive a text message with your code.",
+        screenshotNoteExisting: "Save your participation number. You'll receive an SMS with sweepstake details.",
+        referralCodeLabel: "Your referral code: {{code}}",
+        referralNote: "Share your code to earn extra entries when your friends sign up.",
+        close: "Got it! 🎉",
+      },
+      errors: {
+        pageUnavailable: "Page Unavailable",
+        noActiveCoupon: "This store does not have active welcome coupons.",
+        goHome: "Back to Home",
+      }
+    }
   },
 };
 
