@@ -1,9 +1,9 @@
-"use client";
-
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button, Stack } from "@mui/material";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useTranslation } from "react-i18next";
 
 interface StoreHeaderProps {
   name: string;
@@ -12,6 +12,14 @@ interface StoreHeaderProps {
 }
 
 export function StoreHeader({ name, address, image }: StoreHeaderProps) {
+  const { t } = useTranslation();
+
+  const handleScrollToForm = () => {
+    const formElement = document.getElementById("registration-form");
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: -16 }}
