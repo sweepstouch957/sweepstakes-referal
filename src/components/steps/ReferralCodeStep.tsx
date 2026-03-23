@@ -9,7 +9,10 @@ import {
   CircularProgress,
   TextField,
   Typography,
+  Chip,
 } from "@mui/material";
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Controller, UseFormReturn } from "react-hook-form";
 import { FormData } from "@/hooks/useReferralStepper";
 import { useQuery } from "@tanstack/react-query";
@@ -102,32 +105,114 @@ export default function ReferralCodeStep({
           {t("form.referralInfoSubtitle")}
         </Typography>
 
-        <TextField
-          {...register("referralCode")}
-          label={t("form.referralCode")}
-          placeholder={t("form.referralCodePlaceholder")}
-          InputLabelProps={{ shrink: true }}
-          error={!!errors.referralCode}
-          defaultValue={defaultReferralCode}
-          helperText={errors.referralCode?.message}
-          fullWidth
-          sx={grayInputSx}
-        />
-
-        {referralCodeNotice && (
-          <Box
-            component="p"
-            sx={{
-              mt: 1,
-              mb: 0,
-              color: "error.main",
-              fontSize: "0.875rem",
-              lineHeight: 1.4,
-            }}
-          >
-            {referralCodeNotice}
+        <Box
+          sx={{
+            position: "relative",
+            p: 2.5,
+            mb: 2,
+            borderRadius: 3,
+            background: "linear-gradient(145deg, #ffffff 0%, #fef5f9 100%)",
+            border: "1px solid",
+            borderColor: defaultReferralCode ? "#ff1493" : "rgba(255, 20, 147, 0.15)",
+            boxShadow: defaultReferralCode
+              ? "0 4px 20px rgba(255, 20, 147, 0.12)"
+              : "0 2px 10px rgba(0,0,0,0.03)",
+            transition: "all 0.3s ease",
+            "&:focus-within": {
+              borderColor: "#ff1493",
+              boxShadow: "0 4px 24px rgba(255, 20, 147, 0.15)",
+              transform: "translateY(-2px)",
+            },
+          }}
+        >
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5}>
+            <Box display="flex" alignItems="center" gap={1}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  bgcolor: "#fff0f7",
+                  color: "#ff1493",
+                }}
+              >
+                <ConfirmationNumberIcon fontSize="small" />
+              </Box>
+              <Typography sx={{ fontWeight: 700, color: "#1f2937", fontSize: "0.95rem" }}>
+                {t("form.referralCodeLabel", { defaultValue: "Invitation Code" })}
+              </Typography>
+            </Box>
+            
+            {defaultReferralCode && (
+              <Chip
+                icon={<CheckCircleIcon sx={{ fontSize: "16px !important" }} />}
+                label={t("form.codeApplied", { defaultValue: "Applied" })}
+                size="small"
+                sx={{
+                  bgcolor: "#e8fdf0",
+                  color: "#16a34a",
+                  fontWeight: 700,
+                  fontSize: "0.75rem",
+                  border: "1px solid #bbf7d0",
+                  height: 24,
+                  "& .MuiChip-icon": { color: "#16a34a" }
+                }}
+              />
+            )}
           </Box>
-        )}
+
+          <TextField
+            {...register("referralCode")}
+            placeholder={t("form.referralCodePlaceholder")}
+            error={!!errors.referralCode}
+            defaultValue={defaultReferralCode}
+            helperText={errors.referralCode?.message}
+            fullWidth
+            variant="outlined"
+            sx={{
+              ...grayInputSx,
+              "& .MuiOutlinedInput-root": {
+                bgcolor: "#fff",
+                "& fieldset": { borderColor: "#e5e7eb" },
+                "&:hover fieldset": { borderColor: "#ff1493" },
+                "&.Mui-focused fieldset": { 
+                  borderColor: "#ff1493",
+                  borderWidth: "2px"
+                },
+              },
+              "& .MuiInputBase-input": {
+                py: 1.5,
+                fontWeight: 600,
+                color: "#1f2937",
+                letterSpacing: "0.02em",
+                WebkitTextFillColor: "unset",
+              }
+            }}
+          />
+
+          {referralCodeNotice && (
+            <Box
+              component="p"
+              sx={{
+                mt: 1.5,
+                mb: 0,
+                color: "#d97706",
+                fontSize: "0.82rem",
+                fontWeight: 600,
+                lineHeight: 1.4,
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5
+              }}
+            >
+              <Box component="span" sx={{ fontSize: "1.1rem" }}>💡</Box>
+              {referralCodeNotice}
+            </Box>
+          )}
+        </Box>
       </Box>
 
       {showExtendedFields ? (
