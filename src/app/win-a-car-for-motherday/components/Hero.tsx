@@ -25,7 +25,7 @@ export default function Hero() {
         }}
       >
         <Image
-          src="/images/BannerDiaMadresMobile.jpg"
+          src="/images/BannerDiaMadresMobile.jpeg"
           alt="Win a Car for Mother's Day"
           priority
           width={1080}
@@ -63,7 +63,7 @@ export default function Hero() {
         }}
       >
         <Image
-          src="/images/BannerDiaMadreDesktop.png"
+          src="/images/BannerDiaMadreDesktop.jpeg"
           alt="Win a Car for Mother's Day"
           priority
           width={1920}
