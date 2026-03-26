@@ -142,20 +142,21 @@ export default function WinACarFormWithThankYou({
                   {t("mothersDay.form.title", { defaultValue: "WIN A NISSAN VERSA" })}
                 </Typography>
 
-                <Typography
-                  textAlign="center"
-                  color="#3f485a"
-                  sx={{
-                    fontSize: { xs: 17, sm: 19 },
-                    lineHeight: 1.45,
-                    mb: 2.2,
-                    px: { xs: 0.4, sm: 2 },
-                  }}
-                >
-                  {t("mothersDay.form.subtitle", { defaultValue: "Sign up below for free and participate!" })}
-                </Typography>
+
               </>
             )}
+            <Typography
+              textAlign="center"
+              color="#3f485a"
+              sx={{
+                fontSize: { xs: 17, sm: 19 },
+                lineHeight: 1.45,
+                my: 2.2,
+                px: { xs: 0.4, sm: 2 },
+              }}
+            >
+              {t("mothersDay.form.subtitle", { defaultValue: "Sign up below for free and participate!" })}
+            </Typography>
 
             <Box
               sx={{
