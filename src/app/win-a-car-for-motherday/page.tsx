@@ -176,6 +176,7 @@ function WinACarFormContainer() {
         storeId={showExtendedFields ? store?._id || Cookies.get("storeId") || "" : ""}
         sweepstakeId={motherdaySweepstakeId}
         campaignId={(process.env.NEXT_PUBLIC_CAMPAIGN_ID || "").toString()}
+        hideTitle={true}
       />
     </>
   );

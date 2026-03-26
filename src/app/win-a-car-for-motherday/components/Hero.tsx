@@ -39,18 +39,7 @@ export default function Hero() {
           }}
         />
 
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: { xs: "24%", md: "20%" },
-            pointerEvents: "none",
-            background:
-              "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.18) 28%, rgba(255,255,255,0.62) 62%, rgba(255,255,255,0.96) 88%, #ffffff 100%)",
-          }}
-        />
+
       </Box>
 
       <Box
@@ -77,18 +66,7 @@ export default function Hero() {
           }}
         />
 
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: "20%",
-            pointerEvents: "none",
-            background:
-              "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.18) 28%, rgba(255,255,255,0.62) 62%, rgba(255,255,255,0.96) 88%, #ffffff 100%)",
-          }}
-        />
+
       </Box>
     </Box>
   );
