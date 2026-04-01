@@ -31,6 +31,10 @@ interface Props {
   slug?: string;
   hideTitle?: boolean;
   stepperVariant?: 'full' | 'personalOnly';
+  /** Ruta de thank-you personalizada. Default: /win-a-car/thank-you */
+  thankYouPath?: string;
+  /** ID del premio principal para pasar a la thank-you dinámica */
+  prizeId?: string;
 }
 
 export default function WinACarFormWithThankYou({
@@ -44,6 +48,8 @@ export default function WinACarFormWithThankYou({
   campaignId = "",
   hideTitle = false,
   stepperVariant = 'full',
+  thankYouPath,
+  prizeId,
 }: Props) {
   const theme = useTheme();
   const {language}=useLanguage()
@@ -57,17 +63,20 @@ export default function WinACarFormWithThankYou({
     mutationFn: registerParticipant,
     onSuccess: (data) => {
       setBackendError(null);
-      const slugName = data.storeSlug || slug; // Ajusta esto según cómo lo tengas
+      const slugName = data.storeSlug || slug;
       Cookies.set("sweepstouch_referral_code", data.referralCode, {
         expires: 7,
       });
       Cookies.set("sweepstouch_referral_slug", slug, { expires: 7 });
       setIsRegistered(true);
-      router.push(
-        `/win-a-car/thank-you?referralcode=${encodeURIComponent(
-          data.referralCode
-        )}&slug=${encodeURIComponent(slugName)}`
-      );
+      const basePath = thankYouPath || "/win-a-car/thank-you";
+      const params = new URLSearchParams({
+        referralcode: data.referralCode,
+        slug: slugName,
+        ...(sweepstakeId ? { sweepstakeId } : {}),
+        ...(prizeId ? { prizeId } : {}),
+      });
+      router.push(`${basePath}?${params.toString()}`);
     },
 
     onError: (error: any) => {

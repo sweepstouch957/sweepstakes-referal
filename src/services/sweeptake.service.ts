@@ -237,3 +237,83 @@ export async function getSweepstakeRegistrationsCount(params: {
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DYNAMIC OPTIN BUILDER — Active Sweepstake & Prize
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface ActiveSweepstake {
+  _id: string;
+  id?: string;
+  name: string;
+  description?: string;
+  /** URL del banner para escritorio */
+  bannerDesktop?: string;
+  /** URL del banner para móvil */
+  bannerMobile?: string;
+  /** Color primario del sorteo (hex, ej: "#ff4b9b") */
+  mainColor?: string;
+  /** Color secundario del sorteo */
+  secondaryColor?: string;
+  /** IDs de premios (puede ser string[] o objeto populated) */
+  prizes?: string[] | Prize[];
+  drawDate?: string;
+  participationMessage?: string;
+  storeId?: string;
+}
+
+export interface Prize {
+  _id: string;
+  id?: string;
+  name: string;
+  description?: string;
+  image?: string;
+  value?: number;
+  category?: string;
+}
+
+/**
+ * Obtiene el sorteo activo (optin) de una tienda por su ID.
+ * Endpoint: GET /sweepstakes/active/:storeId
+ */
+export async function getActiveSweepstakeByStoreId(
+  storeId: string
+): Promise<ActiveSweepstake> {
+  try {
+    const response = await api.get<ActiveSweepstake>(
+      `/sweepstakes/active/${storeId}`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "❌ Error al obtener el sorteo activo por storeId:",
+      error?.response?.data || error.message
+    );
+    throw (
+      error?.response?.data || {
+        error: "Error al obtener el sorteo activo de la tienda",
+      }
+    );
+  }
+}
+
+/**
+ * Obtiene los detalles de un premio por su ID.
+ * Endpoint: GET /sweepstakes/prizes/list/:id
+ */
+export async function getPrizeById(id: string): Promise<Prize> {
+  try {
+    const response = await api.get<Prize>(`/sweepstakes/prizes/list/${id}`);
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "❌ Error al obtener el premio:",
+      error?.response?.data || error.message
+    );
+    throw (
+      error?.response?.data || {
+        error: "Error al obtener el premio",
+      }
+    );
+  }
+}
