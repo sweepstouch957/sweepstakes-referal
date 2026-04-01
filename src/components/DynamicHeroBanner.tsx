@@ -112,12 +112,11 @@ export default function DynamicHeroBanner({
       <Box
         sx={{
           position: "absolute",
-          bottom: 0,
+          bottom: -1,
           left: 0,
           right: 0,
-          height: "120px",
-          background:
-            "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.95) 100%)",
+          height: { xs: "60px", md: "80px" },
+          background: "linear-gradient(to bottom, transparent 0%, #f8f9fc 100%)",
         }}
       />
 

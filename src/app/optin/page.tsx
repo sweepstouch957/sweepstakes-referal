@@ -306,9 +306,9 @@ function OptinPageInner() {
           mainColor={mainColor}
           secondaryColor={secondaryColor}
           isLoading={sweepLoading}
-          desktopHeight="55vh"
-          mobileHeight="38vh"
-          overlayOpacity={0.35}
+          desktopHeight="80vh"
+          mobileHeight="50vh"
+          overlayOpacity={0.2}
         />
       </Box>
 
