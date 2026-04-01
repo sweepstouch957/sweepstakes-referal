@@ -361,7 +361,6 @@ function OptinPageInner() {
             storeId={store?._id || Cookies.get("storeId") || ""}
             sweepstakeId={sweepstakeId}
             hideTitle
-            stepperVariant="personalOnly"
             thankYouPath="/optin/thank-you"
             prizeId={prizeId}
           />

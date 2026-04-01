@@ -189,6 +189,13 @@ export default function ReferralCodeStep({
                 color: "#1f2937",
                 letterSpacing: "0.02em",
                 WebkitTextFillColor: "unset",
+              },
+              "& .MuiInputBase-input::placeholder": {
+                color: "#9ca3af",
+                WebkitTextFillColor: "#9ca3af",
+                opacity: 1,
+                fontWeight: 400,
+                letterSpacing: "normal",
               }
             }}
           />

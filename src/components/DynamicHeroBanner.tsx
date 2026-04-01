@@ -80,7 +80,26 @@ export default function DynamicHeroBanner({
         overflow: "hidden",
       }}
     >
-      {/* Background image */}
+      {/* Fondo difuminado para rellenar los espacios cuando la imagen es contain */}
+      <Box
+        component="img"
+        src={activeSrc}
+        alt=""
+        sx={{
+          position: "absolute",
+          inset: "-40px",
+          width: "calc(100% + 80px)",
+          height: "calc(100% + 80px)",
+          objectFit: "cover",
+          objectPosition: "center",
+          filter: "blur(20px)",
+          opacity: 0.6,
+          display: "block",
+          zIndex: 0,
+        }}
+      />
+
+      {/* Background image principal (contain) */}
       <Box
         component="img"
         src={activeSrc}
@@ -90,9 +109,10 @@ export default function DynamicHeroBanner({
           inset: 0,
           width: "100%",
           height: "100%",
-          objectFit: "cover",
+          objectFit: "contain",
           objectPosition: "center",
           display: "block",
+          zIndex: 1,
         }}
       />
 
