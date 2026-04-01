@@ -52,6 +52,7 @@ const es = {
       zip: "Código postal",
       referralCode: "Código de referido",
       referralCodeNotice: "Si no tienes uno, puedes darle al siguiente paso.",
+      smsConsent: "Sí quiero recibir mensajes de texto",
       supermarket: "Supermercado",
       selectSupermarket: "Ingresa el nombre del supermercado",
       referralInfoTitle: "Información de referido",
@@ -208,6 +209,7 @@ const es = {
         referralHide: "Ocultar código de referido",
         referralLabel: "Código de referido",
         submit: "Obtener mi cupón",
+        smsConsent: "Sí quiero recibir mensajes de texto",
         privacy: "Al registrarte aceptas recibir comunicaciones de la tienda.",
         errors: {
           firstName: "El nombre es requerido",

@@ -9,6 +9,8 @@ import {
   Alert,
   InputAdornment,
   Collapse,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { useForm, Controller } from "react-hook-form";
@@ -74,6 +76,7 @@ export function WelcomeRegistrationForm({
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -85,6 +88,9 @@ export function WelcomeRegistrationForm({
       referralCode: defaultReferralCode,
     },
   });
+
+  const phoneValue = watch("customerPhone") || "";
+  const smsConsentChecked = phoneValue.replace(/\D/g, "").length > 0;
 
   const onFormSubmit = (data: FormValues) => {
     const cleanPhone = data.customerPhone.replace(/\D/g, "");
@@ -233,6 +239,32 @@ export function WelcomeRegistrationForm({
               />
             )}
           />
+
+          <Box sx={{ gridColumn: { xs: "1 / -1", sm: "1 / 2" }, mt: -1.25 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={smsConsentChecked}
+                  sx={{
+                    color: "#ff4b9b",
+                    "&.Mui-checked": {
+                      color: "#ff4b9b",
+                    },
+                    py: 0.5,
+                  }}
+                />
+              }
+              label={t("welcomeCoupon.form.smsConsent")}
+              sx={{
+                ml: 0,
+                "& .MuiFormControlLabel-label": {
+                  fontSize: 14,
+                  color: "#374151",
+                  fontWeight: 500,
+                },
+              }}
+            />
+          </Box>
 
           {/* Email */}
           <Controller

@@ -1,4 +1,4 @@
-import { Skeleton, TextField } from "@mui/material";
+import { Checkbox, FormControlLabel, Skeleton, TextField } from "@mui/material";
 import { UseFormReturn } from "react-hook-form";
 import { FormData } from "@/hooks/useReferralStepper";
 import { useTranslation } from "react-i18next";
@@ -47,6 +47,7 @@ export default function PersonalInfoStep({
     register,
     formState: { errors },
     setValue,
+    watch,
   } = form;
 
   const { t } = useTranslation();
@@ -58,6 +59,9 @@ export default function PersonalInfoStep({
       ? `(${match[1]}) ${match[2]}${match[3] ? `-${match[3]}` : ""}`
       : cleaned;
   };
+
+  const phoneValue = watch("phone") || "";
+  const smsConsentChecked = phoneValue.replace(/\D/g, "").length > 0;
 
   const skeletonField = <Skeleton height={62} variant="rounded" sx={{ borderRadius: 3 }} />;
 
@@ -104,6 +108,36 @@ export default function PersonalInfoStep({
           fullWidth
           sx={fieldSx}
           onChange={(e) => setValue("phone", formatPhone(e.target.value))}
+        />
+      )}
+      {isLoading ? (
+        <Skeleton height={34} width="70%" sx={{ borderRadius: 2, mt: -1, mb: 0.25 }} />
+      ) : (
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={smsConsentChecked}
+              sx={{
+                color: "#ff1493",
+                "&.Mui-checked": {
+                  color: "#ff1493",
+                },
+                py: 0.5,
+              }}
+            />
+          }
+          label={t("form.smsConsent")}
+          sx={{
+            alignSelf: "flex-start",
+            mt: -1,
+            mb: -0.25,
+            ml: 0.25,
+            "& .MuiFormControlLabel-label": {
+              fontSize: "0.95rem",
+              color: "#374151",
+              fontWeight: 500,
+            },
+          }}
         />
       )}
       {isLoading ? (

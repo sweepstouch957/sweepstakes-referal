@@ -28,6 +28,7 @@ export const schema = z.object({
   zip: z.string().regex(/^\d{5}$/, { message: t("form.errors.zip") }),
   referralCode: z.string().optional(),
   supermarket: z.string().optional(),
+  smsConsent: z.boolean().optional(),
   otp:z.string()
 });
 
@@ -86,6 +87,7 @@ export function useReferralStepper(
       zip: cookieData.zip || "",
       referralCode: cookieData.referralCode || defaultReferralCode,
       supermarket: cookieData.supermarket || defaultStoreName,
+      smsConsent: cookieData.smsConsent ?? false,
     },
   });
 
