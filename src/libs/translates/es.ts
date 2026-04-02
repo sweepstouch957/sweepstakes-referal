@@ -53,6 +53,8 @@ const es = {
       referralCode: "Código de referido",
       referralCodeNotice: "Si no tienes uno, puedes darle al siguiente paso.",
       smsConsent: "Sí quiero recibir mensajes de texto",
+      termsLink: "Términos y condiciones",
+      privacyLink: "Política de privacidad",
       supermarket: "Supermercado",
       selectSupermarket: "Ingresa el nombre del supermercado",
       referralInfoTitle: "Información de referido",
@@ -211,6 +213,8 @@ const es = {
         submit: "Obtener mi cupón",
         smsConsent: "Sí quiero recibir mensajes de texto",
         privacy: "Al registrarte aceptas recibir comunicaciones de la tienda.",
+        termsLink: "Términos y condiciones",
+        privacyLink: "Política de privacidad",
         errors: {
           firstName: "El nombre es requerido",
           lastName: "El apellido es requerido",

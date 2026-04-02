@@ -1,4 +1,4 @@
-import { Box, Stack, Alert, CircularProgress, Typography } from "@mui/material";
+import { Box, Stack, Alert, CircularProgress, Typography, Link } from "@mui/material";
 import { useReferralStepper } from "@/hooks/useReferralStepper";
 import PersonalInfoStep from "@/components/steps/PersonalInfoStep";
 import ReferralCodeStep from "@/components/steps/ReferralCodeStep";
@@ -201,6 +201,37 @@ export default function ReferralForm({
             </CustomButton>
           )}
         </Stack>
+
+        {activeStep < 2 && (
+          <Stack
+            direction="row"
+            spacing={1}
+            justifyContent="center"
+            flexWrap="wrap"
+            useFlexGap
+            sx={{ mt: 1.5 }}
+          >
+            <Link
+              href="https://www.sweepstouch.com/term"
+              target="_blank"
+              rel="noopener noreferrer"
+              underline="hover"
+              sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
+            >
+              {t("form.termsLink")}
+            </Link>
+            <Typography sx={{ fontSize: 13, color: "#98a2b3" }}>•</Typography>
+            <Link
+              href="https://www.sweepstouch.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              underline="hover"
+              sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
+            >
+              {t("form.privacyLink")}
+            </Link>
+          </Stack>
+        )}
       </Stack>
     </Box>
   );

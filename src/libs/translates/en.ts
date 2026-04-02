@@ -53,6 +53,8 @@ const en = {
       referralCode: "Referral code",
       referralCodeNotice: "If not, you can click next step button.",
       smsConsent: "Yes, I want to receive text messages",
+      termsLink: "Terms and Conditions",
+      privacyLink: "Privacy Policy",
       supermarket: "Supermarket",
       selectSupermarket: "Enter supermarket name",
       referralInfoTitle: "Referral Information",
@@ -210,6 +212,8 @@ const en = {
         submit: "Get my coupon",
         smsConsent: "Yes, I want to receive text messages",
         privacy: "By registering, you agree to receive communications from the store.",
+        termsLink: "Terms and Conditions",
+        privacyLink: "Privacy Policy",
         errors: {
           firstName: "First name is required",
           lastName: "Last name is required",

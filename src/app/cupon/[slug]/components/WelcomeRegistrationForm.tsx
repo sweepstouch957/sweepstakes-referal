@@ -11,6 +11,7 @@ import {
   Collapse,
   Checkbox,
   FormControlLabel,
+  Link,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { useForm, Controller } from "react-hook-form";
@@ -434,6 +435,37 @@ export function WelcomeRegistrationForm({
         >
           {t("welcomeCoupon.form.privacy")}
         </Typography>
+
+        <Box
+          sx={{
+            mt: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 1,
+            flexWrap: "wrap",
+          }}
+        >
+          <Link
+            href="https://www.sweepstouch.com/term"
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="hover"
+            sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
+          >
+            {t("welcomeCoupon.form.termsLink")}
+          </Link>
+          <Typography sx={{ fontSize: 13, color: "#98a2b3" }}>•</Typography>
+          <Link
+            href="https://www.sweepstouch.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="hover"
+            sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
+          >
+            {t("welcomeCoupon.form.privacyLink")}
+          </Link>
+        </Box>
       </Box>
     </motion.div>
   );
