@@ -1,5 +1,12 @@
-import { Box, Checkbox, FormControlLabel, Skeleton, TextField, Typography } from "@mui/material";
-import { UseFormReturn } from "react-hook-form";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Skeleton,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Controller, UseFormReturn } from "react-hook-form";
 import { FormData } from "@/hooks/useReferralStepper";
 import { useTranslation } from "react-i18next";
 
@@ -40,14 +47,15 @@ export default function PersonalInfoStep({
   form,
   isLoading = false,
 }: {
-  form: UseFormReturn<FormData>;
+  form: UseFormReturn<FormData, any, FormData>;
   isLoading?: boolean;
 }) {
   const {
     register,
+    control,
+    watch,
     formState: { errors },
     setValue,
-    watch,
     clearErrors,
     trigger,
   } = form;
@@ -63,18 +71,18 @@ export default function PersonalInfoStep({
       : cleaned;
   };
 
-  const skeletonField = <Skeleton height={62} variant="rounded" sx={{ borderRadius: 3 }} />;
+  const skeletonField = (
+    <Skeleton height={62} variant="rounded" sx={{ borderRadius: 3 }} />
+  );
 
   return (
     <>
-      <input type="hidden" {...register("smsConsent")} value={String(smsConsentChecked)} readOnly />
       {isLoading ? (
         skeletonField
       ) : (
         <TextField
           {...register("firstName")}
           label={t("form.firstName")}
-
           InputLabelProps={{ shrink: true }}
           error={!!errors.firstName}
           helperText={errors.firstName?.message}
@@ -82,13 +90,13 @@ export default function PersonalInfoStep({
           sx={fieldSx}
         />
       )}
+
       {isLoading ? (
         skeletonField
       ) : (
         <TextField
           {...register("lastName")}
           label={t("form.lastName")}
-
           InputLabelProps={{ shrink: true }}
           error={!!errors.lastName}
           helperText={errors.lastName?.message}
@@ -96,13 +104,13 @@ export default function PersonalInfoStep({
           sx={fieldSx}
         />
       )}
+
       {isLoading ? (
         skeletonField
       ) : (
         <TextField
           {...register("phone")}
           label={t("form.phoneOptional")}
-
           InputLabelProps={{ shrink: true }}
           error={!!errors.phone}
           helperText={errors.phone?.message}
@@ -119,13 +127,13 @@ export default function PersonalInfoStep({
           }}
         />
       )}
+
       {isLoading ? (
         skeletonField
       ) : (
         <TextField
           {...register("email")}
           label={t("form.email")}
-
           InputLabelProps={{ shrink: true }}
           error={!!errors.email}
           helperText={errors.email?.message}
@@ -133,13 +141,13 @@ export default function PersonalInfoStep({
           sx={fieldSx}
         />
       )}
+
       {isLoading ? (
         skeletonField
       ) : (
         <TextField
           {...register("zip")}
           label={t("form.zip")}
-
           InputLabelProps={{ shrink: true }}
           error={!!errors.zip}
           helperText={errors.zip?.message}
@@ -155,39 +163,46 @@ export default function PersonalInfoStep({
         <Skeleton height={58} variant="rounded" sx={{ borderRadius: 3 }} />
       ) : (
         <Box sx={{ mt: 0.5 }}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={smsConsentChecked}
-                onChange={(e) => {
-                  const checked = e.target.checked;
-                  setValue("smsConsent", checked, { shouldValidate: true, shouldDirty: true });
-                  if (checked) {
-                    trigger("phone");
-                  } else {
-                    clearErrors("phone");
-                  }
-                }}
+          <Controller
+            name="smsConsent"
+            control={control}
+            render={({ field }) => (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={!!field.value}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      field.onChange(checked);
+                      if (checked) {
+                        trigger("phone");
+                      } else {
+                        clearErrors("phone");
+                      }
+                    }}
+                    sx={{
+                      color: "#ff1493",
+                      "&.Mui-checked": {
+                        color: "#ff1493",
+                      },
+                      py: 0.5,
+                    }}
+                  />
+                }
+                label={t("form.smsConsent")}
                 sx={{
-                  color: "#ff1493",
-                  "&.Mui-checked": {
-                    color: "#ff1493",
+                  alignSelf: "flex-start",
+                  ml: 0.25,
+                  "& .MuiFormControlLabel-label": {
+                    fontSize: "0.95rem",
+                    color: "#374151",
+                    fontWeight: 500,
                   },
-                  py: 0.5,
                 }}
               />
-            }
-            label={t("form.smsConsent")}
-            sx={{
-              alignSelf: "flex-start",
-              ml: 0.25,
-              "& .MuiFormControlLabel-label": {
-                fontSize: "0.95rem",
-                color: "#374151",
-                fontWeight: 500,
-              },
-            }}
+            )}
           />
+
           <Typography
             sx={{
               fontSize: "0.74rem",

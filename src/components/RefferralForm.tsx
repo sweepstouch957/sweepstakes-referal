@@ -1,4 +1,11 @@
-import { Box, Link, Stack, Alert, CircularProgress, Typography } from "@mui/material";
+import {
+  Box,
+  Link,
+  Stack,
+  Alert,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import { useReferralStepper } from "@/hooks/useReferralStepper";
 import PersonalInfoStep from "@/components/steps/PersonalInfoStep";
 import ReferralCodeStep from "@/components/steps/ReferralCodeStep";
@@ -64,19 +71,12 @@ export default function ReferralForm({
 
   const nextStep = async () => {
     if (disabled) return;
+
     if (activeStep === 0) {
-      const rawSmsConsent = getValues("smsConsent");
-      const smsConsent =
-        rawSmsConsent === undefined ||
-        rawSmsConsent === true ||
-        rawSmsConsent === "true" ||
-        rawSmsConsent === 1 ||
-        rawSmsConsent === "1";
+      const smsConsent = getValues("smsConsent") ?? true;
+      const phone = (getValues("phone") || "").trim();
 
-      const phoneValue = String(getValues("phone") || "");
-      const phoneDigits = phoneValue.replace(/\D/g, "");
-
-      if (smsConsent && phoneDigits.length === 0) {
+      if (smsConsent && !phone) {
         form.setError("phone", {
           type: "required",
           message: t("form.errors.phoneRequiredIfSms"),
@@ -122,6 +122,7 @@ export default function ReferralForm({
           return;
         }
       }
+
       setActiveStep(2);
       await handleSendOtp();
     }
@@ -197,7 +198,11 @@ export default function ReferralForm({
           </Box>
         )}
 
-        {backendError && <Alert severity="error" onClose={onClearError}>{backendError}</Alert>}
+        {backendError && (
+          <Alert severity="error" onClose={onClearError}>
+            {backendError}
+          </Alert>
+        )}
 
         <Stack direction="row" justifyContent="center" spacing={2} mt={2}>
           {activeStep > 0 && (
@@ -215,10 +220,18 @@ export default function ReferralForm({
             <CustomButton
               onClick={nextStep}
               disabled={disabled || isLoading || isLoadingOtp}
-              endIcon={!isLoadingOtp ? <span style={{ fontSize: 22, lineHeight: 1 }}>→</span> : undefined}
+              endIcon={
+                !isLoadingOtp ? (
+                  <span style={{ fontSize: 22, lineHeight: 1 }}>→</span>
+                ) : undefined
+              }
               sx={activeStep === 1 ? { minWidth: 126, px: 3.2 } : undefined}
             >
-              {isLoadingOtp ? <CircularProgress size={22} color="inherit" /> : <>{stepperVariant === "personalOnly" ? t("common.submit") : t("common.next")}</>}
+              {isLoadingOtp ? (
+                <CircularProgress size={22} color="inherit" />
+              ) : (
+                <>{stepperVariant === "personalOnly" ? t("common.submit") : t("common.next")}</>
+              )}
             </CustomButton>
           )}
         </Stack>

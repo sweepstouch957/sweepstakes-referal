@@ -12,39 +12,48 @@ import i18n from "@/libs/i18n";
 
 const t = i18n.t.bind(i18n);
 
-export const schema = z.object({
-  firstName: z
-    .string()
-    .min(1, { message: t("form.errors.firstName.required") })
-    .max(50, { message: t("form.errors.firstName.max") }),
-  lastName: z
-    .string()
-    .min(1, { message: t("form.errors.lastName.required") })
-    .max(50, { message: t("form.errors.lastName.max") }),
-  phone: z.string().optional(),
-  email: z.string().email({ message: t("form.errors.email") }),
-  zip: z.string().regex(/^\d{5}$/, { message: t("form.errors.zip") }),
-  referralCode: z.string().optional(),
-  supermarket: z.string().optional(),
-  smsConsent: z.boolean().default(true),
-  otp: z.string(),
-}).superRefine((data, ctx) => {
-  if (data.smsConsent && (!data.phone || !/^\(\d{3}\) \d{3}-\d{4}$/.test(data.phone))) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["phone"],
-      message: t("form.errors.phoneRequiredIfSms"),
-    });
-  }
-});
+export const schema = z
+  .object({
+    firstName: z
+      .string()
+      .min(1, { message: t("form.errors.firstName.required") })
+      .max(50, { message: t("form.errors.firstName.max") }),
+    lastName: z
+      .string()
+      .min(1, { message: t("form.errors.lastName.required") })
+      .max(50, { message: t("form.errors.lastName.max") }),
+    phone: z.string().optional(),
+    email: z.string().email({ message: t("form.errors.email") }),
+    zip: z.string().regex(/^\d{5}$/, { message: t("form.errors.zip") }),
+    referralCode: z.string().optional(),
+    supermarket: z.string().optional(),
+    smsConsent: z.boolean().default(true),
+    otp: z.string(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.smsConsent) {
+      if (!data.phone || !/^\(\d{3}\) \d{3}-\d{4}$/.test(data.phone)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["phone"],
+          message: t("form.errors.phoneRequiredIfSms"),
+        });
+      }
+    } else if (data.phone && !/^\(\d{3}\) \d{3}-\d{4}$/.test(data.phone)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["phone"],
+        message: t("form.errors.phone"),
+      });
+    }
+  });
 
 export type FormData = z.infer<typeof schema>;
 
 const OTP_COOLDOWN = 120;
 const FORM_COOKIE_KEY = "referral-form-data";
 
-// Debounce para no escribir en cada cambio, solo cada 400ms
-const debouncedSetCookie = debounce((data: any) => {
+const debouncedSetCookie = debounce((data: FormData) => {
   Cookies.set(FORM_COOKIE_KEY, JSON.stringify(data), { expires: 7 });
 }, 400);
 
@@ -53,7 +62,6 @@ export function useReferralStepper(
   defaultStoreName = "",
   onSubmit: (data: FormData) => void
 ) {
-  // Estados mínimos para performance
   const [activeStep, setActiveStep] = useState(0);
   const [otpSent, setOtpSent] = useState(false);
   const [isLoadingOtp, setIsLoadingOtp] = useState(false);
@@ -72,17 +80,16 @@ export function useReferralStepper(
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [otp, setOtp] = useState<string>("");
 
-  // Obtiene datos iniciales de cookies
   const cookieData = (() => {
     try {
       const raw = Cookies.get(FORM_COOKIE_KEY);
-      return raw ? JSON.parse(raw) : {};
+      return raw ? (JSON.parse(raw) as Partial<FormData>) : {};
     } catch {
       return {};
     }
   })();
 
-  const form = useForm<FormData>({
+  const form = useForm<FormData, any, FormData>({
     resolver: zodResolver(schema),
     mode: "onBlur",
     defaultValues: {
@@ -94,6 +101,7 @@ export function useReferralStepper(
       referralCode: cookieData.referralCode || defaultReferralCode,
       supermarket: cookieData.supermarket || defaultStoreName,
       smsConsent: cookieData.smsConsent ?? true,
+      otp: cookieData.otp || "",
     },
   });
 
@@ -105,11 +113,21 @@ export function useReferralStepper(
     watch,
   } = form;
 
-  // Guarda en cookies con debounce cuando cambian los datos (sin OTP, puedes agregarlo si lo necesitas)
   useEffect(() => {
     const subscription = watch((data) => {
-      debouncedSetCookie(data);
+      debouncedSetCookie({
+        firstName: data.firstName || "",
+        lastName: data.lastName || "",
+        phone: data.phone || "",
+        email: data.email || "",
+        zip: data.zip || "",
+        referralCode: data.referralCode,
+        supermarket: data.supermarket,
+        smsConsent: data.smsConsent ?? true,
+        otp: data.otp || "",
+      });
     });
+
     return () => {
       subscription.unsubscribe();
       debouncedSetCookie.cancel();
@@ -120,52 +138,76 @@ export function useReferralStepper(
     if (activeStep === 0 || activeStep === 1) {
       setAttemptsLeft(undefined);
       setResendError(null);
-      setResendTimer(0);
-      setLocked(false);
+      setLocked(undefined);
+      setResendLeft(undefined);
+      setSuccess(false);
+      setValue("otp", "");
+      setOtp("");
     }
-  }, [activeStep]);
+  }, [activeStep, setValue]);
 
-  // Limpia cookies
-  const clearFormCookies = () => Cookies.remove(FORM_COOKIE_KEY);
+  const clearFormCookies = useCallback(() => {
+    Cookies.remove(FORM_COOKIE_KEY);
+  }, []);
 
-  // Validación de código de referido
-  const {
-    mutateAsync: validateReferralCodeMutation,
-    data: referralValidation,
-    isPending: isValidatingReferral,
-  } = useMutation({
-    mutationFn: (referral: string) => validateReferalCode(referral),
-    onError: (error: any) => {
-      setReferralError(
-        error?.response?.data?.error || "Referral validation failed"
-      );
-    },
+  const referralValidation = useMutation({
+    mutationFn: validateReferalCode,
   });
 
-  // OTP handler con ref
-  const handeSetOtp = useCallback((val: string) => {
-    setOtp(val);
-    setValue("otp",val)
-  }, [setValue]);
+  const validateReferralCodeMutation = useCallback(
+    async (referralCode: string) => {
+      const { valid, error } = await referralValidation.mutateAsync(referralCode);
 
-  // --- SEND OTP ---
+      if (!valid) {
+        setReferralError(error || t("referral.errorInvalid"));
+      } else {
+        setReferralError(null);
+      }
+
+      return { valid, error };
+    },
+    [referralValidation]
+  );
+
+  const isValidatingReferral = referralValidation.isPending;
+
+  const handeSetOtp = useCallback(
+    (value: string) => {
+      setOtp(value);
+      setValue("otp", value, { shouldValidate: true });
+    },
+    [setValue]
+  );
+
   const handleSendOtp = useCallback(async () => {
+    setResendError(null);
+    setAttemptsLeft(undefined);
+    setLocked(undefined);
+    setResendLeft(undefined);
+    setSuccess(false);
+
+    const phoneFormatted = getValues("phone") || "";
+
+    if (!phoneFormatted) {
+      setResendError(t("form.errors.phoneRequiredIfSms"));
+      return;
+    }
+
+    const phone = phoneFormatted.replace(/\D/g, "");
+    if (phone.length !== 10) {
+      setResendError(t("form.errors.phone"));
+      return;
+    }
+
+    const phoneWithCode = phone.startsWith("1") ? `+${phone}` : `+1${phone}`;
+
+    const otpService = new OtpService();
     setIsLoadingOtp(true);
     setIsResending(true);
-    setResendError(null);
-    setSuccess(false);
     try {
-      const phone = getValues("phone").replace(/\D/g, "");
-      const { data } = await new OtpService().sendOtp({
-        phone: phone.startsWith("1") ? `+${phone}` : `+1${phone}`,
-        channel: "sms",
-      });
+      await otpService.sendOtp(phoneWithCode);
       setOtpSent(true);
-      setActiveStep(2);
       setResendTimer(OTP_COOLDOWN);
-      setAttemptsLeft(data?.attemptsLeft);
-      setLocked(data?.locked);
-      setResendLeft(data?.resendLeft);
     } catch (err: any) {
       setResendError(err?.response?.data?.error || "OTP validation failed");
       setAttemptsLeft(err?.response?.data?.attemptsLeft);
@@ -176,15 +218,14 @@ export function useReferralStepper(
     setIsResending(false);
   }, [getValues]);
 
-  // --- VERIFY OTP ---
   const handleFinalSubmit = useCallback(
     async (data: FormData) => {
       setIsValidatingOtp(true);
       setSuccess(false);
       try {
-        const phone = data.phone.replace(/\D/g, "");
+        const cleanPhone = (data.phone || "").replace(/\D/g, "");
         await new OtpService().verifyOtp({
-          phone: phone.startsWith("1") ? `+${phone}` : `+1${phone}`,
+          phone: cleanPhone.startsWith("1") ? `+${cleanPhone}` : `+1${cleanPhone}`,
           code: data.otp,
         });
         setSuccess(true);
@@ -197,10 +238,9 @@ export function useReferralStepper(
       }
       setIsValidatingOtp(false);
     },
-    [onSubmit]
-  );  
+    [onSubmit, clearFormCookies]
+  );
 
-  // Timer para el cooldown del OTP
   useEffect(() => {
     if (resendTimer > 0) {
       timerRef.current = setInterval(() => {
@@ -221,7 +261,7 @@ export function useReferralStepper(
   return {
     activeStep,
     setActiveStep,
-    otp, // ya no es state
+    otp,
     handeSetOtp,
     otpSent,
     isLoadingOtp,
