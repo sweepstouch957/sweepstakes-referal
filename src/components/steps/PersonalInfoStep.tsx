@@ -1,6 +1,5 @@
 import { Box, Checkbox, FormControlLabel, Skeleton, TextField, Typography } from "@mui/material";
 import { UseFormReturn } from "react-hook-form";
-import { useEffect, useState } from "react";
 import { FormData } from "@/hooks/useReferralStepper";
 import { useTranslation } from "react-i18next";
 
@@ -49,9 +48,12 @@ export default function PersonalInfoStep({
     formState: { errors },
     setValue,
     watch,
+    clearErrors,
+    trigger,
   } = form;
 
   const { t } = useTranslation();
+  const smsConsentChecked = watch("smsConsent") ?? true;
 
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, "").slice(0, 10);
@@ -61,19 +63,11 @@ export default function PersonalInfoStep({
       : cleaned;
   };
 
-  const phoneValue = watch("phone") || "";
-  const [smsConsentChecked, setSmsConsentChecked] = useState(false);
-
-  useEffect(() => {
-    if (phoneValue.replace(/\D/g, "").length > 0) {
-      setSmsConsentChecked(true);
-    }
-  }, [phoneValue]);
-
   const skeletonField = <Skeleton height={62} variant="rounded" sx={{ borderRadius: 3 }} />;
 
   return (
     <>
+      <input type="hidden" {...register("smsConsent")} value={String(smsConsentChecked)} readOnly />
       {isLoading ? (
         skeletonField
       ) : (
@@ -107,61 +101,23 @@ export default function PersonalInfoStep({
       ) : (
         <TextField
           {...register("phone")}
-          label={t("form.phone")}
+          label={t("form.phoneOptional")}
 
           InputLabelProps={{ shrink: true }}
           error={!!errors.phone}
           helperText={errors.phone?.message}
           fullWidth
           sx={fieldSx}
-          onChange={(e) => setValue("phone", formatPhone(e.target.value))}
-        />
-      )}
-      {isLoading ? (
-        <Skeleton height={34} width="70%" sx={{ borderRadius: 2, mt: -1, mb: 0.25 }} />
-      ) : (
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={smsConsentChecked}
-              onChange={(e) => setSmsConsentChecked(e.target.checked)}
-              sx={{
-                color: "#ff1493",
-                "&.Mui-checked": {
-                  color: "#ff1493",
-                },
-                py: 0.5,
-              }}
-            />
-          }
-          label={t("form.smsConsent")}
-          sx={{
-            alignSelf: "flex-start",
-            mt: -1,
-            mb: -0.25,
-            ml: 0.25,
-            "& .MuiFormControlLabel-label": {
-              fontSize: "0.95rem",
-              color: "#374151",
-              fontWeight: 500,
-            },
+          onChange={(e) => {
+            setValue("phone", formatPhone(e.target.value), {
+              shouldValidate: smsConsentChecked,
+              shouldDirty: true,
+            });
+            if (!smsConsentChecked) {
+              clearErrors("phone");
+            }
           }}
         />
-      )}
-      {isLoading ? (
-        <Skeleton height={58} sx={{ borderRadius: 2, mt: -0.5, mb: 0.5 }} />
-      ) : (
-        <Typography
-          sx={{
-            fontSize: "0.74rem",
-            lineHeight: 1.45,
-            color: "#98a2b3",
-            mt: -0.25,
-            mb: 0.75,
-          }}
-        >
-          {t("form.smsConsentDisclaimer")}
-        </Typography>
       )}
       {isLoading ? (
         skeletonField
@@ -193,6 +149,56 @@ export default function PersonalInfoStep({
             setValue("zip", e.target.value.replace(/\D/g, "").slice(0, 5))
           }
         />
+      )}
+
+      {isLoading ? (
+        <Skeleton height={58} variant="rounded" sx={{ borderRadius: 3 }} />
+      ) : (
+        <Box sx={{ mt: 0.5 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={smsConsentChecked}
+                onChange={(e) => {
+                  const checked = e.target.checked;
+                  setValue("smsConsent", checked, { shouldValidate: true, shouldDirty: true });
+                  if (checked) {
+                    trigger("phone");
+                  } else {
+                    clearErrors("phone");
+                  }
+                }}
+                sx={{
+                  color: "#ff1493",
+                  "&.Mui-checked": {
+                    color: "#ff1493",
+                  },
+                  py: 0.5,
+                }}
+              />
+            }
+            label={t("form.smsConsent")}
+            sx={{
+              alignSelf: "flex-start",
+              ml: 0.25,
+              "& .MuiFormControlLabel-label": {
+                fontSize: "0.95rem",
+                color: "#374151",
+                fontWeight: 500,
+              },
+            }}
+          />
+          <Typography
+            sx={{
+              fontSize: "0.74rem",
+              lineHeight: 1.45,
+              color: "#98a2b3",
+              mt: -0.25,
+            }}
+          >
+            {t("form.smsConsentDisclaimer")}
+          </Typography>
+        </Box>
       )}
     </>
   );

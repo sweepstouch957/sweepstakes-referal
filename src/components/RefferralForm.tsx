@@ -1,4 +1,4 @@
-import { Box, Stack, Alert, CircularProgress, Typography, Link } from "@mui/material";
+import { Box, Link, Stack, Alert, CircularProgress, Typography } from "@mui/material";
 import { useReferralStepper } from "@/hooks/useReferralStepper";
 import PersonalInfoStep from "@/components/steps/PersonalInfoStep";
 import ReferralCodeStep from "@/components/steps/ReferralCodeStep";
@@ -65,8 +65,29 @@ export default function ReferralForm({
   const nextStep = async () => {
     if (disabled) return;
     if (activeStep === 0) {
+      const rawSmsConsent = getValues("smsConsent");
+      const smsConsent =
+        rawSmsConsent === undefined ||
+        rawSmsConsent === true ||
+        rawSmsConsent === "true" ||
+        rawSmsConsent === 1 ||
+        rawSmsConsent === "1";
+
+      const phoneValue = String(getValues("phone") || "");
+      const phoneDigits = phoneValue.replace(/\D/g, "");
+
+      if (smsConsent && phoneDigits.length === 0) {
+        form.setError("phone", {
+          type: "required",
+          message: t("form.errors.phoneRequiredIfSms"),
+        });
+        form.setFocus("phone");
+        return;
+      }
+
       const valid = await trigger(["firstName", "lastName", "phone", "email", "zip"]);
       if (!valid) return;
+
       setActiveStep(1);
       return;
     }
@@ -207,6 +228,7 @@ export default function ReferralForm({
             direction="row"
             spacing={1}
             justifyContent="center"
+            alignItems="center"
             flexWrap="wrap"
             useFlexGap
             sx={{ mt: 1.5 }}

@@ -21,15 +21,21 @@ export const schema = z.object({
     .string()
     .min(1, { message: t("form.errors.lastName.required") })
     .max(50, { message: t("form.errors.lastName.max") }),
-  phone: z
-    .string()
-    .regex(/\(\d{3}\) \d{3}-\d{4}/, { message: t("form.errors.phone.format") }),
+  phone: z.string().optional(),
   email: z.string().email({ message: t("form.errors.email") }),
   zip: z.string().regex(/^\d{5}$/, { message: t("form.errors.zip") }),
   referralCode: z.string().optional(),
   supermarket: z.string().optional(),
-  smsConsent: z.boolean().optional(),
-  otp:z.string()
+  smsConsent: z.boolean().default(true),
+  otp: z.string(),
+}).superRefine((data, ctx) => {
+  if (data.smsConsent && (!data.phone || !/^\(\d{3}\) \d{3}-\d{4}$/.test(data.phone))) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["phone"],
+      message: t("form.errors.phoneRequiredIfSms"),
+    });
+  }
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -87,7 +93,7 @@ export function useReferralStepper(
       zip: cookieData.zip || "",
       referralCode: cookieData.referralCode || defaultReferralCode,
       supermarket: cookieData.supermarket || defaultStoreName,
-      smsConsent: cookieData.smsConsent ?? false,
+      smsConsent: cookieData.smsConsent ?? true,
     },
   });
 
