@@ -12,7 +12,19 @@ import i18n from "@/libs/i18n";
 
 const t = i18n.t.bind(i18n);
 
-export const schema = z
+export type FormData = {
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  email: string;
+  zip: string;
+  referralCode?: string;
+  supermarket?: string;
+  smsConsent: boolean;
+  otp: string;
+};
+
+export const schema: z.ZodType<FormData> = z
   .object({
     firstName: z
       .string()
@@ -27,19 +39,24 @@ export const schema = z
     zip: z.string().regex(/^\d{5}$/, { message: t("form.errors.zip") }),
     referralCode: z.string().optional(),
     supermarket: z.string().optional(),
-    smsConsent: z.boolean().default(true),
+    smsConsent: z.boolean(),
     otp: z.string(),
   })
   .superRefine((data, ctx) => {
-    if (data.smsConsent) {
-      if (!data.phone || !/^\(\d{3}\) \d{3}-\d{4}$/.test(data.phone)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["phone"],
-          message: t("form.errors.phoneRequiredIfSms"),
-        });
-      }
-    } else if (data.phone && !/^\(\d{3}\) \d{3}-\d{4}$/.test(data.phone)) {
+    const phone = data.phone || "";
+    const hasPhone = phone.trim().length > 0;
+    const validPhone = /^\(\d{3}\) \d{3}-\d{4}$/.test(phone);
+
+    if (data.smsConsent && !validPhone) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["phone"],
+        message: t("form.errors.phoneRequiredIfSms"),
+      });
+      return;
+    }
+
+    if (!data.smsConsent && hasPhone && !validPhone) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["phone"],
@@ -47,8 +64,6 @@ export const schema = z
       });
     }
   });
-
-export type FormData = z.infer<typeof schema>;
 
 const OTP_COOLDOWN = 120;
 const FORM_COOKIE_KEY = "referral-form-data";
@@ -70,15 +85,13 @@ export function useReferralStepper(
   const [resendTimer, setResendTimer] = useState(0);
   const [resendError, setResendError] = useState<string | null>(null);
   const [referralError, setReferralError] = useState<string | null>(null);
-  const [attemptsLeft, setAttemptsLeft] = useState<number | undefined>(
-    undefined
-  );
+  const [attemptsLeft, setAttemptsLeft] = useState<number | undefined>(undefined);
   const [locked, setLocked] = useState<boolean | undefined>(false);
   const [resendLeft, setResendLeft] = useState<number | undefined>(undefined);
   const [success, setSuccess] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const [otp, setOtp] = useState<string>("");
+  const [otp, setOtp] = useState("");
 
   const cookieData = (() => {
     try {
@@ -89,7 +102,7 @@ export function useReferralStepper(
     }
   })();
 
-  const form = useForm<FormData, any, FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onBlur",
     defaultValues: {
@@ -138,13 +151,10 @@ export function useReferralStepper(
     if (activeStep === 0 || activeStep === 1) {
       setAttemptsLeft(undefined);
       setResendError(null);
-      setLocked(undefined);
-      setResendLeft(undefined);
-      setSuccess(false);
-      setValue("otp", "");
-      setOtp("");
+      setResendTimer(0);
+      setLocked(false);
     }
-  }, [activeStep, setValue]);
+  }, [activeStep]);
 
   const clearFormCookies = useCallback(() => {
     Cookies.remove(FORM_COOKIE_KEY);
@@ -156,15 +166,16 @@ export function useReferralStepper(
 
   const validateReferralCodeMutation = useCallback(
     async (referralCode: string) => {
-      const { valid, error } = await referralValidation.mutateAsync(referralCode);
+      const response = await referralValidation.mutateAsync(referralCode);
+      const valid = response?.valid ?? false;
 
       if (!valid) {
-        setReferralError(error || t("referral.errorInvalid"));
+        setReferralError(t("referral.errorInvalid"));
       } else {
         setReferralError(null);
       }
 
-      return { valid, error };
+      return { valid };
     },
     [referralValidation]
   );
@@ -187,7 +198,6 @@ export function useReferralStepper(
     setSuccess(false);
 
     const phoneFormatted = getValues("phone") || "";
-
     if (!phoneFormatted) {
       setResendError(t("form.errors.phoneRequiredIfSms"));
       return;
@@ -205,7 +215,10 @@ export function useReferralStepper(
     setIsLoadingOtp(true);
     setIsResending(true);
     try {
-      await otpService.sendOtp(phoneWithCode);
+      await otpService.sendOtp({
+        phone: phoneWithCode,
+        channel: "sms",
+      });
       setOtpSent(true);
       setResendTimer(OTP_COOLDOWN);
     } catch (err: any) {
@@ -223,9 +236,9 @@ export function useReferralStepper(
       setIsValidatingOtp(true);
       setSuccess(false);
       try {
-        const cleanPhone = (data.phone || "").replace(/\D/g, "");
+        const phone = (data.phone || "").replace(/\D/g, "");
         await new OtpService().verifyOtp({
-          phone: cleanPhone.startsWith("1") ? `+${cleanPhone}` : `+1${cleanPhone}`,
+          phone: phone.startsWith("1") ? `+${phone}` : `+1${phone}`,
           code: data.otp,
         });
         setSuccess(true);
@@ -253,6 +266,7 @@ export function useReferralStepper(
         });
       }, 1000);
     }
+
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
