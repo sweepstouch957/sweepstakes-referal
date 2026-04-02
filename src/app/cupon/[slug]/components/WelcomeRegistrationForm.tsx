@@ -273,6 +273,19 @@ export function WelcomeRegistrationForm({
             />
           </Box>
 
+          <Box sx={{ gridColumn: "1 / -1", mt: -1 }}>
+            <Typography
+              variant="caption"
+              sx={{
+                display: "block",
+                color: "#98a2b3",
+                lineHeight: 1.5,
+              }}
+            >
+              {t("welcomeCoupon.form.smsConsentDisclaimer")}
+            </Typography>
+          </Box>
+
           {/* Email */}
           <Controller
             name="email"

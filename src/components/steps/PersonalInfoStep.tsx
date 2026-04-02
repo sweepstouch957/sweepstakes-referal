@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, Skeleton, TextField } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, Skeleton, TextField, Typography } from "@mui/material";
 import { UseFormReturn } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { FormData } from "@/hooks/useReferralStepper";
@@ -147,6 +147,21 @@ export default function PersonalInfoStep({
             },
           }}
         />
+      )}
+      {isLoading ? (
+        <Skeleton height={58} sx={{ borderRadius: 2, mt: -0.5, mb: 0.5 }} />
+      ) : (
+        <Typography
+          sx={{
+            fontSize: "0.74rem",
+            lineHeight: 1.45,
+            color: "#98a2b3",
+            mt: -0.25,
+            mb: 0.75,
+          }}
+        >
+          {t("form.smsConsentDisclaimer")}
+        </Typography>
       )}
       {isLoading ? (
         skeletonField
