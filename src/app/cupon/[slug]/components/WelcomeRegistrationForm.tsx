@@ -11,7 +11,6 @@ import {
   Collapse,
   Checkbox,
   FormControlLabel,
-  Link,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { useForm, Controller } from "react-hook-form";
@@ -20,7 +19,7 @@ import PhoneAndroidOutlinedIcon from "@mui/icons-material/PhoneAndroidOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RegisterWelcomePayload } from "@/services/welcomeCoupon.service";
 import { useTranslation } from "react-i18next";
 
@@ -91,7 +90,13 @@ export function WelcomeRegistrationForm({
   });
 
   const phoneValue = watch("customerPhone") || "";
-  const smsConsentChecked = phoneValue.replace(/\D/g, "").length > 0;
+  const [smsConsentChecked, setSmsConsentChecked] = useState(false);
+
+  useEffect(() => {
+    if (phoneValue.replace(/\D/g, "").length > 0) {
+      setSmsConsentChecked(true);
+    }
+  }, [phoneValue]);
 
   const onFormSubmit = (data: FormValues) => {
     const cleanPhone = data.customerPhone.replace(/\D/g, "");
@@ -246,6 +251,7 @@ export function WelcomeRegistrationForm({
               control={
                 <Checkbox
                   checked={smsConsentChecked}
+                  onChange={(e) => setSmsConsentChecked(e.target.checked)}
                   sx={{
                     color: "#ff4b9b",
                     "&.Mui-checked": {
@@ -435,37 +441,6 @@ export function WelcomeRegistrationForm({
         >
           {t("welcomeCoupon.form.privacy")}
         </Typography>
-
-        <Box
-          sx={{
-            mt: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 1,
-            flexWrap: "wrap",
-          }}
-        >
-          <Link
-            href="https://www.sweepstouch.com/term"
-            target="_blank"
-            rel="noopener noreferrer"
-            underline="hover"
-            sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
-          >
-            {t("welcomeCoupon.form.termsLink")}
-          </Link>
-          <Typography sx={{ fontSize: 13, color: "#98a2b3" }}>•</Typography>
-          <Link
-            href="https://www.sweepstouch.com/privacy"
-            target="_blank"
-            rel="noopener noreferrer"
-            underline="hover"
-            sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
-          >
-            {t("welcomeCoupon.form.privacyLink")}
-          </Link>
-        </Box>
       </Box>
     </motion.div>
   );

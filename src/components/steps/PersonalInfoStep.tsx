@@ -1,5 +1,6 @@
-import { Box, Checkbox, FormControlLabel, Link, Skeleton, TextField, Typography } from "@mui/material";
+import { Checkbox, FormControlLabel, Skeleton, TextField } from "@mui/material";
 import { UseFormReturn } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { FormData } from "@/hooks/useReferralStepper";
 import { useTranslation } from "react-i18next";
 
@@ -61,7 +62,13 @@ export default function PersonalInfoStep({
   };
 
   const phoneValue = watch("phone") || "";
-  const smsConsentChecked = phoneValue.replace(/\D/g, "").length > 0;
+  const [smsConsentChecked, setSmsConsentChecked] = useState(false);
+
+  useEffect(() => {
+    if (phoneValue.replace(/\D/g, "").length > 0) {
+      setSmsConsentChecked(true);
+    }
+  }, [phoneValue]);
 
   const skeletonField = <Skeleton height={62} variant="rounded" sx={{ borderRadius: 3 }} />;
 
@@ -117,6 +124,7 @@ export default function PersonalInfoStep({
           control={
             <Checkbox
               checked={smsConsentChecked}
+              onChange={(e) => setSmsConsentChecked(e.target.checked)}
               sx={{
                 color: "#ff1493",
                 "&.Mui-checked": {
