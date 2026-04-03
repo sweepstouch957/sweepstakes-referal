@@ -113,7 +113,7 @@ export function useReferralStepper(
       zip: cookieData.zip || "",
       referralCode: cookieData.referralCode || defaultReferralCode,
       supermarket: cookieData.supermarket || defaultStoreName,
-      smsConsent: cookieData.smsConsent ?? true,
+      smsConsent: cookieData.smsConsent ?? false,
       otp: cookieData.otp || "",
     },
   });

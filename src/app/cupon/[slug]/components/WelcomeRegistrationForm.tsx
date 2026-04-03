@@ -9,9 +9,6 @@ import {
   Alert,
   InputAdornment,
   Collapse,
-  Checkbox,
-  FormControlLabel,
-  Link,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { useForm, Controller } from "react-hook-form";
@@ -24,6 +21,8 @@ import { useState } from "react";
 import { RegisterWelcomePayload } from "@/services/welcomeCoupon.service";
 import { useTranslation } from "react-i18next";
 
+// ────────────────────────────────────────────────────────────────────────────
+
 interface FormValues {
   customerPhone: string;
   firstName: string;
@@ -31,7 +30,6 @@ interface FormValues {
   email: string;
   zipCode: string;
   referralCode: string;
-  smsConsent: boolean;
 }
 
 interface WelcomeRegistrationFormProps {
@@ -42,6 +40,8 @@ interface WelcomeRegistrationFormProps {
   onSubmit: (payload: RegisterWelcomePayload) => void;
   onClearError?: () => void;
 }
+
+// ────────────────────────────────────────────────────────────────────────────
 
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
@@ -58,6 +58,8 @@ const fieldSx = {
   "& .MuiInputBase-input": { fontSize: 15, py: 1.6 },
 };
 
+// ────────────────────────────────────────────────────────────────────────────
+
 export function WelcomeRegistrationForm({
   storeId,
   isLoading,
@@ -72,9 +74,6 @@ export function WelcomeRegistrationForm({
   const {
     control,
     handleSubmit,
-    watch,
-    clearErrors,
-    setError,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -84,23 +83,12 @@ export function WelcomeRegistrationForm({
       email: "",
       zipCode: "",
       referralCode: defaultReferralCode,
-      smsConsent: true,
+      smsConsent: false,
     },
   });
 
-  const smsConsentChecked = watch("smsConsent");
-
   const onFormSubmit = (data: FormValues) => {
     const cleanPhone = data.customerPhone.replace(/\D/g, "");
-
-    if (data.smsConsent && cleanPhone.length !== 10) {
-      setError("customerPhone", {
-        type: "required",
-        message: t("welcomeCoupon.form.errors.phoneRequiredIfSms"),
-      });
-      return;
-    }
-
     onSubmit({
       storeId,
       customerPhone: cleanPhone,
@@ -132,6 +120,7 @@ export function WelcomeRegistrationForm({
           scrollMarginTop: "100px",
         }}
       >
+        {/* Header */}
         <Box sx={{ mb: 3 }}>
           <Typography
             variant="h6"
@@ -151,6 +140,7 @@ export function WelcomeRegistrationForm({
           </Typography>
         </Box>
 
+        {/* Fields grid */}
         <Box
           sx={{
             display: "grid",
@@ -158,6 +148,7 @@ export function WelcomeRegistrationForm({
             gap: 2,
           }}
         >
+          {/* First name */}
           <Controller
             name="firstName"
             control={control}
@@ -182,6 +173,7 @@ export function WelcomeRegistrationForm({
             )}
           />
 
+          {/* Last name */}
           <Controller
             name="lastName"
             control={control}
@@ -206,26 +198,22 @@ export function WelcomeRegistrationForm({
             )}
           />
 
+          {/* Phone */}
           <Controller
             name="customerPhone"
             control={control}
             rules={{
-              validate: (value) => {
-                const digits = value.replace(/\D/g, "");
-                if (smsConsentChecked && digits.length !== 10) {
-                  return t("welcomeCoupon.form.errors.phoneRequiredIfSms");
-                }
-                if (digits.length > 0 && digits.length !== 10) {
-                  return t("welcomeCoupon.form.errors.phoneDigits");
-                }
-                return true;
+              required: t("welcomeCoupon.form.errors.phone"),
+              pattern: {
+                value: /^\d{10}$/,
+                message: t("welcomeCoupon.form.errors.phoneDigits"),
               },
             }}
             render={({ field }) => (
               <TextField
                 {...field}
                 id="coupon-phone"
-                label={t("welcomeCoupon.form.phoneOptional")}
+                label={t("welcomeCoupon.form.phone")}
                 fullWidth
                 type="tel"
                 inputMode="numeric"
@@ -242,14 +230,12 @@ export function WelcomeRegistrationForm({
                 onChange={(e) => {
                   const val = e.target.value.replace(/\D/g, "").slice(0, 10);
                   field.onChange(val);
-                  if (!smsConsentChecked) {
-                    clearErrors("customerPhone");
-                  }
                 }}
               />
             )}
           />
 
+          {/* Email */}
           <Controller
             name="email"
             control={control}
@@ -280,6 +266,7 @@ export function WelcomeRegistrationForm({
             )}
           />
 
+          {/* Zip code */}
           <Controller
             name="zipCode"
             control={control}
@@ -289,9 +276,7 @@ export function WelcomeRegistrationForm({
                 id="coupon-zipCode"
                 label={t("welcomeCoupon.form.zip")}
                 fullWidth
-                error={!!errors.zipCode}
-                helperText={errors.zipCode?.message}
-                sx={fieldSx}
+                sx={{ ...fieldSx, gridColumn: { sm: "span 2" } }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -300,24 +285,28 @@ export function WelcomeRegistrationForm({
                   ),
                 }}
                 onChange={(e) => {
-                  field.onChange(e.target.value.replace(/\D/g, "").slice(0, 5));
+                  const val = e.target.value.replace(/\D/g, "").slice(0, 5);
+                  field.onChange(val);
                 }}
               />
             )}
           />
         </Box>
 
+        {/* Referral code toggle */}
         <Box sx={{ mt: 2 }}>
           <Button
             type="button"
-            onClick={() => setShowReferral((prev) => !prev)}
+            variant="text"
+            size="small"
+            onClick={() => setShowReferral((v) => !v)}
             sx={{
-              p: 0,
-              minWidth: 0,
+              color: "#d7006e",
+              fontWeight: 600,
               textTransform: "none",
-              fontWeight: 700,
-              color: "#ff4b9b",
-              "&:hover": { bgcolor: "transparent", color: "#ff4b9b" },
+              fontSize: 13,
+              px: 0,
+              "&:hover": { background: "transparent", color: "#ff4b9b" },
             }}
             startIcon={<CardGiftcardIcon sx={{ fontSize: 16 }} />}
           >
@@ -355,87 +344,7 @@ export function WelcomeRegistrationForm({
           </Collapse>
         </Box>
 
-        <Controller
-          name="smsConsent"
-          control={control}
-          render={({ field }) => (
-            <Box sx={{ mt: 2 }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={!!field.value}
-                    onChange={(e) => {
-                      field.onChange(e.target.checked);
-                      if (!e.target.checked) {
-                        clearErrors("customerPhone");
-                      }
-                    }}
-                    sx={{
-                      color: "#ff4b9b",
-                      "&.Mui-checked": {
-                        color: "#ff4b9b",
-                      },
-                      py: 0.5,
-                    }}
-                  />
-                }
-                label={t("welcomeCoupon.form.smsConsent")}
-                sx={{
-                  ml: 0,
-                  "& .MuiFormControlLabel-label": {
-                    fontSize: 14,
-                    color: "#374151",
-                    fontWeight: 500,
-                  },
-                }}
-              />
-
-              <Typography
-                variant="caption"
-                sx={{
-                  display: "block",
-                  color: "#98a2b3",
-                  lineHeight: 1.5,
-                  mt: -0.25,
-                }}
-              >
-                {t("welcomeCoupon.form.smsConsentDisclaimer")}
-              </Typography>
-
-              <Box
-                sx={{
-                  mt: 1,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 1,
-                  flexWrap: "wrap",
-                }}
-              >
-                <Link
-                  href="https://www.sweepstouch.com/term"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  underline="hover"
-                  sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
-                >
-                  {t("welcomeCoupon.form.termsLink")}
-                </Link>
-                <Typography sx={{ fontSize: 13, color: "#98a2b3" }}>•</Typography>
-                <Link
-                  href="https://www.sweepstouch.com/privacy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  underline="hover"
-                  sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
-                >
-                  {t("welcomeCoupon.form.privacyLink")}
-                </Link>
-              </Box>
-            </Box>
-          )}
-        />
-
+        {/* Error */}
         {backendError && (
           <Alert
             severity="error"
@@ -446,6 +355,7 @@ export function WelcomeRegistrationForm({
           </Alert>
         )}
 
+        {/* Submit button — Sweepstouch pink */}
         <Button
           type="submit"
           fullWidth
