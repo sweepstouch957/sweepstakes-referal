@@ -20,7 +20,7 @@ const es = {
       form: {
         title: "Sorteo semanal de Smart TV",
         subtitle: 'Gana una Smart TV nueva de 55" - ¡Participa ahora para tener tu oportunidad!',
-        note: "Todos los campos son obligatorios. Solo teléfono y ZIP de EE. UU.",
+        note: "Solo teléfono y ZIP de EE. UU.",
       },
     },
     winATv: {

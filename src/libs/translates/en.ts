@@ -20,7 +20,7 @@ const en = {
       form: {
         title: "Weekly Smart TV Sweepstake",
         subtitle: 'Win a brand new 55" Smart TV - Enter now for your chance!',
-        note: "All fields are required. US phone & ZIP code only.",
+        note: "US phone & ZIP code only.",
       },
     },
     winATv: {
