@@ -133,27 +133,39 @@ export default function WinACarFormWithThankYou({
         </Fade>
       ) : (
         <Fade in timeout={400}>
-          <Container ref={cardRef} maxWidth="sm" sx={{ my: 6, opacity: 0 }}>
-            <Typography
-              variant={isMobile ? "h4" : "h3"}
-              textAlign="center"
-              fontWeight={800}
-              color="#ff4b9b"
-              mb={4}
+          <Container ref={cardRef} maxWidth="sm" sx={{ my: 3, opacity: 0, px: { xs: 2, sm: 3 } }}>
+            {!hideTitle && (
+              <Typography
+                variant={isMobile ? "h4" : "h3"}
+                textAlign="center"
+                fontWeight={800}
+                color="#ff4b9b"
+                mb={3}
+              >
+                {t("referralStep.title")}
+              </Typography>
+            )}
+            <Box
+              sx={{
+                bgcolor: "#fff",
+                borderRadius: { xs: 3, sm: 4 },
+                boxShadow: "0 2px 24px rgba(255,20,147,0.07), 0 1px 4px rgba(0,0,0,0.04)",
+                border: "1px solid rgba(255,20,147,0.09)",
+                p: { xs: 2.5, sm: 3.5 },
+              }}
             >
-              {!hideTitle && t("referralStep.title")}
-            </Typography>
-            <ReferralStepper stepperVariant={stepperVariant}
-              onSubmit={handleFormSubmit}
-              isLoading={mutation.isPending}
-              backendError={backendError}
-              onClearError={() => setBackendError(null)}
-              defaultReferralCode={tokenValue}
-              defaultStoreName={storeName}
-              showExtendedFields={showExtendedFields}
-              sweepstakeId={sweepstakeId}
-              storeId={storeId}
-            />
+              <ReferralStepper stepperVariant={stepperVariant}
+                onSubmit={handleFormSubmit}
+                isLoading={mutation.isPending}
+                backendError={backendError}
+                onClearError={() => setBackendError(null)}
+                defaultReferralCode={tokenValue}
+                defaultStoreName={storeName}
+                showExtendedFields={showExtendedFields}
+                sweepstakeId={sweepstakeId}
+                storeId={storeId}
+              />
+            </Box>
           </Container>
         </Fade>
       )}

@@ -134,7 +134,7 @@ export default function ReferralForm({
         </Stack>
       )}
 
-      <Box ref={stepContentRef} sx={{ mt: 3.5 }}>
+      <Box ref={stepContentRef} sx={{ mt: 2.5 }}>
         {/* ── Step 0: Personal info + referral code ── */}
         {activeStep === 0 && (
           <>
@@ -143,25 +143,6 @@ export default function ReferralForm({
               defaultReferralCode={defaultReferralCode}
               showSupermarket={!showExtendedFields}
             />
-
-            {/* Note */}
-            <Box
-              sx={{
-                mt: "20px",
-                bgcolor: "#fef3f8",
-                borderLeft: "3px solid #ff1493",
-                borderRadius: "0 10px 10px 0",
-                px: 2,
-                py: 1.25,
-              }}
-            >
-              <Typography sx={{ color: "#6b7280", fontSize: "0.85rem", lineHeight: 1.55 }}>
-                <Box component="span" sx={{ fontWeight: 700, color: "#374151" }}>
-                  {t("common.note", { defaultValue: "Note:" })}
-                </Box>{" "}
-                {t("weeklyTv.form.note")}
-              </Typography>
-            </Box>
 
             {referralError && (
               <Alert severity="error" sx={{ mt: 2, borderRadius: 3 }} onClose={() => setReferralError(null)}>
@@ -198,7 +179,7 @@ export default function ReferralForm({
       )}
 
       {/* ── Action buttons ── */}
-      <Stack direction="row" justifyContent="center" spacing={2} mt={3}>
+      <Stack direction="row" justifyContent="center" spacing={2} mt={2.5}>
         {activeStep === 1 && (
           <CustomButton
             onClick={prevStep}

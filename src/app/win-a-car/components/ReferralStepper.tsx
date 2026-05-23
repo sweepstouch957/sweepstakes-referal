@@ -6,6 +6,7 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import StepConnector, { stepConnectorClasses } from "@mui/material/StepConnector";
 import { StepIconProps } from "@mui/material/StepIcon";
 import { useTranslation } from "react-i18next";
@@ -67,7 +68,7 @@ function CustomStepIcon(props: StepIconProps) {
   return (
     <CustomStepIconRoot ownerState={{ completed, active }} className={className}>
       {completed
-        ? <ShieldOutlinedIcon sx={{ fontSize: 22 }} />
+        ? <CheckCircleOutlineIcon sx={{ fontSize: 22 }} />
         : icons[String(props.icon)]}
     </CustomStepIconRoot>
   );

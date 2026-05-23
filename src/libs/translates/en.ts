@@ -10,6 +10,8 @@ const en = {
       prev: "Previous",
       optional: "optional",
       note: "Note:",
+      seeTerms: "See full terms ↓",
+      hideTerms: "Hide terms ↑",
     },
     referralStep: {
       step1: "Your Information",
@@ -66,6 +68,9 @@ const en = {
       referralCodePlaceholder: "HAVE A REFERRAL CODE? ADD IT HERE",
       referralCodeLabel: "Invitation Code",
       codeApplied: "Applied",
+      referralBonusChip: "+1 entry each",
+      referralBonusTitle: "Extra Entries!",
+      referralBonusBody: "Enter a friend's referral code — you both earn +1 extra entry in the sweepstake!",
       errors: {
         firstName: {
           required: "First name is required",

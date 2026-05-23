@@ -3,12 +3,14 @@
 import {
   Box,
   Checkbox,
+  Collapse,
   FormControlLabel,
   Grid,
   InputAdornment,
   TextField,
   Typography,
   Chip,
+  Tooltip,
 } from "@mui/material";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
@@ -16,36 +18,38 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
+import { useState } from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import { FormData } from "@/hooks/useReferralStepper";
 import { useTranslation } from "react-i18next";
 
 const fieldSx = {
   "& .MuiInputLabel-root": {
-    fontSize: "0.9rem",
+    fontSize: "0.85rem",
     fontWeight: 600,
     color: "#6b7280",
     "&.Mui-focused": { color: "#ff1493" },
   },
   "& .MuiOutlinedInput-root": {
-    borderRadius: "14px",
+    borderRadius: "12px",
     backgroundColor: "#fafafa",
-    minHeight: 56,
     "& fieldset": { borderColor: "#e5e7eb", borderWidth: "1.5px" },
     "&:hover fieldset": { borderColor: "#fba8d0" },
     "&.Mui-focused fieldset": { borderColor: "#ff1493", borderWidth: "2px" },
     "&.Mui-error fieldset": { borderColor: "#ef4444" },
   },
   "& .MuiInputBase-input": {
-    fontSize: "1rem",
+    fontSize: "0.95rem",
     color: "#111827",
-    py: "14px",
+    py: "11px",
   },
   "& .MuiInputAdornment-root svg": {
-    fontSize: "1.15rem",
+    fontSize: "1.05rem",
     color: "#9ca3af",
   },
-  "& .MuiFormHelperText-root": { mx: 0.5, mt: 0.5, fontSize: "0.8rem" },
+  "& .MuiFormHelperText-root": { mx: 0.5, mt: 0.25, fontSize: "0.75rem" },
 };
 
 export default function CombinedInfoStep({
@@ -69,6 +73,7 @@ export default function CombinedInfoStep({
 
   const { t } = useTranslation();
   const smsConsent = watch("smsConsent") ?? true;
+  const [disclaimerOpen, setDisclaimerOpen] = useState(false);
 
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, "").slice(0, 10);
@@ -79,10 +84,10 @@ export default function CombinedInfoStep({
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: "12px" }}>
 
       {/* ── Name row ── */}
-      <Grid container spacing={2}>
+      <Grid container spacing={1.5}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             {...register("firstName")}
@@ -137,7 +142,7 @@ export default function CombinedInfoStep({
               <LocalPhoneOutlinedIcon />
               <Typography
                 component="span"
-                sx={{ fontSize: "0.95rem", color: "#374151", fontWeight: 600, ml: 0.5 }}
+                sx={{ fontSize: "0.9rem", color: "#374151", fontWeight: 600, ml: 0.5 }}
               >
                 +1
               </Typography>
@@ -194,14 +199,114 @@ export default function CombinedInfoStep({
         }
       />
 
-      {/* ── SMS Consent ── */}
+      {/* ── Referral Code ── */}
+      <Box
+        sx={{
+          border: "1.5px dashed",
+          borderColor: defaultReferralCode ? "#ff1493" : "#e5e7eb",
+          borderRadius: "13px",
+          p: 1.5,
+          bgcolor: defaultReferralCode ? "#fff5fa" : "#fafafa",
+          transition: "border-color 0.2s, background 0.2s",
+          "&:focus-within": {
+            borderColor: "#ff1493",
+            bgcolor: "#fff5fa",
+            borderStyle: "solid",
+          },
+        }}
+      >
+        {/* Header */}
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.75 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+            <ConfirmationNumberOutlinedIcon
+              sx={{ fontSize: 14, color: defaultReferralCode ? "#ff1493" : "#9ca3af" }}
+            />
+            <Typography sx={{ fontWeight: 700, fontSize: "0.82rem", color: "#374151" }}>
+              {t("form.referralCodeLabel")}
+              <Typography component="span" sx={{ fontWeight: 400, color: "#9ca3af", ml: 0.5, fontSize: "0.76rem" }}>
+                ({t("common.optional")})
+              </Typography>
+            </Typography>
+            <Tooltip
+              title={
+                <Box sx={{ p: 0.25 }}>
+                  <Typography sx={{ fontSize: "0.8rem", fontWeight: 700, mb: 0.25 }}>
+                    {t("form.referralBonusTitle")}
+                  </Typography>
+                  <Typography sx={{ fontSize: "0.75rem", lineHeight: 1.45 }}>
+                    {t("form.referralBonusBody")}
+                  </Typography>
+                </Box>
+              }
+              placement="top"
+              arrow
+              enterTouchDelay={0}
+              leaveTouchDelay={3000}
+            >
+              <InfoOutlinedIcon sx={{ fontSize: 13, color: "#cbd5e1", cursor: "help", ml: 0.25 }} />
+            </Tooltip>
+          </Box>
+
+          <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+            <Chip
+              icon={<EmojiEventsOutlinedIcon sx={{ fontSize: "11px !important", color: "#d97706 !important" }} />}
+              label={t("form.referralBonusChip")}
+              size="small"
+              sx={{
+                bgcolor: "#fffbeb", color: "#92400e", fontWeight: 700, fontSize: "0.67rem",
+                border: "1px solid #fde68a", height: 19,
+                "& .MuiChip-icon": { color: "#d97706" },
+              }}
+            />
+            {defaultReferralCode && (
+              <Chip
+                icon={<CheckCircleIcon sx={{ fontSize: "11px !important" }} />}
+                label={t("form.codeApplied")}
+                size="small"
+                sx={{
+                  bgcolor: "#dcfce7", color: "#16a34a", fontWeight: 700, fontSize: "0.67rem",
+                  border: "1px solid #bbf7d0", height: 19,
+                  "& .MuiChip-icon": { color: "#16a34a" },
+                }}
+              />
+            )}
+          </Box>
+        </Box>
+
+        <TextField
+          {...register("referralCode")}
+          placeholder={t("form.referralCodePlaceholder")}
+          error={!!errors.referralCode}
+          defaultValue={defaultReferralCode}
+          helperText={errors.referralCode?.message}
+          fullWidth
+          variant="outlined"
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+              bgcolor: "#fff",
+              "& fieldset": { borderColor: "#e5e7eb", borderWidth: "1.5px" },
+              "&:hover fieldset": { borderColor: "#fba8d0" },
+              "&.Mui-focused fieldset": { borderColor: "#ff1493", borderWidth: "2px" },
+            },
+            "& .MuiInputBase-input": {
+              py: "10px", fontSize: "0.93rem", fontWeight: 600,
+              color: "#1f2937", letterSpacing: "0.04em",
+              "&::placeholder": { color: "#9ca3af", fontWeight: 400, letterSpacing: "normal", fontSize: "0.8rem" },
+            },
+            "& .MuiFormHelperText-root": { mx: 0.5 },
+          }}
+        />
+      </Box>
+
+      {/* ── SMS Consent (checkbox below as requested) ── */}
       <Box
         sx={{
           bgcolor: "#fff8fc",
           border: "1.5px solid #fce7f3",
-          borderRadius: "14px",
-          px: 2,
-          py: 1.25,
+          borderRadius: "12px",
+          px: 1.75,
+          py: 0.75,
         }}
       >
         <Controller
@@ -221,98 +326,38 @@ export default function CombinedInfoStep({
                   sx={{
                     color: "#ff1493",
                     "&.Mui-checked": { color: "#ff1493" },
-                    py: 0.5,
+                    py: 0.25,
+                    pr: 0.5,
                   }}
                 />
               }
               label={
-                <Typography sx={{ fontSize: "0.92rem", color: "#374151", fontWeight: 500 }}>
+                <Typography sx={{ fontSize: "0.875rem", color: "#374151", fontWeight: 600 }}>
                   {t("form.smsConsent")}
                 </Typography>
               }
-              sx={{ alignItems: "flex-start", ml: 0, mr: 0 }}
+              sx={{ alignItems: "center", ml: 0, mr: 0 }}
             />
           )}
         />
-        <Typography sx={{ fontSize: "0.73rem", color: "#9ca3af", lineHeight: 1.5, mt: 0.25 }}>
-          {t("form.smsConsentDisclaimer")}
-        </Typography>
-      </Box>
-
-      {/* ── Referral Code (inline, at bottom) ── */}
-      <Box
-        sx={{
-          border: "1.5px dashed",
-          borderColor: defaultReferralCode ? "#ff1493" : "#e5e7eb",
-          borderRadius: "16px",
-          p: 2,
-          bgcolor: defaultReferralCode ? "#fff5fa" : "#fafafa",
-          transition: "border-color 0.2s, background 0.2s",
-          "&:focus-within": {
-            borderColor: "#ff1493",
-            bgcolor: "#fff5fa",
-            borderStyle: "solid",
-          },
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1.25 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Box
-              sx={{
-                width: 30, height: 30, borderRadius: "50%",
-                bgcolor: defaultReferralCode ? "#ffe0f4" : "#f3f4f6",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <ConfirmationNumberOutlinedIcon
-                sx={{ fontSize: 16, color: defaultReferralCode ? "#ff1493" : "#9ca3af" }}
-              />
-            </Box>
-            <Typography sx={{ fontWeight: 700, fontSize: "0.88rem", color: "#374151" }}>
-              {t("form.referralCodeLabel", { defaultValue: "Invitation Code" })}
-              <Typography component="span" sx={{ fontWeight: 400, color: "#9ca3af", ml: 0.5, fontSize: "0.82rem" }}>
-                ({t("common.optional", { defaultValue: "optional" })})
-              </Typography>
-            </Typography>
-          </Box>
-          {defaultReferralCode && (
-            <Chip
-              icon={<CheckCircleIcon sx={{ fontSize: "14px !important" }} />}
-              label={t("form.codeApplied", { defaultValue: "Applied" })}
-              size="small"
-              sx={{
-                bgcolor: "#dcfce7", color: "#16a34a", fontWeight: 700, fontSize: "0.72rem",
-                border: "1px solid #bbf7d0", height: 22, "& .MuiChip-icon": { color: "#16a34a" },
-              }}
-            />
-          )}
-        </Box>
-
-        <TextField
-          {...register("referralCode")}
-          placeholder={t("form.referralCodePlaceholder")}
-          error={!!errors.referralCode}
-          defaultValue={defaultReferralCode}
-          helperText={errors.referralCode?.message}
-          fullWidth
-          variant="outlined"
+        <Collapse in={disclaimerOpen}>
+          <Typography sx={{ fontSize: "0.67rem", color: "#9ca3af", lineHeight: 1.5, mt: 0.5, ml: "28px" }}>
+            {t("form.smsConsentDisclaimer")}
+          </Typography>
+        </Collapse>
+        <Box
+          component="button"
+          type="button"
+          onClick={() => setDisclaimerOpen((v) => !v)}
           sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "10px",
-              bgcolor: "#fff",
-              "& fieldset": { borderColor: "#e5e7eb" },
-              "&:hover fieldset": { borderColor: "#ff1493" },
-              "&.Mui-focused fieldset": { borderColor: "#ff1493", borderWidth: "2px" },
-            },
-            "& .MuiInputBase-input": {
-              py: "11px", fontSize: "0.95rem", fontWeight: 600,
-              color: "#1f2937", letterSpacing: "0.04em",
-              "&::placeholder": { color: "#9ca3af", fontWeight: 400, letterSpacing: "normal" },
-            },
-            "& .MuiFormHelperText-root": { mx: 0.5 },
+            background: "none", border: "none", cursor: "pointer",
+            fontSize: "0.68rem", color: "#d1b3c8", ml: "28px", mt: 0.25,
+            p: 0, display: "block", textDecoration: "underline",
+            "&:hover": { color: "#9ca3af" },
           }}
-        />
+        >
+          {disclaimerOpen ? t("common.hideTerms") : t("common.seeTerms")}
+        </Box>
       </Box>
 
     </Box>
