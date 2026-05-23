@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Link,
@@ -6,16 +8,15 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
-import { useReferralStepper } from "@/hooks/useReferralStepper";
 import { useRef, useEffect } from "react";
-import { stepFadeIn } from "@/utils/animations";
-import PersonalInfoStep from "@/components/steps/PersonalInfoStep";
-import ReferralCodeStep from "@/components/steps/ReferralCodeStep";
+import { useReferralStepper } from "@/hooks/useReferralStepper";
+import CombinedInfoStep from "@/components/steps/CombinedInfoStep";
 import OtpStep from "@/components/steps/OtpStep";
 import { FormData } from "@/hooks/useReferralStepper";
 import CustomReferralStepper from "@/app/win-a-car/components/ReferralStepper";
 import CustomButton from "@/app/win-a-car/components/Button";
 import { useTranslation } from "react-i18next";
+import { stepFadeIn } from "@/utils/animations";
 
 interface Props {
   stepperVariant?: "full" | "personalOnly";
@@ -44,7 +45,6 @@ export default function ReferralForm({
   showExtendedFields = false,
   disabled = false,
   stepperVariant = "full",
-  referralCodeNotice,
 }: Props) {
   const {
     activeStep,
@@ -54,7 +54,6 @@ export default function ReferralForm({
     resendTimer,
     resendError,
     validateReferralCodeMutation,
-    referralValidation,
     isValidatingReferral,
     isValidatingOtp,
     form,
@@ -71,6 +70,7 @@ export default function ReferralForm({
     locked,
     success,
   } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit, storeId);
+
   const { t } = useTranslation();
   const stepContentRef = useRef<HTMLDivElement>(null);
 
@@ -78,10 +78,12 @@ export default function ReferralForm({
     if (stepContentRef.current) stepFadeIn(stepContentRef.current);
   }, [activeStep]);
 
+  /* ── Step advance (2-step flow) ── */
   const nextStep = async () => {
     if (disabled) return;
 
     if (activeStep === 0) {
+      // Validate personal info
       const smsConsent = getValues("smsConsent") ?? true;
       const phone = (getValues("phone") || "").trim();
 
@@ -97,47 +99,30 @@ export default function ReferralForm({
       const valid = await trigger(["firstName", "lastName", "phone", "email", "zip"]);
       if (!valid) return;
 
-      setActiveStep(1);
-      return;
-    }
-
-    if (activeStep === 1) {
-      const valid = await trigger(["referralCode"]);
-      if (!valid) return;
-
-      if (!showExtendedFields) {
-        const supermarket = (getValues("supermarket") || "").trim();
-        if (!supermarket) {
-          form.setError("supermarket", {
-            type: "required",
-            message: t("form.errors.supermarket.required"),
-          });
-          return;
-        }
-      }
-
+      // Validate referral code if provided
       const code = getValues("referralCode");
       if (code) {
         try {
-          const validation = await validateReferralCodeMutation(code);
-          if (!validation.valid) {
-            return;
-          }
-          setActiveStep(2);
-          await handleSendOtp();
-          return;
-        } catch (err) {
-          console.error("Validation error", err);
+          const result = await validateReferralCodeMutation(code);
+          if (!result.valid) return;
+        } catch {
           return;
         }
       }
 
-      setActiveStep(2);
+      // If personalOnly variant, submit directly
+      if (stepperVariant === "personalOnly") {
+        form.handleSubmit(handleFinalSubmit)();
+        return;
+      }
+
+      // Send OTP and advance to verification step
+      setActiveStep(1);
       await handleSendOtp();
     }
   };
 
-  const prevStep = () => setActiveStep((prev) => prev - 1);
+  const prevStep = () => setActiveStep(0);
 
   return (
     <Box component="form">
@@ -149,34 +134,51 @@ export default function ReferralForm({
         </Stack>
       )}
 
-      <Stack spacing={2.5} mt={3.5}>
-        <Box ref={stepContentRef}>
-        {activeStep === 0 && <PersonalInfoStep form={form} />}
+      <Box ref={stepContentRef} sx={{ mt: 3.5 }}>
+        {/* ── Step 0: Personal info + referral code ── */}
+        {activeStep === 0 && (
+          <>
+            <CombinedInfoStep
+              form={form}
+              defaultReferralCode={defaultReferralCode}
+              showSupermarket={!showExtendedFields}
+            />
 
-        {activeStep === 1 && (
-          <ReferralCodeStep
-            form={form}
-            defaultStoreName={defaultStoreName}
-            showExtendedFields={showExtendedFields}
-            sweepstakeId={sweepstakeId}
-            referralValidation={referralValidation}
-            isValidatingReferral={isValidatingReferral}
-            referralError={referralError}
-            defaultReferralCode={defaultReferralCode}
-            setReferralError={setReferralError}
-            referralCodeNotice={referralCodeNotice}
-          />
+            {/* Note */}
+            <Box
+              sx={{
+                mt: "20px",
+                bgcolor: "#fef3f8",
+                borderLeft: "3px solid #ff1493",
+                borderRadius: "0 10px 10px 0",
+                px: 2,
+                py: 1.25,
+              }}
+            >
+              <Typography sx={{ color: "#6b7280", fontSize: "0.85rem", lineHeight: 1.55 }}>
+                <Box component="span" sx={{ fontWeight: 700, color: "#374151" }}>
+                  {t("common.note", { defaultValue: "Note:" })}
+                </Box>{" "}
+                {t("weeklyTv.form.note")}
+              </Typography>
+            </Box>
+
+            {referralError && (
+              <Alert severity="error" sx={{ mt: 2, borderRadius: 3 }} onClose={() => setReferralError(null)}>
+                {referralError}
+              </Alert>
+            )}
+          </>
         )}
 
-        {activeStep === 2 && (
+        {/* ── Step 1: OTP verification ── */}
+        {activeStep === 1 && (
           <OtpStep
             otp={otp}
             setOtp={handeSetOtp}
             resendTimer={resendTimer}
             phone={getValues("phone")}
-            onResend={() => {
-              handleSendOtp();
-            }}
+            onResend={handleSendOtp}
             onComplete={form.handleSubmit(handleFinalSubmit)}
             attemptsLeft={attemptsLeft}
             locked={locked}
@@ -187,104 +189,83 @@ export default function ReferralForm({
             isVerifying={isValidatingOtp}
           />
         )}
-        </Box>
+      </Box>
+
+      {backendError && (
+        <Alert severity="error" sx={{ mt: 2, borderRadius: 3 }} onClose={onClearError}>
+          {backendError}
+        </Alert>
+      )}
+
+      {/* ── Action buttons ── */}
+      <Stack direction="row" justifyContent="center" spacing={2} mt={3}>
+        {activeStep === 1 && (
+          <CustomButton
+            onClick={prevStep}
+            variant="outlined"
+            disabled={disabled || isLoading || isLoadingOtp}
+          >
+            {t("common.prev")}
+          </CustomButton>
+        )}
 
         {activeStep === 0 && (
-          <Box
-            sx={{
-              backgroundColor: "#f4e9ef",
-              borderLeft: "4px solid #ff1493",
-              borderRadius: 2,
-              px: 2,
-              py: 1.5,
-              mt: 0.75,
+          <CustomButton
+            onClick={(e) => {
+              import("@/utils/animations").then(({ pulseButton }) =>
+                pulseButton(e.currentTarget)
+              );
+              nextStep();
             }}
+            disabled={disabled || isLoading || isLoadingOtp || isValidatingReferral}
+            endIcon={
+              isLoadingOtp || isValidatingReferral ? undefined : (
+                <span style={{ fontSize: 22, lineHeight: 1 }}>→</span>
+              )
+            }
           >
-            <Typography sx={{ color: "#475467", fontSize: 15, lineHeight: 1.55 }}>
-              <Box component="span" sx={{ fontWeight: 700 }}>
-                Note:
-              </Box>{" "}
-              {t("weeklyTv.form.note")}
-            </Typography>
-          </Box>
-        )}
-
-        {backendError && (
-          <Alert severity="error" onClose={onClearError}>
-            {backendError}
-          </Alert>
-        )}
-
-        <Stack direction="row" justifyContent="center" spacing={2} mt={2}>
-          {activeStep > 0 && (
-            <CustomButton
-              onClick={prevStep}
-              variant="outlined"
-              disabled={disabled || isLoading || isLoadingOtp}
-              sx={activeStep === 1 ? { minWidth: 138, px: 3.25 } : undefined}
-            >
-              {t("common.prev")}
-            </CustomButton>
-          )}
-
-          {activeStep < 2 && (
-            <CustomButton
-              id="referral-next-btn"
-              onClick={(e) => {
-                import("@/utils/animations").then(({ pulseButton }) =>
-                  pulseButton(e.currentTarget)
-                );
-                nextStep();
-              }}
-              disabled={disabled || isLoading || isLoadingOtp}
-              endIcon={
-                !isLoadingOtp ? (
-                  <span style={{ fontSize: 22, lineHeight: 1 }}>→</span>
-                ) : undefined
-              }
-              sx={activeStep === 1 ? { minWidth: 126, px: 3.2 } : undefined}
-            >
-              {isLoadingOtp ? (
-                <CircularProgress size={22} color="inherit" />
-              ) : (
-                <>{stepperVariant === "personalOnly" ? t("common.submit") : t("common.next")}</>
-              )}
-            </CustomButton>
-          )}
-        </Stack>
-
-        {activeStep < 2 && (
-          <Stack
-            direction="row"
-            spacing={1}
-            justifyContent="center"
-            alignItems="center"
-            flexWrap="wrap"
-            useFlexGap
-            sx={{ mt: 1.5 }}
-          >
-            <Link
-              href="https://www.sweepstouch.com/term"
-              target="_blank"
-              rel="noopener noreferrer"
-              underline="hover"
-              sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
-            >
-              {t("form.termsLink")}
-            </Link>
-            <Typography sx={{ fontSize: 13, color: "#98a2b3" }}>•</Typography>
-            <Link
-              href="https://www.sweepstouch.com/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-              underline="hover"
-              sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
-            >
-              {t("form.privacyLink")}
-            </Link>
-          </Stack>
+            {isLoadingOtp || isValidatingReferral ? (
+              <CircularProgress size={22} color="inherit" />
+            ) : stepperVariant === "personalOnly" ? (
+              t("common.submit")
+            ) : (
+              t("common.next")
+            )}
+          </CustomButton>
         )}
       </Stack>
+
+      {activeStep === 0 && (
+        <Stack
+          direction="row"
+          spacing={1}
+          justifyContent="center"
+          alignItems="center"
+          flexWrap="wrap"
+          useFlexGap
+          sx={{ mt: 2 }}
+        >
+          <Link
+            href="https://www.sweepstouch.com/term"
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="hover"
+            sx={{ fontSize: 12.5, fontWeight: 500, color: "#9ca3af" }}
+          >
+            {t("form.termsLink")}
+          </Link>
+          <Typography sx={{ fontSize: 12.5, color: "#d1d5db" }}>•</Typography>
+          <Link
+            href="https://www.sweepstouch.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="hover"
+            sx={{ fontSize: 12.5, fontWeight: 500, color: "#9ca3af" }}
+          >
+            {t("form.privacyLink")}
+          </Link>
+        </Stack>
+      )}
     </Box>
   );
 }

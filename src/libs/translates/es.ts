@@ -8,6 +8,8 @@ const es = {
       no: "No",
       next: "Siguiente",
       prev: "Anterior",
+      optional: "opcional",
+      note: "Nota:",
     },
     referralStep: {
       step1: "Tu Información",
@@ -62,6 +64,8 @@ const es = {
       referralInfoTitle: "Información de referido",
       referralInfoSubtitle: "Ayúdanos a rastrear tu referido",
       referralCodePlaceholder: "¿TIENES UN CÓDIGO? AGRÉGALO AQUÍ",
+      referralCodeLabel: "Código de Invitación",
+      codeApplied: "Aplicado",
       errors: {
         firstName: {
           required: "El nombre es obligatorio",
@@ -166,6 +170,7 @@ const es = {
       resending: "Enviando...",
       resend: "Reenviar código",
       resendInline: "¿No recibiste un código? Reenviar",
+      verifying: "Verificando…",
       notReceived:
         "¿No recibiste el código? Revisa tu número y la carpeta de spam.",
     },

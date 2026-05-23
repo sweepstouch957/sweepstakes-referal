@@ -149,7 +149,7 @@ export function useReferralStepper(
   }, [watch]);
 
   useEffect(() => {
-    if (activeStep === 0 || activeStep === 1) {
+    if (activeStep === 0) {
       setAttemptsLeft(undefined);
       setResendError(null);
       setResendTimer(0);

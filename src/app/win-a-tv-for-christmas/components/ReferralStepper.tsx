@@ -4,49 +4,55 @@ import Stack from "@mui/material/Stack";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
-import PersonIcon from "@mui/icons-material/Person";
-import LinkIcon from "@mui/icons-material/Link";
-import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import StepConnector, { stepConnectorClasses } from "@mui/material/StepConnector";
 import { StepIconProps } from "@mui/material/StepIcon";
 import { useTranslation } from "react-i18next";
 
 const CustomConnector = styled(StepConnector)(() => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 22,
+    top: 23,
   },
   [`&.${stepConnectorClasses.active} .${stepConnectorClasses.line}`]: {
-    backgroundColor: "#de0000ff",
+    background: "linear-gradient(90deg, #e4007f 0%, #ff1493 100%)",
   },
   [`&.${stepConnectorClasses.completed} .${stepConnectorClasses.line}`]: {
-    backgroundColor: "#de0000ff",
+    background: "linear-gradient(90deg, #e4007f 0%, #ff1493 100%)",
   },
   [`& .${stepConnectorClasses.line}`]: {
     height: 3,
     border: 0,
-    backgroundColor: "#eaeaf0",
-    borderRadius: 1,
+    backgroundColor: "#eed9e9",
+    borderRadius: 2,
   },
 }));
 
 const CustomStepIconRoot = styled("div")<{
   ownerState: { completed?: boolean; active?: boolean };
 }>(({ ownerState }) => ({
-  backgroundColor: "#ccc",
+  backgroundColor: "#e5e7eb",
   zIndex: 1,
-  color: "#fff",
-  width: 50,
-  height: 50,
+  color: "#9ca3af",
+  width: 48,
+  height: 48,
   display: "flex",
   borderRadius: "50%",
   justifyContent: "center",
   alignItems: "center",
+  transition: "all 0.25s ease",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+  border: "3px solid transparent",
   ...(ownerState.active && {
-    backgroundColor: "#de0000ff",
-    boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+    background: "linear-gradient(145deg, #ff1493 0%, #e4007f 100%)",
+    color: "#ffffff",
+    borderColor: "rgba(255,20,147,0.2)",
+    boxShadow: "0 6px 20px rgba(228,0,127,0.30)",
   }),
   ...(ownerState.completed && {
-    backgroundColor: "#de0000ff",
+    background: "linear-gradient(145deg, #ff1493 0%, #e4007f 100%)",
+    color: "#ffffff",
+    boxShadow: "0 4px 12px rgba(228,0,127,0.22)",
   }),
 }));
 
@@ -54,14 +60,15 @@ function CustomStepIcon(props: StepIconProps) {
   const { active, completed, className } = props;
 
   const icons: { [index: string]: React.ReactElement } = {
-    1: <PersonIcon />,
-    2: <LinkIcon />,
-    3: <PhoneIphoneIcon />,
+    1: <AccountCircleOutlinedIcon sx={{ fontSize: 24 }} />,
+    2: <ShieldOutlinedIcon sx={{ fontSize: 24 }} />,
   };
 
   return (
     <CustomStepIconRoot ownerState={{ completed, active }} className={className}>
-      {icons[String(props.icon)]}
+      {completed
+        ? <ShieldOutlinedIcon sx={{ fontSize: 22 }} />
+        : icons[String(props.icon)]}
     </CustomStepIconRoot>
   );
 }
@@ -75,10 +82,19 @@ export default function CustomReferralStepper({
 }) {
   const { t } = useTranslation();
 
-  const steps =
-    variant === "personalOnly"
-      ? [t("referralStep.step1")]
-      : [t("referralStep.step1"), t("referralStep.step2"), t("referralStep.step3")];
+  if (variant === "personalOnly") {
+    return (
+      <Stack sx={{ width: "100%" }} spacing={4}>
+        <Stepper alternativeLabel activeStep={0} connector={<CustomConnector />}>
+          <Step key="info">
+            <StepLabel StepIconComponent={CustomStepIcon}>{t("referralStep.step1")}</StepLabel>
+          </Step>
+        </Stepper>
+      </Stack>
+    );
+  }
+
+  const steps = [t("referralStep.step1"), t("referralStep.step3")];
 
   return (
     <Stack sx={{ width: "100%" }} spacing={4}>

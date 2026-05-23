@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Typography,
@@ -5,13 +7,12 @@ import {
   CircularProgress,
   Stack,
   useTheme,
-  Fade,
 } from "@mui/material";
 import OTPInput from "react-otp-input";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
-import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
+import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import { formatTimer } from "@/utils/formatTimer";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef } from "react";
@@ -56,7 +57,6 @@ export default function OtpStep({
   const prevOtpLen = useRef(0);
 
   useEffect(() => {
-    // Animate boxes in on first render
     if (otpContainerRef.current) {
       const inputs = otpContainerRef.current.querySelectorAll("input");
       otpBoxIn(Array.from(inputs));
@@ -64,7 +64,6 @@ export default function OtpStep({
   }, []);
 
   const handleChange = (val: string) => {
-    // Pop the newly-filled box
     if (val.length > prevOtpLen.current && otpContainerRef.current) {
       const inputs = otpContainerRef.current.querySelectorAll("input");
       const filledIndex = val.length - 1;
@@ -72,128 +71,154 @@ export default function OtpStep({
     }
     prevOtpLen.current = val.length;
     setOtp(val);
-    if (val.length === 6 && onComplete) {
-      onComplete();
-      return;
-    }
-    if (val.length === 6 && onSubmit) {
-      onSubmit(val);
-    }
+    if (val.length === 6 && onComplete) { onComplete(); return; }
+    if (val.length === 6 && onSubmit) { onSubmit(val); }
   };
 
+  const formattedPhone = phone
+    ? phone.replace(/\D/g, "").replace(/^1?(\d{3})(\d{3})(\d{4})$/, "($1) $2-$3")
+    : null;
+
   return (
-    <Stack spacing={2.25} alignItems="center" width="100%" sx={{ pt: 0.5 }}>
+    <Stack spacing={0} alignItems="center" width="100%">
 
-      <Typography
-        variant="h4"
-        fontWeight={800}
-        color="#182033"
-        textAlign="center"
-        letterSpacing={-0.6}
-        sx={{ fontSize: { xs: 22, sm: 28 }, lineHeight: 1.05 }}
-      >
-        {t("otp.title")}
-      </Typography>
-
-      <Typography
-        variant="body1"
-        color="#5b6474"
-        textAlign="center"
-        sx={{
-          maxWidth: 320,
-          mt: "-2px !important",
-          lineHeight: 1.45,
-          fontSize: { xs: 16, sm: 18 },
-        }}
-      >
-        {t("otp.instruction")} <br />
-        <Box component="span" sx={{ color: "#ff1493", fontWeight: 700 }}>
-          +1{phone || t("otp.fallbackPhone")}
-        </Box>
-      </Typography>
-
+      {/* Phone indicator */}
       <Box
         sx={{
-          width: "100%",
-          borderRadius: 2.5,
-          bgcolor: "#f7eaf1",
-          borderLeft: "4px solid #ff1493",
-          px: 2,
-          py: 1.4,
-          mt: "6px !important",
+          display: "flex", flexDirection: "column", alignItems: "center",
+          gap: 1, mb: 3,
         }}
       >
-        <Typography sx={{ color: "#4b5565", fontSize: 16, lineHeight: 1.45 }}>
-          <Box component="span" sx={{ fontWeight: 700 }}>
+        <Box
+          sx={{
+            width: 56, height: 56, borderRadius: "50%",
+            background: "linear-gradient(145deg, #ff1493, #e4007f)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "0 8px 24px rgba(228,0,127,0.30)",
+          }}
+        >
+          <PhoneIphoneIcon sx={{ color: "#fff", fontSize: 26 }} />
+        </Box>
+
+        <Typography
+          variant="h5"
+          fontWeight={800}
+          color="#111827"
+          textAlign="center"
+          sx={{ fontSize: { xs: 20, sm: 24 }, letterSpacing: "-0.4px", lineHeight: 1.1 }}
+        >
+          {t("otp.title")}
+        </Typography>
+
+        <Typography
+          color="#6b7280"
+          textAlign="center"
+          sx={{ fontSize: { xs: 14.5, sm: 16 }, lineHeight: 1.5, maxWidth: 300 }}
+        >
+          {t("otp.instruction")}
+          {formattedPhone && (
+            <>
+              {" "}<Box component="span" sx={{ color: "#ff1493", fontWeight: 700, whiteSpace: "nowrap" }}>
+                +1 {formattedPhone}
+              </Box>
+            </>
+          )}
+        </Typography>
+      </Box>
+
+      {/* Info banner */}
+      <Box
+        sx={{
+          width: "100%", borderRadius: "12px",
+          bgcolor: "#fff8fc", border: "1.5px solid #fce7f3",
+          px: 2, py: 1.25, mb: 3,
+        }}
+      >
+        <Typography sx={{ color: "#6b7280", fontSize: "0.875rem", lineHeight: 1.5, textAlign: "center" }}>
+          <Box component="span" sx={{ fontWeight: 700, color: "#374151" }}>
             {t("otp.noteStrong")}
           </Box>{" "}
           {t("otp.note")}
         </Typography>
       </Box>
 
+      {/* OTP label */}
       <Typography
-        variant="subtitle1"
         fontWeight={700}
         color="#374151"
         textAlign="center"
-        sx={{ mt: "2px !important" }}
+        sx={{ mb: 2, fontSize: "0.95rem", letterSpacing: "0.02em" }}
       >
         {t("otp.enterLabel")}
       </Typography>
 
-      <Box ref={otpContainerRef}>
-      <OTPInput
-        value={otp}
-        onChange={handleChange}
-        numInputs={6}
-        inputType="tel"
-        renderInput={(props, idx) => (
-          <input
-            {...props}
-            aria-label={`Digit ${idx + 1}`}
-            style={{
-              width: "2.7rem",
-              height: "3.3rem",
-              fontSize: "1.35rem",
-              borderRadius: 10,
-              border: `2px solid ${theme.palette.grey[200]}`,
-              background: theme.palette.background.paper,
-              textAlign: "center",
-              fontWeight: 700,
-              outline: "none",
-              marginRight: 8,
-              boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
-              transition: "border-color 0.2s",
-            }}
-            onPaste={(e) => {
-              const pasted = e.clipboardData.getData("Text").replace(/\D/g, "");
-              handleChange(pasted);
-              e.preventDefault();
-            }}
-          />
-        )}
-        containerStyle={{
-          justifyContent: "center",
-          gap: 10,
-          marginBottom: 4,
-          marginTop: 2,
-        }}
-      />
+      {/* OTP Inputs */}
+      <Box ref={otpContainerRef} sx={{ mb: 3 }}>
+        <OTPInput
+          value={otp}
+          onChange={handleChange}
+          numInputs={6}
+          inputType="tel"
+          renderInput={(props, idx) => (
+            <input
+              {...props}
+              aria-label={`Digit ${idx + 1}`}
+              style={{
+                width: "3.1rem",
+                height: "3.75rem",
+                fontSize: "1.5rem",
+                borderRadius: 12,
+                border: `2px solid ${theme.palette.grey[200]}`,
+                background: "#fafafa",
+                textAlign: "center",
+                fontWeight: 800,
+                outline: "none",
+                marginRight: idx < 5 ? 10 : 0,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                transition: "border-color 0.18s, box-shadow 0.18s",
+                color: "#111827",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = "#ff1493";
+                e.target.style.boxShadow = "0 0 0 3px rgba(255,20,147,0.12)";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = theme.palette.grey[200];
+                e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)";
+              }}
+              onPaste={(e) => {
+                const pasted = e.clipboardData.getData("Text").replace(/\D/g, "");
+                handleChange(pasted);
+                e.preventDefault();
+              }}
+            />
+          )}
+          containerStyle={{ justifyContent: "center" }}
+        />
       </Box>
 
+      {/* Success */}
       {success && (
-        <Stack direction="row" alignItems="center" spacing={1} mt={0.5}>
-          <CheckCircleIcon color="success" fontSize="small" />
-          <Typography color="success.main" variant="body2">
+        <Stack direction="row" alignItems="center" spacing={1} mb={2}>
+          <CheckCircleOutlineIcon sx={{ color: "#16a34a", fontSize: 22 }} />
+          <Typography color="#16a34a" fontWeight={600} fontSize="0.95rem">
             {t("otp.verified")}
           </Typography>
         </Stack>
       )}
 
+      {/* Error */}
       {errorSend && (
-        <Stack direction="row" alignItems="center" spacing={1} mt={0.5}>
-          <ErrorOutlineIcon color="error" fontSize="small" />
-          <Typography color="error" variant="body2" textAlign="center">
+        <Box
+          sx={{
+            width: "100%", borderRadius: "12px",
+            bgcolor: "#fff1f2", border: "1.5px solid #fecdd3",
+            px: 2, py: 1.25, mb: 2,
+            display: "flex", alignItems: "flex-start", gap: 1,
+          }}
+        >
+          <ErrorOutlineIcon sx={{ color: "#ef4444", fontSize: 20, flexShrink: 0, mt: "1px" }} />
+          <Typography color="#dc2626" fontSize="0.875rem" lineHeight={1.5}>
             {errorSend}
             {locked
               ? " " + t("otp.locked")
@@ -201,44 +226,39 @@ export default function OtpStep({
                 ? ` (${t("otp.attemptsLeft", { count: attemptsLeft })})`
                 : ""}
           </Typography>
-        </Stack>
+        </Box>
       )}
 
-      {attemptsLeft !== undefined && !locked && attemptsLeft > 0 && (
-        <Typography color="warning.main" variant="caption">
-          {t("otp.attemptsLeft", {
-            count: attemptsLeft,
-            defaultValue: "{{count}} attempts left",
-          })}
+      {/* Attempts warning (no error yet) */}
+      {attemptsLeft !== undefined && !locked && !errorSend && attemptsLeft > 0 && (
+        <Typography color="warning.main" fontSize="0.82rem" mb={1.5}>
+          {t("otp.attemptsLeft", { count: attemptsLeft, defaultValue: "{{count}} attempts left" })}
         </Typography>
       )}
 
-      <Box mt={0.5}>
+      {/* Loading */}
+      {isVerifying && (
+        <Stack direction="row" alignItems="center" spacing={1} mb={2}>
+          <CircularProgress size={18} sx={{ color: "#ff1493" }} />
+          <Typography color="#6b7280" fontSize="0.875rem">
+            {t("otp.verifying", { defaultValue: "Verifying…" })}
+          </Typography>
+        </Stack>
+      )}
+
+      {/* Resend */}
+      <Box>
         {resendTimer > 0 ? (
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="center"
-            spacing={1}
-            sx={{
-              color: "#ff1493",
-              fontWeight: 700,
-              fontSize: 15,
-              flexWrap: "wrap",
-            }}
-          >
-            <Typography sx={{ color: "#ff1493", fontWeight: 700, fontSize: 15 }}>
+          <Stack direction="row" alignItems="center" spacing={0.75}>
+            <Typography sx={{ color: "#9ca3af", fontSize: "0.875rem" }}>
               {t("otp.resendIn")}
             </Typography>
-            <Typography sx={{ color: "#ff1493", fontWeight: 800, fontSize: 15 }}>
+            <Typography sx={{ color: "#ff1493", fontWeight: 800, fontSize: "0.9rem", minWidth: 38 }}>
               {formatTimer(resendTimer)}
             </Typography>
-            {typeof resendLeft === "number" && (
-              <Typography sx={{ color: "#8b93a5", fontSize: 13 }}>
-                {t("otp.resendsLeft", {
-                  count: resendLeft,
-                  defaultValue: "({{count}} left)",
-                })}
+            {typeof resendLeft === "number" && resendLeft > 0 && (
+              <Typography sx={{ color: "#d1d5db", fontSize: "0.78rem" }}>
+                {t("otp.resendsLeft", { count: resendLeft, defaultValue: "({{count}} left)" })}
               </Typography>
             )}
           </Stack>
@@ -246,24 +266,23 @@ export default function OtpStep({
           <Button
             onClick={onResend}
             variant="text"
-            color="primary"
-            startIcon={isResending ? <CircularProgress size={16} /> : <AutorenewIcon />}
+            startIcon={
+              isResending
+                ? <CircularProgress size={15} sx={{ color: "#ff1493" }} />
+                : <AutorenewIcon sx={{ fontSize: 18 }} />
+            }
             disabled={isResending || resendLeft === 0 || isVerifying}
             sx={{
-              borderRadius: 6,
-              fontWeight: 700,
-              px: 1,
-              boxShadow: "none",
-              textTransform: "none",
-              mt: 0.5,
-              color: "#ff1493",
-              '&:hover': { backgroundColor: 'transparent', textDecoration: 'underline' },
+              borderRadius: 6, fontWeight: 700, px: 1.5, py: 0.75,
+              textTransform: "none", color: "#ff1493", fontSize: "0.9rem",
+              "&:hover": { bgcolor: "#fff0f7" },
             }}
           >
             {isResending ? t("otp.resending") : t("otp.resendInline")}
           </Button>
         )}
       </Box>
+
     </Stack>
   );
 }
