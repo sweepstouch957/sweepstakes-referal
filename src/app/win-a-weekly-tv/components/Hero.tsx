@@ -3,8 +3,16 @@
 import { Box } from "@mui/material";
 import Image from "next/image";
 import WeeklyTvHero from "@public/weekly-tv-hero-new.jpg";
+import { useEffect, useRef } from "react";
+import { heroImageIn } from "@/utils/animations";
 
 export default function Hero() {
+  const imgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (imgRef.current) heroImageIn(imgRef.current);
+  }, []);
+
   return (
     <Box
       sx={{
@@ -17,11 +25,13 @@ export default function Hero() {
       }}
     >
       <Box
+        ref={imgRef}
         sx={{
           position: "relative",
           width: "100%",
           isolation: "isolate",
           backgroundColor: "#ff4cb1",
+          opacity: 0,
         }}
       >
         <Image

@@ -3,6 +3,7 @@ import { api } from "../http/client";
 export interface SendOtpDto {
   phone: string;
   channel: "sms" | "whatsapp";
+  storeId?: string;
 }
 
 export interface VerifyOtpDto {

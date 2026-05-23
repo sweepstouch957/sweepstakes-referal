@@ -13,7 +13,8 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { registerParticipant } from "@/services/sweeptake.service";
 import Cookies from "js-cookie";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { fadeSlideIn } from "@/utils/animations";
 import { useRouter } from "next/navigation";
 
 import ReferralStepper from "@/components/RefferralForm";
@@ -48,6 +49,8 @@ export default function WinACarFormWithThankYou({
   const theme = useTheme();
   const {language}=useLanguage()
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const cardRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { if (cardRef.current) fadeSlideIn(cardRef.current, { delay: 180, duration: 650 }); }, []);
   const [backendError, setBackendError] = useState<string | null>(null);
   const [isRegistred, setIsRegistered] = useState(false);
   const router = useRouter();
@@ -121,7 +124,7 @@ export default function WinACarFormWithThankYou({
         </Fade>
       ) : (
         <Fade in timeout={400}>
-          <Container maxWidth="sm" sx={{ my: isMobile ? 3 : 6, px: isMobile ? 2 : 0 }}>
+          <Container ref={cardRef} maxWidth="sm" sx={{ my: isMobile ? 3 : 6, px: isMobile ? 2 : 0, opacity: 0 }}>
             <Typography
               variant={isMobile ? "h4" : "h3"}
               textAlign="center"
@@ -140,6 +143,7 @@ export default function WinACarFormWithThankYou({
               defaultStoreName={storeName}
               showExtendedFields={showExtendedFields}
               sweepstakeId={sweepstakeId}
+              storeId={storeId}
             />
           </Container>
         </Fade>

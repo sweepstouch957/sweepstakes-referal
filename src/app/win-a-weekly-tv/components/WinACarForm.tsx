@@ -13,7 +13,8 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { registerParticipant } from "@/services/sweeptake.service";
 import Cookies from "js-cookie";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { fadeSlideIn } from "@/utils/animations";
 import { useRouter } from "next/navigation";
 
 import ReferralStepper from "@/components/RefferralForm";
@@ -52,6 +53,11 @@ export default function WinACarFormWithThankYou({
   const [isRegistred, setIsRegistered] = useState(false);
   const router = useRouter();
   const { t } = useTranslation();
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (cardRef.current) fadeSlideIn(cardRef.current, { delay: 180, duration: 650 });
+  }, []);
 
   const mutation = useMutation({
     mutationFn: registerParticipant,
@@ -158,7 +164,9 @@ export default function WinACarFormWithThankYou({
             )}
 
             <Box
+              ref={cardRef}
               sx={{
+                opacity: 0,
                 background: "linear-gradient(180deg, #fffafb 0%, #fff7fb 100%)",
                 borderRadius: { xs: 4, sm: 4.5 },
                 boxShadow: "0 12px 30px rgba(24, 32, 56, 0.12)",
@@ -210,6 +218,7 @@ export default function WinACarFormWithThankYou({
                 defaultStoreName={storeName}
                 showExtendedFields={showExtendedFields}
                 sweepstakeId={sweepstakeId}
+                storeId={storeId}
                 referralCodeNotice={t("form.referralCodeNotice")}
               />
             </Box>

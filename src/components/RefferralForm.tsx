@@ -7,6 +7,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useReferralStepper } from "@/hooks/useReferralStepper";
+import { useRef, useEffect } from "react";
+import { stepFadeIn } from "@/utils/animations";
 import PersonalInfoStep from "@/components/steps/PersonalInfoStep";
 import ReferralCodeStep from "@/components/steps/ReferralCodeStep";
 import OtpStep from "@/components/steps/OtpStep";
@@ -21,6 +23,7 @@ interface Props {
   defaultReferralCode?: string;
   defaultStoreName?: string;
   sweepstakeId?: string;
+  storeId?: string;
   isLoading?: boolean;
   backendError?: string | null;
   onClearError?: () => void;
@@ -34,6 +37,7 @@ export default function ReferralForm({
   defaultReferralCode = "",
   defaultStoreName = "",
   sweepstakeId,
+  storeId = "",
   isLoading = false,
   backendError,
   onClearError,
@@ -66,8 +70,13 @@ export default function ReferralForm({
     resendLeft,
     locked,
     success,
-  } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit);
+  } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit, storeId);
   const { t } = useTranslation();
+  const stepContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (stepContentRef.current) stepFadeIn(stepContentRef.current);
+  }, [activeStep]);
 
   const nextStep = async () => {
     if (disabled) return;
@@ -141,6 +150,7 @@ export default function ReferralForm({
       )}
 
       <Stack spacing={2.5} mt={3.5}>
+        <Box ref={stepContentRef}>
         {activeStep === 0 && <PersonalInfoStep form={form} />}
 
         {activeStep === 1 && (
@@ -177,6 +187,7 @@ export default function ReferralForm({
             isVerifying={isValidatingOtp}
           />
         )}
+        </Box>
 
         {activeStep === 0 && (
           <Box
@@ -218,7 +229,13 @@ export default function ReferralForm({
 
           {activeStep < 2 && (
             <CustomButton
-              onClick={nextStep}
+              id="referral-next-btn"
+              onClick={(e) => {
+                import("@/utils/animations").then(({ pulseButton }) =>
+                  pulseButton(e.currentTarget)
+                );
+                nextStep();
+              }}
               disabled={disabled || isLoading || isLoadingOtp}
               endIcon={
                 !isLoadingOtp ? (

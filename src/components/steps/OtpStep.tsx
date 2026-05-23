@@ -14,6 +14,8 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import { formatTimer } from "@/utils/formatTimer";
 import { useTranslation } from "react-i18next";
+import { useEffect, useRef } from "react";
+import { otpBoxIn, otpDigitPop } from "@/utils/animations";
 
 interface OtpStepProps {
   otp: string;
@@ -50,8 +52,25 @@ export default function OtpStep({
 }: Readonly<OtpStepProps>) {
   const { t } = useTranslation();
   const theme = useTheme();
+  const otpContainerRef = useRef<HTMLDivElement>(null);
+  const prevOtpLen = useRef(0);
+
+  useEffect(() => {
+    // Animate boxes in on first render
+    if (otpContainerRef.current) {
+      const inputs = otpContainerRef.current.querySelectorAll("input");
+      otpBoxIn(Array.from(inputs));
+    }
+  }, []);
 
   const handleChange = (val: string) => {
+    // Pop the newly-filled box
+    if (val.length > prevOtpLen.current && otpContainerRef.current) {
+      const inputs = otpContainerRef.current.querySelectorAll("input");
+      const filledIndex = val.length - 1;
+      if (inputs[filledIndex]) otpDigitPop(inputs[filledIndex]);
+    }
+    prevOtpLen.current = val.length;
     setOtp(val);
     if (val.length === 6 && onComplete) {
       onComplete();
@@ -122,6 +141,7 @@ export default function OtpStep({
         {t("otp.enterLabel")}
       </Typography>
 
+      <Box ref={otpContainerRef}>
       <OTPInput
         value={otp}
         onChange={handleChange}
@@ -159,6 +179,7 @@ export default function OtpStep({
           marginTop: 2,
         }}
       />
+      </Box>
 
       {success && (
         <Stack direction="row" alignItems="center" spacing={1} mt={0.5}>

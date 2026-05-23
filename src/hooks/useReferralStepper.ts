@@ -75,7 +75,8 @@ const debouncedSetCookie = debounce((data: FormData) => {
 export function useReferralStepper(
   defaultReferralCode = "",
   defaultStoreName = "",
-  onSubmit: (data: FormData) => void
+  onSubmit: (data: FormData) => void,
+  storeId = ""
 ) {
   const [activeStep, setActiveStep] = useState(0);
   const [otpSent, setOtpSent] = useState(false);
@@ -218,6 +219,7 @@ export function useReferralStepper(
       await otpService.sendOtp({
         phone: phoneWithCode,
         channel: "sms",
+        storeId: storeId || undefined,
       });
       setOtpSent(true);
       setResendTimer(OTP_COOLDOWN);

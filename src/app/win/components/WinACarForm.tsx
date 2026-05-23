@@ -140,6 +140,7 @@ export default function WinACarFormWithThankYou({
               defaultStoreName={storeName}
               showExtendedFields={showExtendedFields}
               sweepstakeId={sweepstakeId}
+              storeId={storeId}
               referralCodeNotice={t("form.referralCodeNotice")}
             />
           </Container>

@@ -7,7 +7,8 @@ import WinACarForm from "./components/WinACarForm";
 import Footer from "./components/Footer";
 import { useQuery } from "@tanstack/react-query";
 import { getStoreBySlug } from "@/services/store.service";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useRef } from "react";
+import { bannerIn, fadeSlideIn } from "@/utils/animations";
 import {
   Box,
   Container,
@@ -43,6 +44,12 @@ function StoreBanner({
   store?: Awaited<ReturnType<typeof getStoreBySlug>>;
   isLoading: boolean;
 }) {
+  const bannerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (store && bannerRef.current) bannerIn(bannerRef.current);
+  }, [store]);
+
   if (isLoading) {
     return (
       <Container maxWidth="sm" sx={{ mt: 0.2, mb: 0.15, px: 0 }}>
@@ -60,7 +67,9 @@ function StoreBanner({
   return (
     <Container maxWidth="sm" sx={{ mt: 0.2, mb: 0.15, px: 0 }}>
       <Box
+        ref={bannerRef}
         sx={{
+          opacity: 0,
           background: "linear-gradient(180deg, #ff2d96 0%, #ff1493 100%)",
           borderRadius: 2.5,
           p: 0,
