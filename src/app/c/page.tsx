@@ -353,8 +353,8 @@ function CampaignProfileContent() {
       <Box
         sx={{
           bgcolor: "#ffffff",
-          pt: 1.75,
-          pb: 1.5,
+          pt: 2.5,
+          pb: 2,
           display: "flex",
           justifyContent: "center",
           borderBottom: `2px solid ${primaryColor}18`,
@@ -363,8 +363,8 @@ function CampaignProfileContent() {
         <Logo
           src={theme.logoUrl || store.image || "/ctown.webp"}
           alt={store.name}
-          height={62}
-          width={{ xs: 190, sm: 240 }}
+          height={90}
+          width={{ xs: 260, sm: 320 }}
           disableZoom
         />
       </Box>
