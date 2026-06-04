@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Box,
@@ -200,11 +200,9 @@ function CampaignProfileContent() {
     }
   }, [profile]);
 
-  // Confetti on success — cleanup on unmount
   useEffect(() => {
     if (updateSuccess) {
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
-      return () => { confetti.reset(); };
     }
   }, [updateSuccess]);
 
@@ -239,9 +237,7 @@ function CampaignProfileContent() {
   const textOnPrimary = theme.textOnPrimary || "#FFFFFF";
   const footerBg = theme.footerBg || "#F8F9FA";
 
-  // Memoize styles that depend on primaryColor
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const fieldSx = useMemo(() => ({
+  const fieldSx = {
     "& .MuiOutlinedInput-root": {
       borderRadius: "12px",
       bgcolor: "#f8fafc",
@@ -251,7 +247,7 @@ function CampaignProfileContent() {
     },
     "& .MuiInputBase-input": { fontSize: "16px", color: "#0f172a", py: "11px", px: "13px" },
     "& .MuiInputLabel-root.Mui-focused": { color: primaryColor },
-  }), [primaryColor]);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
