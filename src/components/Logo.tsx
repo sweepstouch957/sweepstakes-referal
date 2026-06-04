@@ -9,6 +9,8 @@ type LogoProps = {
   alt?: string;
   /** Altura del contenedor en px */
   height?: number;
+  /** Ancho del contenedor (acepta valores responsivos de MUI) */
+  width?: number | string | object;
   /** Color de fondo */
   bgColor?: string;
   /** Si quieres desactivar el efecto zoom */
@@ -19,10 +21,11 @@ export default function Logo({
   src,
   alt = 'Logo',
   height = 150,
+  width,
   disableZoom = false,
 }: LogoProps) {
   return (
-    <Box sx={{ width: { xs: 80, sm: 140 } }}>
+    <Box sx={{ width: width ?? { xs: 80, sm: 140 } }}>
       <Box
         sx={{
           height,
