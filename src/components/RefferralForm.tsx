@@ -231,7 +231,12 @@ export default function ReferralForm({
             target="_blank"
             rel="noopener noreferrer"
             underline="hover"
-            sx={{ fontSize: 12.5, fontWeight: 500, color: "#9ca3af" }}
+            sx={{
+              fontSize: 12.5,
+              fontWeight: 600,
+              color: "#2563eb",
+              "&:hover": { color: "#1d4ed8" },
+            }}
           >
             {t("form.termsLink")}
           </Link>
@@ -241,7 +246,12 @@ export default function ReferralForm({
             target="_blank"
             rel="noopener noreferrer"
             underline="hover"
-            sx={{ fontSize: 12.5, fontWeight: 500, color: "#9ca3af" }}
+            sx={{
+              fontSize: 12.5,
+              fontWeight: 600,
+              color: "#2563eb",
+              "&:hover": { color: "#1d4ed8" },
+            }}
           >
             {t("form.privacyLink")}
           </Link>

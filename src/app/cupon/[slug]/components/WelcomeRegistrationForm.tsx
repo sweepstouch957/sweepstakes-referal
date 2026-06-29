@@ -417,7 +417,12 @@ export function WelcomeRegistrationForm({
                   target="_blank"
                   rel="noopener noreferrer"
                   underline="hover"
-                  sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
+                  sx={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "#2563eb",
+                    "&:hover": { color: "#1d4ed8" },
+                  }}
                 >
                   {t("welcomeCoupon.form.termsLink")}
                 </Link>
@@ -427,7 +432,12 @@ export function WelcomeRegistrationForm({
                   target="_blank"
                   rel="noopener noreferrer"
                   underline="hover"
-                  sx={{ fontSize: 13, fontWeight: 500, color: "#667085" }}
+                  sx={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "#2563eb",
+                    "&:hover": { color: "#1d4ed8" },
+                  }}
                 >
                   {t("welcomeCoupon.form.privacyLink")}
                 </Link>
