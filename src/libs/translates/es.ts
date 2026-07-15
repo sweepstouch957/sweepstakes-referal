@@ -81,6 +81,7 @@ const es = {
           max: "El apellido debe tener menos de 50 caracteres",
         },
         phone: "El número de teléfono debe tener el formato (123) 456-7890",
+        phoneRequired: "El teléfono es obligatorio",
         phoneRequiredIfSms: "El teléfono es obligatorio si activas los mensajes de texto",
         email: "Ingresa un correo electrónico válido",
         zip: "El código postal debe tener 5 dígitos",

@@ -10,6 +10,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getStoreBySlug } from "@/services/store.service";
+import { getActiveSweepstakeByStoreId } from "@/services/sweeptake.service";
 import { useTranslation } from "react-i18next";
 
 function StoreInfo() {
@@ -88,7 +89,51 @@ function StoreInfo() {
 }
 
 function HomeFormContainer() {
-  return <WinACarForm hideTitle stepperVariant="personalOnly" />;
+  const searchParams = useSearchParams();
+  const slug = searchParams.get("slug") || "";
+  const referralCode = searchParams.get("referralcode") || "";
+
+  const { data: store, isLoading: storeLoading } = useQuery({
+    queryKey: ["store", slug],
+    queryFn: () => getStoreBySlug(slug),
+    enabled: !!slug,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+  });
+
+  const storeId = store?._id || "";
+  const { data: sweepstake, isLoading: sweepstakeLoading } = useQuery({
+    queryKey: ["active-sweepstake", storeId],
+    queryFn: () => getActiveSweepstakeByStoreId(storeId),
+    enabled: !!storeId,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+  });
+
+  const configuredSweepstakeId = (
+    process.env.NEXT_PUBLIC_SWEEPSTAKE_ID ||
+    process.env.NEXT_PUBLIC_SWEEPSTAKE_ID_WEEKLY_TV ||
+    process.env.NEXT_PUBLIC_SWEEPSTAKE_ID_WIN_A_TV ||
+    ""
+  ).toString();
+
+  const sweepstakeId = slug
+    ? sweepstake?._id || sweepstake?.id || ""
+    : configuredSweepstakeId;
+
+  return (
+    <WinACarForm
+      hideTitle
+      stepperVariant="personalOnly"
+      tokenValue={referralCode}
+      storeName={store?.name || ""}
+      storeId={storeId}
+      slug={slug}
+      sweepstakeId={sweepstakeId}
+      showExtendedFields={!!storeId}
+      isLoading={storeLoading || sweepstakeLoading}
+    />
+  );
 }
 
 export default function Home() {

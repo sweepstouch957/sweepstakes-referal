@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Autocomplete,
   Box,
   Checkbox,
   Collapse,
@@ -20,10 +21,15 @@ import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumb
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import { FormData } from "@/hooks/useReferralStepper";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getStoresBySweepstake,
+  SweepstakeStoreOption,
+} from "@/services/store.service";
 
 const fieldSx = {
   "& .MuiInputLabel-root": {
@@ -56,10 +62,12 @@ export default function CombinedInfoStep({
   form,
   defaultReferralCode = "",
   showSupermarket = false,
+  sweepstakeId,
 }: {
   form: UseFormReturn<FormData, any, FormData>;
   defaultReferralCode?: string;
   showSupermarket?: boolean;
+  sweepstakeId?: string;
 }) {
   const {
     register,
@@ -74,6 +82,32 @@ export default function CombinedInfoStep({
   const { t } = useTranslation();
   const smsConsent = watch("smsConsent") ?? true;
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
+
+  const {
+    data: stores = [],
+    isLoading: isLoadingStores,
+    isSuccess: storesLoaded,
+  } = useQuery({
+    queryKey: ["sweepstake", "stores", sweepstakeId || "none"],
+    queryFn: () => getStoresBySweepstake(sweepstakeId as string),
+    enabled: showSupermarket && !!sweepstakeId,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const storesSafe: SweepstakeStoreOption[] = Array.isArray(stores) ? stores : [];
+
+  useEffect(() => {
+    if (!showSupermarket || !storesLoaded) return;
+
+    const selectedStoreId = form.getValues("supermarket");
+    if (
+      selectedStoreId &&
+      !storesSafe.some((store) => store._id === selectedStoreId)
+    ) {
+      setValue("supermarket", "");
+    }
+  }, [form, setValue, showSupermarket, storesLoaded, storesSafe]);
 
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, "").slice(0, 10);
@@ -129,7 +163,7 @@ export default function CombinedInfoStep({
       {/* ── Phone ── */}
       <TextField
         {...register("phone")}
-        label={t("form.phoneOptional")}
+        label={t("form.phone")}
         InputLabelProps={{ shrink: true }}
         error={!!errors.phone}
         helperText={errors.phone?.message}
@@ -198,6 +232,44 @@ export default function CombinedInfoStep({
           setValue("zip", e.target.value.replace(/\D/g, "").slice(0, 5))
         }
       />
+
+      {showSupermarket && (
+        <Controller
+          name="supermarket"
+          control={control}
+          render={({ field }) => (
+            <Autocomplete
+              options={storesSafe}
+              loading={isLoadingStores}
+              value={storesSafe.find((store) => store._id === field.value) || null}
+              onChange={(_, store) => {
+                field.onChange(store?._id || "");
+                if (store) clearErrors("supermarket");
+              }}
+              getOptionLabel={(store) => store.name}
+              isOptionEqualToValue={(option, value) => option._id === value._id}
+              disabled={!sweepstakeId}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={t("form.supermarket")}
+                  placeholder={t("form.selectSupermarket")}
+                  InputLabelProps={{ shrink: true }}
+                  error={!!errors.supermarket}
+                  helperText={
+                    errors.supermarket?.message ||
+                    (!sweepstakeId
+                      ? t("form.errors.supermarket.missingSweepstake")
+                      : undefined)
+                  }
+                  fullWidth
+                  sx={fieldSx}
+                />
+              )}
+            />
+          )}
+        />
+      )}
 
       {/* ── Referral Code ── */}
       <Box

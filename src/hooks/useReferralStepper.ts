@@ -219,7 +219,7 @@ export function useReferralStepper(
       await otpService.sendOtp({
         phone: phoneWithCode,
         channel: "sms",
-        storeId: storeId || undefined,
+        storeId: storeId || getValues("supermarket") || undefined,
       });
       setOtpSent(true);
       setResendTimer(OTP_COOLDOWN);
@@ -231,7 +231,7 @@ export function useReferralStepper(
     }
     setIsLoadingOtp(false);
     setIsResending(false);
-  }, [getValues]);
+  }, [getValues, storeId]);
 
   const handleFinalSubmit = useCallback(
     async (data: FormData) => {

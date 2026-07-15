@@ -84,13 +84,12 @@ export default function ReferralForm({
 
     if (activeStep === 0) {
       // Validate personal info
-      const smsConsent = getValues("smsConsent") ?? true;
       const phone = (getValues("phone") || "").trim();
 
-      if (smsConsent && !phone) {
+      if (!phone) {
         form.setError("phone", {
           type: "required",
-          message: t("form.errors.phoneRequiredIfSms"),
+          message: t("form.errors.phoneRequired"),
         });
         form.setFocus("phone");
         return;
@@ -98,6 +97,14 @@ export default function ReferralForm({
 
       const valid = await trigger(["firstName", "lastName", "phone", "email", "zip"]);
       if (!valid) return;
+
+      if (!storeId && !getValues("supermarket")) {
+        form.setError("supermarket", {
+          type: "required",
+          message: t("form.errors.supermarket.required"),
+        });
+        return;
+      }
 
       // Validate referral code if provided
       const code = getValues("referralCode");
@@ -110,12 +117,6 @@ export default function ReferralForm({
         }
       }
 
-      // If personalOnly variant, submit directly
-      if (stepperVariant === "personalOnly") {
-        form.handleSubmit(handleFinalSubmit)();
-        return;
-      }
-
       // Send OTP and advance to verification step
       setActiveStep(1);
       await handleSendOtp();
@@ -125,7 +126,13 @@ export default function ReferralForm({
   const prevStep = () => setActiveStep(0);
 
   return (
-    <Box component="form">
+    <Box
+      component="form"
+      onSubmit={(event) => {
+        event.preventDefault();
+        void nextStep();
+      }}
+    >
       {stepperVariant === "full" ? (
         <CustomReferralStepper activeStep={activeStep} variant="full" />
       ) : (
@@ -142,6 +149,7 @@ export default function ReferralForm({
               form={form}
               defaultReferralCode={defaultReferralCode}
               showSupermarket={!showExtendedFields}
+              sweepstakeId={sweepstakeId}
             />
 
             {referralError && (
@@ -192,11 +200,11 @@ export default function ReferralForm({
 
         {activeStep === 0 && (
           <CustomButton
+            type="submit"
             onClick={(e) => {
               import("@/utils/animations").then(({ pulseButton }) =>
                 pulseButton(e.currentTarget)
               );
-              nextStep();
             }}
             disabled={disabled || isLoading || isLoadingOtp || isValidatingReferral}
             endIcon={
@@ -207,8 +215,6 @@ export default function ReferralForm({
           >
             {isLoadingOtp || isValidatingReferral ? (
               <CircularProgress size={22} color="inherit" />
-            ) : stepperVariant === "personalOnly" ? (
-              t("common.submit")
             ) : (
               t("common.next")
             )}

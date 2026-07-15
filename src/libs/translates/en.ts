@@ -81,6 +81,7 @@ const en = {
           max: "Last name must be less than 50 characters",
         },
         phone: "Phone number must be in format (123) 456-7890",
+        phoneRequired: "Phone is required",
         phoneRequiredIfSms: "Phone is required when text messages are enabled",
         email: "Enter a valid email address",
         zip: "ZIP code must be 5 digits",
