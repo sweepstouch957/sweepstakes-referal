@@ -58,6 +58,7 @@ const en = {
       termsLink: "Terms and Conditions",
       privacyLink: "Privacy Policy",
       email: "Email",
+      emailPlaceholder: "gmail.com · outlook.com · hotmail.com · yahoo.com · icloud.com · sweepstouch.com",
       zip: "ZIP Code",
       referralCode: "Referral code",
       referralCodeNotice: "If not, you can click next step button.",

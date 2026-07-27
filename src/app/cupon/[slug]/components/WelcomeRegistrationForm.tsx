@@ -264,6 +264,7 @@ export function WelcomeRegistrationForm({
                 {...field}
                 id="coupon-email"
                 label={t("welcomeCoupon.form.email")}
+                placeholder={t("form.emailPlaceholder")}
                 fullWidth
                 type="email"
                 error={!!errors.email}

@@ -82,6 +82,9 @@ export default function CombinedInfoStep({
   const { t } = useTranslation();
   const smsConsent = watch("smsConsent") ?? true;
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
+  const [referralOpen, setReferralOpen] = useState(
+    () => !!(defaultReferralCode || form.getValues("referralCode"))?.trim()
+  );
 
   const {
     data: stores = [],
@@ -196,6 +199,7 @@ export default function CombinedInfoStep({
       <TextField
         {...register("email")}
         label={t("form.email")}
+        placeholder={t("form.emailPlaceholder")}
         InputLabelProps={{ shrink: true }}
         error={!!errors.email}
         helperText={errors.email?.message}
@@ -288,7 +292,24 @@ export default function CombinedInfoStep({
         }}
       >
         {/* Header */}
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.75 }}>
+        <Box
+          component="button"
+          type="button"
+          aria-expanded={referralOpen}
+          onClick={() => setReferralOpen((open) => !open)}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            mb: referralOpen ? 0.75 : 0,
+            p: 0,
+            border: 0,
+            bgcolor: "transparent",
+            cursor: "pointer",
+            textAlign: "left",
+          }}
+        >
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
             <ConfirmationNumberOutlinedIcon
               sx={{ fontSize: 14, color: defaultReferralCode ? "#ff1493" : "#9ca3af" }}
@@ -342,33 +363,49 @@ export default function CombinedInfoStep({
                 }}
               />
             )}
+            <Typography
+              component="span"
+              aria-hidden="true"
+              sx={{
+                ml: 0.25,
+                color: "#9ca3af",
+                fontSize: 18,
+                lineHeight: 1,
+                transform: referralOpen ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.2s ease",
+              }}
+            >
+              ▾
+            </Typography>
           </Box>
         </Box>
 
-        <TextField
-          {...register("referralCode")}
-          placeholder={t("form.referralCodePlaceholder")}
-          error={!!errors.referralCode}
-          defaultValue={defaultReferralCode}
-          helperText={errors.referralCode?.message}
-          fullWidth
-          variant="outlined"
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "10px",
-              bgcolor: "#fff",
-              "& fieldset": { borderColor: "#e5e7eb", borderWidth: "1.5px" },
-              "&:hover fieldset": { borderColor: "#fba8d0" },
-              "&.Mui-focused fieldset": { borderColor: "#ff1493", borderWidth: "2px" },
-            },
-            "& .MuiInputBase-input": {
-              py: "10px", fontSize: "0.93rem", fontWeight: 600,
-              color: "#1f2937", letterSpacing: "0.04em",
-              "&::placeholder": { color: "#9ca3af", fontWeight: 400, letterSpacing: "normal", fontSize: "0.8rem" },
-            },
-            "& .MuiFormHelperText-root": { mx: 0.5 },
-          }}
-        />
+        <Collapse in={referralOpen} timeout={200}>
+          <TextField
+            {...register("referralCode")}
+            placeholder={t("form.referralCodePlaceholder")}
+            error={!!errors.referralCode}
+            defaultValue={defaultReferralCode}
+            helperText={errors.referralCode?.message}
+            fullWidth
+            variant="outlined"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                bgcolor: "#fff",
+                "& fieldset": { borderColor: "#e5e7eb", borderWidth: "1.5px" },
+                "&:hover fieldset": { borderColor: "#fba8d0" },
+                "&.Mui-focused fieldset": { borderColor: "#ff1493", borderWidth: "2px" },
+              },
+              "& .MuiInputBase-input": {
+                py: "10px", fontSize: "0.93rem", fontWeight: 600,
+                color: "#1f2937", letterSpacing: "0.04em",
+                "&::placeholder": { color: "#9ca3af", fontWeight: 400, letterSpacing: "normal", fontSize: "0.8rem" },
+              },
+              "& .MuiFormHelperText-root": { mx: 0.5 },
+            }}
+          />
+        </Collapse>
       </Box>
 
       {/* ── SMS Consent (checkbox below as requested) ── */}
