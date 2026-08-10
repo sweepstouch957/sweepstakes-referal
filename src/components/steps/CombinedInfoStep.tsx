@@ -81,7 +81,6 @@ export default function CombinedInfoStep({
 
   const { t } = useTranslation();
   const smsConsent = watch("smsConsent") ?? true;
-  const [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const [referralOpen, setReferralOpen] = useState(
     () => !!(defaultReferralCode || form.getValues("referralCode"))?.trim()
   );
@@ -449,24 +448,9 @@ export default function CombinedInfoStep({
             />
           )}
         />
-        <Collapse in={disclaimerOpen}>
-          <Typography sx={{ fontSize: "0.67rem", color: "#9ca3af", lineHeight: 1.5, mt: 0.5, ml: "28px" }}>
-            {t("form.smsConsentDisclaimer")}
-          </Typography>
-        </Collapse>
-        <Box
-          component="button"
-          type="button"
-          onClick={() => setDisclaimerOpen((v) => !v)}
-          sx={{
-            background: "none", border: "none", cursor: "pointer",
-            fontSize: "0.68rem", color: "#d1b3c8", ml: "28px", mt: 0.25,
-            p: 0, display: "block", textDecoration: "underline",
-            "&:hover": { color: "#9ca3af" },
-          }}
-        >
-          {disclaimerOpen ? t("common.hideTerms") : t("common.seeTerms")}
-        </Box>
+        <Typography sx={{ fontSize: "0.67rem", color: "#9ca3af", lineHeight: 1.5, mt: 0.5, ml: "28px" }}>
+          {t("form.smsConsentDisclaimer")}
+        </Typography>
       </Box>
 
     </Box>

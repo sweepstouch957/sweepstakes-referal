@@ -10,8 +10,6 @@ const es = {
       prev: "Anterior",
       optional: "opcional",
       note: "Nota:",
-      seeTerms: "Ver términos ↓",
-      hideTerms: "Ocultar ↑",
     },
     referralStep: {
       step1: "Tu Información",

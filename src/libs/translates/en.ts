@@ -10,8 +10,6 @@ const en = {
       prev: "Previous",
       optional: "optional",
       note: "Note:",
-      seeTerms: "See full terms ↓",
-      hideTerms: "Hide terms ↑",
     },
     referralStep: {
       step1: "Your Information",
