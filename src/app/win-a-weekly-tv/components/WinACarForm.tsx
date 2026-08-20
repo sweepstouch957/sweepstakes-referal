@@ -166,7 +166,9 @@ export default function WinACarFormWithThankYou({
             <Box
               ref={cardRef}
               sx={{
-                opacity: 0,
+                // Keep the form visible if the entrance animation cannot run.
+                // anime.js applies its own initial opacity when the effect starts.
+                opacity: 1,
                 background: "linear-gradient(180deg, #fffafb 0%, #fff7fb 100%)",
                 borderRadius: { xs: 4, sm: 4.5 },
                 boxShadow: "0 12px 30px rgba(24, 32, 56, 0.12)",
