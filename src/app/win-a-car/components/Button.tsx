@@ -20,20 +20,20 @@ export default function CustomButton(props: CustomButtonProps) {
           fontSize: 16,
           boxShadow: variant === "contained" ? "0 12px 26px rgba(255, 20, 147, 0.28)" : "none",
           ...(variant === "contained" && {
-            background: "linear-gradient(180deg, #ff1493 0%, #ff007f 100%)",
+            background: "var(--optin-fill, linear-gradient(180deg, #ff1493 0%, #ff007f 100%))",
             color: "#fff",
             "&:hover": {
-              background: "linear-gradient(180deg, #f5128f 0%, #ea0077 100%)",
+              background: "var(--optin-fill, linear-gradient(180deg, #f5128f 0%, #ea0077 100%))",
               boxShadow: "0 14px 30px rgba(255, 20, 147, 0.34)",
             },
           }),
           ...(variant === "outlined" && {
             backgroundColor: "#fff",
-            color: "#ff1493",
-            border: "2px solid #ff1493",
+            color: "var(--optin-pink, #ff1493)",
+            border: "2px solid var(--optin-pink, #ff1493)",
             "&:hover": {
-              backgroundColor: "#fff5fa",
-              border: "2px solid #ff1493",
+              backgroundColor: "var(--optin-surface, #fff5fa)",
+              border: "2px solid var(--optin-pink, #ff1493)",
             },
           }),
         },

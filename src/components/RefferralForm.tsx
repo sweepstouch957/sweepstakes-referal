@@ -19,6 +19,8 @@ import { useTranslation } from "react-i18next";
 import { stepFadeIn } from "@/utils/animations";
 
 interface Props {
+  compact?: boolean;
+  skipOtpVerification?: boolean;
   stepperVariant?: "full" | "personalOnly";
   onSubmit: (data: FormData) => void;
   defaultReferralCode?: string;
@@ -35,6 +37,8 @@ interface Props {
 
 export default function ReferralForm({
   onSubmit,
+  compact = false,
+  skipOtpVerification = false,
   defaultReferralCode = "",
   defaultStoreName = "",
   sweepstakeId,
@@ -47,6 +51,7 @@ export default function ReferralForm({
   stepperVariant = "full",
 }: Props) {
   const {
+    clearFormCookies,
     activeStep,
     setActiveStep,
     handeSetOtp,
@@ -117,6 +122,14 @@ export default function ReferralForm({
         }
       }
 
+      if (skipOtpVerification) {
+        await form.handleSubmit((data) => {
+          clearFormCookies();
+          onSubmit(data);
+        })();
+        return;
+      }
+
       // Send OTP and advance to verification step
       setActiveStep(1);
       await handleSendOtp();
@@ -146,6 +159,7 @@ export default function ReferralForm({
         {activeStep === 0 && (
           <>
             <CombinedInfoStep
+              compact={compact}
               form={form}
               defaultReferralCode={defaultReferralCode}
               showSupermarket={!showExtendedFields}

@@ -16,10 +16,10 @@ const CustomConnector = styled(StepConnector)(() => ({
     top: 23,
   },
   [`&.${stepConnectorClasses.active} .${stepConnectorClasses.line}`]: {
-    background: "linear-gradient(90deg, #e4007f 0%, #ff1493 100%)",
+    background: "var(--optin-fill, linear-gradient(90deg, #e4007f 0%, #ff1493 100%))",
   },
   [`&.${stepConnectorClasses.completed} .${stepConnectorClasses.line}`]: {
-    background: "linear-gradient(90deg, #e4007f 0%, #ff1493 100%)",
+    background: "var(--optin-fill, linear-gradient(90deg, #e4007f 0%, #ff1493 100%))",
   },
   [`& .${stepConnectorClasses.line}`]: {
     height: 3,
@@ -45,13 +45,13 @@ const CustomStepIconRoot = styled("div")<{
   boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
   border: "3px solid transparent",
   ...(ownerState.active && {
-    background: "linear-gradient(145deg, #ff1493 0%, #e4007f 100%)",
+    background: "var(--optin-fill, linear-gradient(145deg, #ff1493 0%, #e4007f 100%))",
     color: "#ffffff",
     borderColor: "rgba(255,20,147,0.2)",
     boxShadow: "0 6px 20px rgba(228,0,127,0.30)",
   }),
   ...(ownerState.completed && {
-    background: "linear-gradient(145deg, #ff1493 0%, #e4007f 100%)",
+    background: "var(--optin-fill, linear-gradient(145deg, #ff1493 0%, #e4007f 100%))",
     color: "#ffffff",
     boxShadow: "0 4px 12px rgba(228,0,127,0.22)",
   }),

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -9,7 +9,6 @@ import {
   Typography,
   Stack,
   Avatar,
-  Chip,
   Fade,
   Skeleton,
   Paper,
@@ -17,13 +16,11 @@ import {
 } from "@mui/material";
 import PlaceIcon from "@mui/icons-material/Place";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import Cookies from "js-cookie";
 
 import Navbar from "@/app/win-a-car/components/Navbar";
 import WinACarForm from "@/app/win-a-car/components/WinACarForm";
 import Footer from "@/app/win-a-car/components/Footer";
-import DynamicHeroBanner from "@/components/DynamicHeroBanner";
 import { getStoreBySlug } from "@/services/store.service";
 import { getActiveSweepstakeByStoreId } from "@/services/sweeptake.service";
 
@@ -39,13 +36,6 @@ function removeStoreNameFromAddress(address?: string, storeName?: string) {
   if (!raw || !clean) return raw;
   const esc = clean.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   return raw.replace(new RegExp(`^${esc}\\s*`, "i"), "").trim();
-}
-
-/** Ensures hex has 6 digits and prepends # if missing. Falls back to default. */
-function safeColor(color?: string, fallback = "#ff4b9b") {
-  if (!color) return fallback;
-  const c = color.startsWith("#") ? color : `#${color}`;
-  return /^#[0-9a-fA-F]{3,8}$/.test(c) ? c : fallback;
 }
 
 /** Extract first prize id regardless of populated vs id-only */
@@ -68,7 +58,7 @@ function StoreBadge({
 }) {
   if (isLoading) {
     return (
-      <Container maxWidth="sm" sx={{ mt: -3, position: "relative", zIndex: 10 }}>
+      <Container maxWidth="sm" sx={{ mt: { xs: 0.75, sm: 2 }, position: "relative", zIndex: 10 }}>
         <Skeleton variant="rounded" height={72} sx={{ borderRadius: 3 }} />
       </Container>
     );
@@ -80,7 +70,7 @@ function StoreBadge({
   const fullAddr = [addr, store.zipCode].filter(Boolean).join(", ");
 
   return (
-    <Container maxWidth="sm" sx={{ mt: -3.5, position: "relative", zIndex: 10, px: { xs: 2, sm: 3 } }}>
+    <Container maxWidth="sm" sx={{ mt: { xs: 0.75, sm: 2 }, position: "relative", zIndex: 10, px: { xs: 1.5, sm: 3 } }}>
       <Paper
         elevation={6}
         sx={{
@@ -90,13 +80,13 @@ function StoreBadge({
           boxShadow: `0 8px 32px ${mainColor}28`,
         }}
       >
-        <Stack direction="row" spacing={1.5} alignItems="center" sx={{ p: 1.5 }}>
+        <Stack direction="row" spacing={1.5} alignItems="center" sx={{ p: { xs: 0.75, sm: 1.5 } }}>
           <Avatar
             src={store.image || undefined}
             alt={shortName || store.name}
             sx={{
-              width: { xs: 56, sm: 64 },
-              height: { xs: 56, sm: 64 },
+              width: { xs: 36, sm: 64 },
+              height: { xs: 36, sm: 64 },
               border: `2.5px solid ${mainColor}`,
               bgcolor: `${mainColor}15`,
               flexShrink: 0,
@@ -136,93 +126,21 @@ function StoreBadge({
 }
 
 // ─── Sweepstake info strip ────────────────────────────────────────────────────
-function SweepstakeInfoStrip({
-  name,
-  drawDate,
-  mainColor,
-  secondaryColor,
-  isLoading,
-}: {
-  name?: string;
-  drawDate?: string;
-  mainColor: string;
-  secondaryColor: string;
-  isLoading: boolean;
-}) {
-  if (isLoading) {
-    return (
-      <Container maxWidth="sm" sx={{ mt: 2, px: { xs: 2, sm: 3 } }}>
-        <Skeleton variant="rounded" height={56} sx={{ borderRadius: 3 }} />
-      </Container>
-    );
-  }
-  if (!name) return null;
-
-  const formattedDate = drawDate
-    ? new Date(drawDate).toLocaleDateString("es-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : null;
-
-  return (
-    <Container maxWidth="sm" sx={{ mt: 2, px: { xs: 2, sm: 3 } }}>
-      <Box
-        sx={{
-          borderRadius: 3,
-          background: `linear-gradient(135deg, ${mainColor} 0%, ${secondaryColor} 100%)`,
-          p: { xs: 1.5, sm: 2 },
-          color: "#fff",
-        }}
-      >
-        <Stack direction="row" spacing={1.5} alignItems="center" flexWrap="wrap" gap={1}>
-          <EmojiEventsIcon sx={{ fontSize: 22, flexShrink: 0 }} />
-          <Typography fontWeight={700} sx={{ fontSize: { xs: 13, sm: 15 }, flex: 1 }}>
-            {name}
-          </Typography>
-          {formattedDate && (
-            <Chip
-              icon={<CalendarTodayIcon sx={{ fontSize: 13, color: "#fff !important" }} />}
-              label={formattedDate}
-              size="small"
-              sx={{
-                bgcolor: "rgba(255,255,255,0.22)",
-                color: "#fff",
-                fontSize: 11,
-                fontWeight: 600,
-                border: "1px solid rgba(255,255,255,0.35)",
-                "& .MuiChip-icon": { color: "#fff" },
-              }}
-            />
-          )}
-        </Stack>
-      </Box>
-    </Container>
-  );
-}
-
-// ─── Section heading ──────────────────────────────────────────────────────────
 function SectionHeading({
   mainColor,
-  secondaryColor,
 }: {
   mainColor: string;
-  secondaryColor: string;
 }) {
   return (
-    <Container maxWidth="sm" sx={{ mt: 3, mb: 1, px: { xs: 2, sm: 3 } }}>
-      <Stack alignItems="center" spacing={1}>
+    <Container maxWidth="sm" sx={{ mt: { xs: 1, sm: 3 }, mb: { xs: 0, sm: 1 }, px: { xs: 1.5, sm: 3 } }}>
+      <Stack alignItems="center" spacing={0.5}>
         <Typography
           variant="h5"
           fontWeight={900}
           textAlign="center"
           sx={{
-            background: `linear-gradient(135deg, ${mainColor}, ${secondaryColor})`,
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            fontSize: { xs: "1.4rem", sm: "1.75rem" },
+            color: mainColor,
+            fontSize: { xs: "1.15rem", sm: "1.75rem" },
             lineHeight: 1.15,
           }}
         >
@@ -230,12 +148,13 @@ function SectionHeading({
         </Typography>
         <Typography
           textAlign="center"
-          sx={{ color: "#64748b", fontSize: { xs: 13, sm: 15 }, maxWidth: 380 }}
+          sx={{ color: "#64748b", fontSize: { xs: 11, sm: 15 }, lineHeight: 1.3, maxWidth: 380 }}
         >
           Completa el formulario para entrar al sorteo. Comparte tu link y aumenta tus chances.
         </Typography>
         <Divider
           sx={{
+            display: { xs: "none", sm: "block" },
             mt: 1,
             width: 60,
             borderWidth: 2.5,
@@ -280,54 +199,36 @@ function OptinPageInner() {
     if (store?._id) Cookies.set("storeId", store._id);
   }, [store]);
 
-  // Derive brand colors safely
-  const mainColor = useMemo(
-    () => safeColor(sweepstake?.mainColor, "#ff4b9b"),
-    [sweepstake?.mainColor]
-  );
-  const secondaryColor = useMemo(
-    () => safeColor(sweepstake?.secondaryColor, "#c8104f"),
-    [sweepstake?.secondaryColor]
-  );
+  const mainColor = "#E8127F";
 
   const sweepstakeId = sweepstake?._id || sweepstake?.id || "";
   const prizeId = getFirstPrizeId(sweepstake?.prizes as string[]);
 
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column", bgcolor: "#f8f9fc" }}>
+    <Box sx={{
+      "--optin-pink": "#E8127F",
+      "--optin-fill": "#E8127F",
+      "--optin-surface": "#fff",
+      minHeight: "100svh", width: "100%", minWidth: 0,
+      display: "flex", flexDirection: "column", bgcolor: "#f8f9fc",
+      pt: { xs: "56px", sm: "64px" },
+      pb: "env(safe-area-inset-bottom)",
+      "& > .MuiAppBar-root": { color: "#E8127F" },
+      "& .MuiToggleButton-root.Mui-selected, & .MuiToggleButton-root.Mui-selected:hover": { bgcolor: "#E8127F" },
+      "& > .MuiAppBar-root .MuiToolbar-root": { px: { xs: 0, sm: 2 } },
+      "& > .MuiAppBar-root img": { maxWidth: "45vw", height: "auto" },
+    }}>
       {/* Navbar */}
       <Navbar hideActions hideMobileMenu />
 
-      {/* Hero Banner */}
-      <Box sx={{ mt: { xs: 7, md: 8 } }}>
-        <DynamicHeroBanner
-          desktopSrc={sweepstake?.bannerDesktop}
-          mobileSrc={sweepstake?.bannerMobile}
-          mainColor={mainColor}
-          secondaryColor={secondaryColor}
-          isLoading={sweepLoading}
-          desktopHeight="80vh"
-          mobileHeight="50vh"
-          overlayOpacity={0.2}
-        />
-      </Box>
-
-      {/* Store badge (overlapping hero) */}
+      {/* Store badge below the fixed navbar */}
       <StoreBadge store={store} isLoading={storeLoading} mainColor={mainColor} />
 
-      {/* Sweepstake info bar */}
-      <SweepstakeInfoStrip
-        name={sweepstake?.name}
-        drawDate={sweepstake?.drawDate}
-        mainColor={mainColor}
-        secondaryColor={secondaryColor}
-        isLoading={sweepLoading}
-      />
-
+      <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, py: 0.5 }}>
       {/* Section heading */}
       <Fade in={!isLoading} timeout={500}>
         <Box>
-          <SectionHeading mainColor={mainColor} secondaryColor={secondaryColor} />
+          <SectionHeading mainColor={mainColor} />
         </Box>
       </Fade>
 
@@ -335,10 +236,19 @@ function OptinPageInner() {
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
-          pb: { xs: 4, md: 6 },
+          flexGrow: 0,
+          pb: 0,
+          minWidth: 0,
+          "& #form": { bgcolor: "transparent" },
+          "& #form > .MuiContainer-root": { mt: { xs: 1, sm: 3 }, mb: 0.5, px: { xs: 1.5, sm: 3 } },
+          "& #form > .MuiContainer-root > .MuiBox-root": { p: { xs: 1.5, sm: 3.5 } },
+          "& form > .MuiStack-root:first-of-type": { display: { xs: "none", sm: "flex" } },
+          "& form > .MuiBox-root": { mt: { xs: 0, sm: 2.5 } },
+          "& form > .MuiStack-root": { mt: { xs: 0.75, sm: 2.5 } },
+          "& form .MuiButton-root": { minHeight: 44, py: 0.75, boxShadow: "none !important" },
+          "& .MuiInputBase-input": { fontSize: "16px", py: { xs: "8px", sm: "11px" }, minWidth: 0 },
           "& .MuiButton-containedPrimary": {
-            background: `linear-gradient(135deg, ${mainColor}, ${secondaryColor}) !important`,
+            background: `${mainColor} !important`,
             boxShadow: `0 4px 18px ${mainColor}44 !important`,
           },
           "& .MuiStepIcon-root.Mui-active": { color: `${mainColor} !important` },
@@ -346,7 +256,7 @@ function OptinPageInner() {
         }}
       >
         {isLoading ? (
-          <Container maxWidth="sm" sx={{ my: 4, px: { xs: 2, sm: 3 } }}>
+          <Container maxWidth="sm" sx={{ my: 4, px: { xs: 1.5, sm: 3 } }}>
             {[1, 2, 3, 4].map((i) => (
               <Skeleton key={i} variant="rounded" height={56} sx={{ mb: 2, borderRadius: 2 }} />
             ))}
@@ -361,12 +271,14 @@ function OptinPageInner() {
             storeId={store?._id || Cookies.get("storeId") || ""}
             sweepstakeId={sweepstakeId}
             hideTitle
+            compact
+            stepperVariant="full"
             thankYouPath="/optin/thank-you"
             prizeId={prizeId}
           />
         ) : (
           // No active sweepstake found
-          <Container maxWidth="sm" sx={{ my: 6, px: { xs: 2, sm: 3 } }}>
+          <Container maxWidth="sm" sx={{ my: 6, px: { xs: 1.5, sm: 3 } }}>
             <Paper
               elevation={0}
               sx={{
@@ -391,7 +303,9 @@ function OptinPageInner() {
         )}
       </Box>
 
-      <Footer />
+      </Box>
+
+      <Box sx={{ flexShrink: 0, minHeight: 80, bgcolor: mainColor, display: "flex", flexDirection: "column", justifyContent: "center" }}><Footer compact /></Box>
     </Box>
   );
 }
@@ -402,8 +316,7 @@ export default function OptinPage() {
     <Suspense
       fallback={
         <Box sx={{ minHeight: "100vh", bgcolor: "#f8f9fc" }}>
-          <Skeleton variant="rectangular" height="50vh" width="100%" />
-          <Container maxWidth="sm" sx={{ mt: 3 }}>
+          <Container maxWidth="sm" sx={{ mt: { xs: 0.75, sm: 2 } }}>
             <Skeleton variant="rounded" height={72} sx={{ mb: 2, borderRadius: 3 }} />
             <Skeleton variant="rounded" height={56} sx={{ mb: 2, borderRadius: 3 }} />
             {[1, 2, 3, 4].map((i) => (

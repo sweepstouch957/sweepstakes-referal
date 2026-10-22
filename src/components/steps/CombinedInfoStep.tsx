@@ -36,14 +36,14 @@ const fieldSx = {
     fontSize: "0.85rem",
     fontWeight: 600,
     color: "#6b7280",
-    "&.Mui-focused": { color: "#ff1493" },
+    "&.Mui-focused": { color: "var(--optin-pink, #ff1493)" },
   },
   "& .MuiOutlinedInput-root": {
     borderRadius: "12px",
     backgroundColor: "#fafafa",
     "& fieldset": { borderColor: "#e5e7eb", borderWidth: "1.5px" },
-    "&:hover fieldset": { borderColor: "#fba8d0" },
-    "&.Mui-focused fieldset": { borderColor: "#ff1493", borderWidth: "2px" },
+    "&:hover fieldset": { borderColor: "var(--optin-pink, #fba8d0)" },
+    "&.Mui-focused fieldset": { borderColor: "var(--optin-pink, #ff1493)", borderWidth: "2px" },
     "&.Mui-error fieldset": { borderColor: "#ef4444" },
   },
   "& .MuiInputBase-input": {
@@ -59,11 +59,13 @@ const fieldSx = {
 };
 
 export default function CombinedInfoStep({
+  compact = false,
   form,
   defaultReferralCode = "",
   showSupermarket = false,
   sweepstakeId,
 }: {
+  compact?: boolean;
   form: UseFormReturn<FormData, any, FormData>;
   defaultReferralCode?: string;
   showSupermarket?: boolean;
@@ -120,11 +122,11 @@ export default function CombinedInfoStep({
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: compact ? "10px" : "12px", minWidth: 0 }}>
 
       {/* ── Name row ── */}
       <Grid container spacing={1.5}>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid size={{ xs: 12, sm: compact ? 12 : 6 }}>
           <TextField
             {...register("firstName")}
             label={t("form.firstName")}
@@ -142,7 +144,7 @@ export default function CombinedInfoStep({
             }}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid size={{ xs: 12, sm: compact ? 12 : 6 }}>
           <TextField
             {...register("lastName")}
             label={t("form.lastName")}
@@ -278,14 +280,14 @@ export default function CombinedInfoStep({
       <Box
         sx={{
           border: "1.5px dashed",
-          borderColor: defaultReferralCode ? "#ff1493" : "#e5e7eb",
+          borderColor: defaultReferralCode ? "var(--optin-pink, #ff1493)" : "#e5e7eb",
           borderRadius: "13px",
-          p: 1.5,
-          bgcolor: defaultReferralCode ? "#fff5fa" : "#fafafa",
+          p: compact ? 0.75 : 1.5,
+          bgcolor: defaultReferralCode ? "var(--optin-surface, #fff5fa)" : "#fafafa",
           transition: "border-color 0.2s, background 0.2s",
           "&:focus-within": {
-            borderColor: "#ff1493",
-            bgcolor: "#fff5fa",
+            borderColor: "var(--optin-pink, #ff1493)",
+            bgcolor: "var(--optin-surface, #fff5fa)",
             borderStyle: "solid",
           },
         }}
@@ -311,7 +313,7 @@ export default function CombinedInfoStep({
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
             <ConfirmationNumberOutlinedIcon
-              sx={{ fontSize: 14, color: defaultReferralCode ? "#ff1493" : "#9ca3af" }}
+              sx={{ fontSize: 14, color: defaultReferralCode ? "var(--optin-pink, #ff1493)" : "#9ca3af" }}
             />
             <Typography sx={{ fontWeight: 700, fontSize: "0.82rem", color: "#374151" }}>
               {t("form.referralCodeLabel")}
@@ -339,13 +341,13 @@ export default function CombinedInfoStep({
             </Tooltip>
           </Box>
 
-          <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+          <Box sx={{ display: "flex", gap: 0.5, alignItems: "center", flexShrink: 0 }}>
             <Chip
               icon={<EmojiEventsOutlinedIcon sx={{ fontSize: "11px !important", color: "#d97706 !important" }} />}
               label={t("form.referralBonusChip")}
               size="small"
               sx={{
-                bgcolor: "#fffbeb", color: "#92400e", fontWeight: 700, fontSize: "0.67rem",
+                display: compact ? "none" : "inline-flex", bgcolor: "#fffbeb", color: "#92400e", fontWeight: 700, fontSize: "0.67rem",
                 border: "1px solid #fde68a", height: 19,
                 "& .MuiChip-icon": { color: "#d97706" },
               }}
@@ -393,8 +395,8 @@ export default function CombinedInfoStep({
                 borderRadius: "10px",
                 bgcolor: "#fff",
                 "& fieldset": { borderColor: "#e5e7eb", borderWidth: "1.5px" },
-                "&:hover fieldset": { borderColor: "#fba8d0" },
-                "&.Mui-focused fieldset": { borderColor: "#ff1493", borderWidth: "2px" },
+                "&:hover fieldset": { borderColor: "var(--optin-pink, #fba8d0)" },
+                "&.Mui-focused fieldset": { borderColor: "var(--optin-pink, #ff1493)", borderWidth: "2px" },
               },
               "& .MuiInputBase-input": {
                 py: "10px", fontSize: "0.93rem", fontWeight: 600,
@@ -410,11 +412,11 @@ export default function CombinedInfoStep({
       {/* ── SMS Consent (checkbox below as requested) ── */}
       <Box
         sx={{
-          bgcolor: "#fff8fc",
-          border: "1.5px solid #fce7f3",
+          bgcolor: "var(--optin-surface, #fff8fc)",
+          border: "1.5px solid var(--optin-pink, #fce7f3)",
           borderRadius: "12px",
-          px: 1.75,
-          py: 0.75,
+          px: compact ? 0.75 : 1.75,
+          py: compact ? 0.5 : 0.75,
         }}
       >
         <Controller
@@ -432,8 +434,8 @@ export default function CombinedInfoStep({
                   }}
                   size="small"
                   sx={{
-                    color: "#ff1493",
-                    "&.Mui-checked": { color: "#ff1493" },
+                    color: "var(--optin-pink, #ff1493)",
+                    "&.Mui-checked": { color: "var(--optin-pink, #ff1493)" },
                     py: 0.25,
                     pr: 0.5,
                   }}
@@ -448,7 +450,7 @@ export default function CombinedInfoStep({
             />
           )}
         />
-        <Typography sx={{ fontSize: "0.67rem", color: "#9ca3af", lineHeight: 1.5, mt: 0.5, ml: "28px" }}>
+        <Typography sx={{ fontSize: "0.67rem", color: "#9ca3af", lineHeight: compact ? 1.2 : 1.5, mt: compact ? 0.25 : 0.5, ml: "28px" }}>
           {t("form.smsConsentDisclaimer")}
         </Typography>
       </Box>

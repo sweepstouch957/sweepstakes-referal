@@ -22,6 +22,8 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/libs/context/LanguageContext";
 
 interface Props {
+  compact?: boolean;
+  skipOtpVerification?: boolean;
   showExtendedFields?: boolean;
   tokenValue?: string;
   storeName?: string;
@@ -39,6 +41,8 @@ interface Props {
 }
 
 export default function WinACarFormWithThankYou({
+  compact = false,
+  skipOtpVerification = false,
   showExtendedFields = false,
   tokenValue = "",
   storeName = "",
@@ -155,6 +159,8 @@ export default function WinACarFormWithThankYou({
               }}
             >
               <ReferralStepper stepperVariant={stepperVariant}
+                compact={compact}
+                skipOtpVerification={skipOtpVerification}
                 onSubmit={handleFormSubmit}
                 isLoading={mutation.isPending}
                 backendError={backendError}

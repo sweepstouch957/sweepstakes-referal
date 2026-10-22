@@ -11,22 +11,30 @@ import {
 import { Facebook, Instagram, LinkedIn } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 
-export default function Footer() {
+export default function Footer({ compact = false }: { compact?: boolean }) {
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Box sx={{ backgroundColor: "#ff4b9b", color: "#fff", pt: 4, pb: 3 }}>
+    <Box component="footer" sx={{
+      backgroundColor: compact ? "#E8127F" : "#ff4b9b",
+      color: "#fff", pt: compact ? 0.75 : 4, pb: compact ? 0.75 : 3,
+      flexShrink: 0,
+      ...(compact && {
+        "& .MuiIconButton-root": { p: 0.5 },
+        "& .MuiSvgIcon-root": { fontSize: 18 },
+      }),
+    }}>
       <Container maxWidth="lg">
         <Stack
-          direction={isSmall ? "column" : "row"}
+          direction={compact ? "row" : isSmall ? "column" : "row"}
           justifyContent="space-between"
           alignItems="center"
-          spacing={2}
+          spacing={compact ? 0.5 : 2}
           textAlign={isSmall ? "center" : "left"}
         >
           <Box>
-            <Typography variant="body1">📧 info@sweepstouch.com</Typography>
+            <Typography variant="body1" sx={{ fontSize: compact ? 12 : undefined }}>📧 info@sweepstouch.com</Typography>
           </Box>
 
           <Stack direction="row" spacing={1} justifyContent="center">
@@ -69,8 +77,8 @@ export default function Footer() {
           </Stack>
         </Stack>
 
-        <Box mt={3} textAlign="center">
-          <Typography variant="caption" color="white">
+        <Box mt={compact ? 0.25 : 3} textAlign="center">
+          <Typography variant="caption" color="white" sx={{ fontSize: compact ? 10 : undefined, display: "block", lineHeight: compact ? 1.3 : undefined }}>
             © {new Date().getFullYear()} Sweepstouch. All rights reserved.
           </Typography>
         </Box>

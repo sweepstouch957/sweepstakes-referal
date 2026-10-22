@@ -31,16 +31,9 @@ import { Email, Sms, X } from "@mui/icons-material";
 import { useState, useMemo } from "react";
 
 import Navbar from "@/app/win-a-car/components/Navbar";
-import DynamicHeroBanner from "@/components/DynamicHeroBanner";
 import { getReferralLinkByStore, getActiveSweepstakeByStoreId, getPrizeById, Prize } from "@/services/sweeptake.service";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
-function safeColor(color?: string, fallback = "#ff4b9b") {
-  if (!color) return fallback;
-  const c = color.startsWith("#") ? color : `#${color}`;
-  return /^#[0-9a-fA-F]{3,8}$/.test(c) ? c : fallback;
-}
-
 function getFirstPrizeId(prizes?: string[] | Record<string, unknown>[]): string {
   if (!prizes || prizes.length === 0) return "";
   const first = prizes[0];
@@ -49,7 +42,7 @@ function getFirstPrizeId(prizes?: string[] | Record<string, unknown>[]): string 
 }
 
 // ─── Centered loader ──────────────────────────────────────────────────────────
-function CenteredLoader({ text = "Cargando...", color = "#ff4b9b" }: { text?: string; color?: string }) {
+function CenteredLoader({ text = "Cargando...", color = "#E8127F" }: { text?: string; color?: string }) {
   return (
     <Box
       sx={{
@@ -76,17 +69,15 @@ function PrizeSection({
   prize,
   isLoading,
   mainColor,
-  secondaryColor,
 }: {
   prize?: Prize | null;
   isLoading: boolean;
   mainColor: string;
-  secondaryColor: string;
 }) {
   if (isLoading) {
     return (
-      <Box sx={{ mt: 3 }}>
-        <Skeleton variant="rounded" height={200} sx={{ borderRadius: 3 }} />
+      <Box sx={{ mt: { xs: 1, sm: 3 } }}>
+        <Skeleton variant="rounded" height={80} sx={{ borderRadius: 3 }} />
       </Box>
     );
   }
@@ -94,8 +85,8 @@ function PrizeSection({
 
   return (
     <Fade in timeout={700}>
-      <Box sx={{ mt: 3 }}>
-        <Divider sx={{ mb: 2.5 }}>
+      <Box sx={{ mt: { xs: 1, sm: 3 } }}>
+        <Divider sx={{ mb: { xs: 1, sm: 2.5 } }}>
           <Chip
             icon={<EmojiEventsIcon sx={{ fontSize: 16, color: mainColor }} />}
             label="Premio del Sorteo"
@@ -114,6 +105,8 @@ function PrizeSection({
           elevation={0}
           sx={{
             borderRadius: 3,
+            display: { xs: "flex", sm: "block" },
+            alignItems: "center",
             overflow: "hidden",
             border: `1.5px solid ${mainColor}22`,
             background: "#fff",
@@ -124,9 +117,11 @@ function PrizeSection({
           {prize.image ? (
             <Box
               sx={{
-                height: { xs: 180, sm: 220 },
+                height: { xs: 72, sm: 220 },
+                width: { xs: 72, sm: "100%" },
+                flexShrink: 0,
                 overflow: "hidden",
-                background: `linear-gradient(135deg, ${mainColor}08, ${secondaryColor}12)`,
+                background: mainColor,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -140,7 +135,7 @@ function PrizeSection({
                   maxWidth: "100%",
                   maxHeight: "100%",
                   objectFit: "contain",
-                  p: 2,
+                  p: { xs: 0.5, sm: 2 },
                   display: "block",
                 }}
               />
@@ -148,20 +143,22 @@ function PrizeSection({
           ) : (
             <Box
               sx={{
-                height: { xs: 120, sm: 160 },
-                background: `linear-gradient(135deg, ${mainColor} 0%, ${secondaryColor} 100%)`,
+                height: { xs: 64, sm: 160 },
+                width: { xs: 64, sm: "100%" },
+                flexShrink: 0,
+                background: mainColor,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <EmojiEventsIcon sx={{ fontSize: 72, color: "#fff", opacity: 0.9 }} />
+              <EmojiEventsIcon sx={{ fontSize: { xs: 36, sm: 72 }, color: "#fff", opacity: 0.9 }} />
             </Box>
           )}
 
           {/* Info */}
-          <Box sx={{ p: { xs: 2, sm: 2.5 } }}>
-            <Stack direction="row" spacing={1} alignItems="center" mb={1}>
+          <Box sx={{ p: { xs: 0.75, sm: 2.5 }, minWidth: 0 }}>
+            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap mb={{ xs: 0.25, sm: 1 }}>
               <Chip
                 icon={<StarIcon sx={{ fontSize: 13 }} />}
                 label="Premio Principal"
@@ -183,18 +180,18 @@ function PrizeSection({
                 />
               )}
             </Stack>
-            <Typography fontWeight={800} sx={{ fontSize: { xs: "1rem", sm: "1.15rem" }, color: "#1a1a2e", mb: 0.5 }}>
+            <Typography fontWeight={800} sx={{ fontSize: { xs: "0.85rem", sm: "1.15rem" }, color: "#1a1a2e", mb: 0.5 }}>
               {prize.name}
             </Typography>
             {prize.description && (
-              <Typography sx={{ fontSize: { xs: 12, sm: 13.5 }, color: "#64748b", lineHeight: 1.5 }}>
+              <Typography sx={{ fontSize: { xs: 11, sm: 13.5 }, color: "#64748b", lineHeight: 1.3 }}>
                 {prize.description}
               </Typography>
             )}
           </Box>
 
           {/* Brand bar */}
-          <Box sx={{ height: 3, background: `linear-gradient(90deg, ${mainColor}, ${secondaryColor})` }} />
+          <Box sx={{ display: { xs: "none", sm: "block" }, height: 3, background: mainColor }} />
         </Paper>
       </Box>
     </Fade>
@@ -257,8 +254,7 @@ function ThankYouOptinInner() {
     staleTime: 1000 * 60 * 10,
   });
 
-  const mainColor = useMemo(() => safeColor(sweepstake?.mainColor, "#ff4b9b"), [sweepstake]);
-  const secondaryColor = useMemo(() => safeColor(sweepstake?.secondaryColor, "#c8104f"), [sweepstake]);
+  const mainColor = "#E8127F";
 
   const referralLink = referralData?.referralLink || "";
   const shareText = `🎉 ¡Participa en ${sweepstake?.name || "el sorteo"}! Usa mi código para registrarte: ${referralLink}`;
@@ -303,27 +299,16 @@ function ThankYouOptinInner() {
   }
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "#f8f9fc", display: "flex", flexDirection: "column" }}>
-      {/* Top mini hero with sweepstake banner */}
-      <DynamicHeroBanner
-        desktopSrc={sweepstake?.bannerDesktop}
-        mobileSrc={sweepstake?.bannerMobile}
-        mainColor={mainColor}
-        secondaryColor={secondaryColor}
-        isLoading={sweepLoading}
-        desktopHeight="30vh"
-        mobileHeight="22vh"
-        overlayOpacity={0.5}
-      />
-
-      <Box sx={{ flexGrow: 1, pb: 6 }}>
-        <Container maxWidth="sm" sx={{ px: { xs: 2, sm: 3 } }}>
+    <Box sx={{ minHeight: { xs: "calc(100svh - 56px)", sm: "calc(100svh - 64px)" }, bgcolor: "#f8f9fc", display: "flex", flexDirection: "column", minWidth: 0 }}>
+      <Box component="main" sx={{ flexGrow: 1, display: "flex", alignItems: "center", py: { xs: 1, sm: 3 }, minWidth: 0 }}>
+        <Container maxWidth="sm" sx={{ px: { xs: 1.5, sm: 3 } }}>
           <Fade in timeout={400}>
             <Paper
               elevation={0}
               sx={{
                 borderRadius: 4,
-                mt: -4,
+                mt: 0,
+                width: "100%",
                 position: "relative",
                 zIndex: 10,
                 overflow: "hidden",
@@ -334,18 +319,18 @@ function ThankYouOptinInner() {
               {/* Success header */}
               <Box
                 sx={{
-                  background: `linear-gradient(135deg, ${mainColor} 0%, ${secondaryColor} 100%)`,
-                  px: { xs: 2.5, sm: 4 },
-                  pt: { xs: 3, sm: 4 },
-                  pb: { xs: 3.5, sm: 4.5 },
+                  background: mainColor,
+                  px: { xs: 1.5, sm: 4 },
+                  pt: { xs: 1.5, sm: 4 },
+                  pb: { xs: 1.5, sm: 4.5 },
                   textAlign: "center",
                 }}
               >
                 {/* Check icon */}
                 <Box
                   sx={{
-                    width: { xs: 72, sm: 88 },
-                    height: { xs: 72, sm: 88 },
+                    width: { xs: 44, sm: 88 },
+                    height: { xs: 44, sm: 88 },
                     borderRadius: "50%",
                     bgcolor: "rgba(255,255,255,0.2)",
                     border: "3px solid rgba(255,255,255,0.6)",
@@ -353,20 +338,20 @@ function ThankYouOptinInner() {
                     alignItems: "center",
                     justifyContent: "center",
                     mx: "auto",
-                    mb: 2,
+                    mb: { xs: 0.75, sm: 2 },
                     boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
                   }}
                 >
-                  <CheckCircleIcon sx={{ fontSize: { xs: 42, sm: 52 }, color: "#fff" }} />
+                  <CheckCircleIcon sx={{ fontSize: { xs: 28, sm: 52 }, color: "#fff" }} />
                 </Box>
 
                 <Typography
                   fontWeight={900}
                   sx={{
-                    fontSize: { xs: "1.8rem", sm: "2.4rem" },
+                    fontSize: { xs: "1.4rem", sm: "2.4rem" },
                     color: "#fff",
                     lineHeight: 1.1,
-                    mb: 1,
+                    mb: { xs: 0.5, sm: 1 },
                   }}
                 >
                   ¡Ya estás dentro!
@@ -374,7 +359,7 @@ function ThankYouOptinInner() {
 
                 {referralData?.firstName && (
                   <Typography
-                    sx={{ color: "rgba(255,255,255,0.9)", fontSize: { xs: 15, sm: 17 }, fontWeight: 500 }}
+                    sx={{ color: "rgba(255,255,255,0.9)", fontSize: { xs: 12, sm: 17 }, fontWeight: 500 }}
                   >
                     Hola,{" "}
                     <Box component="span" fontWeight={800}>
@@ -387,11 +372,11 @@ function ThankYouOptinInner() {
 
               {/* Store name + referral code */}
               {referralData && (
-                <Box sx={{ px: { xs: 2.5, sm: 4 }, pt: 3 }}>
+                <Box sx={{ px: { xs: 1.5, sm: 4 }, pt: { xs: 1, sm: 3 } }}>
                   {referralData.storeName && (
                     <Typography
                       textAlign="center"
-                      sx={{ color: "#64748b", fontSize: 14, mb: 1.5 }}
+                      sx={{ color: "#64748b", fontSize: { xs: 12, sm: 14 }, mb: { xs: 0.75, sm: 1.5 } }}
                     >
                       Registrado en{" "}
                       <Box component="span" fontWeight={700} color="#1a1a2e">
@@ -409,7 +394,7 @@ function ThankYouOptinInner() {
                       borderRadius: 3,
                       border: `2px dashed ${mainColor}50`,
                       bgcolor: `${mainColor}08`,
-                      p: 2,
+                      p: { xs: 1, sm: 2 },
                       textAlign: "center",
                       cursor: "pointer",
                       transition: "all 0.2s",
@@ -435,7 +420,6 @@ function ThankYouOptinInner() {
                     prize={prize}
                     isLoading={prizeLoading}
                     mainColor={mainColor}
-                    secondaryColor={secondaryColor}
                   />
                 </Box>
               )}
@@ -443,12 +427,12 @@ function ThankYouOptinInner() {
               {/* Sharing section */}
               <Box
                 sx={{
-                  mt: 3,
-                  px: { xs: 2.5, sm: 4 },
-                  pb: { xs: 3, sm: 4 },
+                  mt: { xs: 1, sm: 3 },
+                  px: { xs: 1.5, sm: 4 },
+                  pb: { xs: 1, sm: 4 },
                 }}
               >
-                <Divider sx={{ mb: 2.5 }}>
+                <Divider sx={{ mb: { xs: 1, sm: 2.5 } }}>
                   <Chip
                     label="Comparte y gana más chances"
                     size="small"
@@ -464,7 +448,7 @@ function ThankYouOptinInner() {
 
                 <Stack
                   direction={isMobile ? "column" : "row"}
-                  spacing={1.5}
+                  spacing={1}
                   justifyContent="center"
                   alignItems="center"
                 >
@@ -479,7 +463,8 @@ function ThankYouOptinInner() {
                       fontWeight: 700,
                       borderRadius: 3,
                       px: 3,
-                      py: 1.4,
+                      py: { xs: 0.75, sm: 1.4 },
+                      minHeight: 44,
                       fontSize: 14,
                       textTransform: "none",
                       boxShadow: "0 4px 16px #25d36635",
@@ -500,7 +485,8 @@ function ThankYouOptinInner() {
                       fontWeight: 700,
                       borderRadius: 3,
                       px: 3,
-                      py: 1.4,
+                      py: { xs: 0.75, sm: 1.4 },
+                      minHeight: 44,
                       fontSize: 14,
                       textTransform: "none",
                       boxShadow: "0 4px 16px #7c3aed35",
@@ -512,7 +498,7 @@ function ThankYouOptinInner() {
                 </Stack>
 
                 {/* More share icons */}
-                <Stack direction="row" justifyContent="center" spacing={1} mt={2}>
+                <Stack direction="row" justifyContent="center" spacing={1} mt={{ xs: 1, sm: 2 }}>
                   <Tooltip title="Facebook">
                     <IconButton
                       onClick={shareOnFacebook}
@@ -576,12 +562,12 @@ function ThankYouOptinInner() {
               {/* Footer bar */}
               <Box
                 sx={{
-                  background: `linear-gradient(135deg, ${mainColor} 0%, ${secondaryColor} 100%)`,
-                  py: 2,
+                  background: mainColor,
+                  py: { xs: 0.75, sm: 2 },
                   textAlign: "center",
                 }}
               >
-                <Typography sx={{ color: "rgba(255,255,255,0.9)", fontSize: 12, fontWeight: 500 }}>
+                <Typography sx={{ color: "rgba(255,255,255,0.9)", fontSize: { xs: 10, sm: 12 }, fontWeight: 500 }}>
                   © {new Date().getFullYear()} Sweepstouch · Todos los derechos reservados
                 </Typography>
               </Box>
@@ -604,9 +590,14 @@ function ThankYouOptinInner() {
 // ─── Page export ──────────────────────────────────────────────────────────────
 export default function ThankYouOptinPage() {
   return (
-    <Box bgcolor="#f8f9fc">
+    <Box sx={{ bgcolor: "#f8f9fc", minHeight: "100svh", minWidth: 0,
+      "& .MuiToggleButton-root.Mui-selected, & .MuiToggleButton-root.Mui-selected:hover": { bgcolor: "#E8127F" },
+      "& .MuiAppBar-root": { color: "#E8127F" },
+      "& .MuiToolbar-root": { px: { xs: 0, sm: 2 } },
+      "& .MuiAppBar-root img": { maxWidth: "45vw", height: "auto" },
+    }}>
       <Navbar hideActions hideMobileMenu />
-      <Box sx={{ pt: { xs: 7, md: 8 } }}>
+      <Box sx={{ pt: { xs: "56px", sm: "64px" }, pb: "env(safe-area-inset-bottom)" }}>
         <Suspense fallback={<CenteredLoader text="Cargando la página..." />}>
           <ThankYouOptinInner />
         </Suspense>
