@@ -16,13 +16,15 @@ import {
 } from "@mui/material";
 import PlaceIcon from "@mui/icons-material/Place";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 import Cookies from "js-cookie";
+import ReferralBanner from "./components/ReferralBanner";
 
 import Navbar from "@/app/win-a-car/components/Navbar";
 import WinACarForm from "@/app/win-a-car/components/WinACarForm";
 import Footer from "@/app/win-a-car/components/Footer";
 import { getStoreBySlug } from "@/services/store.service";
-import { getActiveSweepstakeByStoreId } from "@/services/sweeptake.service";
+import { getActiveSweepstakeByStoreId, getStoreReferralReward } from "@/services/sweeptake.service";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 function cleanStoreName(name?: string) {
@@ -128,9 +130,15 @@ function StoreBadge({
 // ─── Sweepstake info strip ────────────────────────────────────────────────────
 function SectionHeading({
   mainColor,
+  reward,
+  invited,
 }: {
   mainColor: string;
+  reward?: { title?: string; amount?: number; minPurchase?: number; referredBonusCoupon?: boolean } | null;
+  invited: boolean;
 }) {
+  const rewardTitle = reward?.title || (reward?.amount ? `$${reward.amount} OFF` : "");
+  const minTxt = reward?.minPurchase ? ` (compra mín. $${reward.minPurchase})` : "";
   return (
     <Container maxWidth="sm" sx={{ mt: { xs: 1, sm: 3 }, mb: { xs: 0, sm: 1 }, px: { xs: 1.5, sm: 3 } }}>
       <Stack alignItems="center" spacing={0.5}>
@@ -152,6 +160,29 @@ function SectionHeading({
         >
           Completa el formulario para entrar al sorteo. Comparte tu link y aumenta tus chances.
         </Typography>
+        {reward && rewardTitle && (
+          <Stack
+            direction="row"
+            spacing={0.75}
+            alignItems="center"
+            sx={{
+              mt: 0.5,
+              px: 1.25,
+              py: 0.5,
+              borderRadius: 99,
+              bgcolor: `${mainColor}10`,
+              border: `1px solid ${mainColor}30`,
+              maxWidth: "100%",
+            }}
+          >
+            <CardGiftcardIcon sx={{ fontSize: 16, color: mainColor, flexShrink: 0 }} />
+            <Typography sx={{ fontSize: { xs: 11, sm: 13 }, color: "#334155", fontWeight: 600, lineHeight: 1.25 }}>
+              {invited && reward.referredBonusCoupon !== false
+                ? `Vienes invitado: entras con participación doble. Y tu primer referido te da ${rewardTitle}${minTxt}.`
+                : `Tu primer referido te da ${rewardTitle}${minTxt}.`}
+            </Typography>
+          </Stack>
+        )}
         <Divider
           sx={{
             display: { xs: "none", sm: "block" },
@@ -184,6 +215,15 @@ function OptinPageInner() {
 
   // Fetch active sweepstake — needs store._id first
   const storeId = store?._id || "";
+  // Recompensa por referidos de la tienda (null si no la tiene activa)
+  const { data: referralReward } = useQuery({
+    queryKey: ["store-referral-reward", storeId],
+    queryFn: () => getStoreReferralReward(storeId),
+    enabled: !!storeId,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+  });
+
   const { data: sweepstake, isLoading: sweepLoading } = useQuery({
     queryKey: ["active-sweepstake", storeId],
     queryFn: () => getActiveSweepstakeByStoreId(storeId),
@@ -223,12 +263,17 @@ function OptinPageInner() {
 
       {/* Store badge below the fixed navbar */}
       <StoreBadge store={store} isLoading={storeLoading} mainColor={mainColor} />
+      <ReferralBanner src={referralReward?.bannerUrl} alt={referralReward?.title || ""} />
 
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, py: 0.5 }}>
       {/* Section heading */}
       <Fade in={!isLoading} timeout={500}>
         <Box>
-          <SectionHeading mainColor={mainColor} />
+          <SectionHeading
+            mainColor={mainColor}
+            reward={referralReward}
+            invited={!!referralCode}
+          />
         </Box>
       </Fade>
 

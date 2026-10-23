@@ -72,9 +72,9 @@ export default function WinACarFormWithThankYou({
       setBackendError(null);
       const slugName = data.storeSlug || slug;
       Cookies.set("sweepstouch_referral_code", data.referralCode, {
-        expires: 7,
+        expires: 30,
       });
-      Cookies.set("sweepstouch_referral_slug", slug, { expires: 7 });
+      Cookies.set("sweepstouch_referral_slug", slugName, { expires: 30 });
       setIsRegistered(true);
       const basePath = thankYouPath || "/win-a-car/thank-you";
       const params = new URLSearchParams({

@@ -124,11 +124,34 @@ export async function getReferralInfoByStore(
 
 // services/participantService.ts
 
+/** Recompensa por referidos del sorteo activo + estado de este cliente. null = el sorteo no la tiene. */
+export interface ReferralRewardInfo {
+  title: string;
+  amount: number;
+  minPurchase: number;
+  imageUrl: string | null;
+  bannerUrl?: string | null;
+  terms: string;
+  referredBonusCoupon: boolean;
+  referredCount: number;
+  earned: {
+    code: string;
+    status: "pending" | "redeemed" | "cancelled";
+    createdAt?: string;
+    redeemedAt: string | null;
+  } | null;
+}
+
 export interface ReferralLinkSimpleResponse {
   referralLink: string;
   storeName: string;
+  storeId?: string | null;
+  storeImage?: string;
   referralCode: string;
   firstName: string;
+  referralReward?: ReferralRewardInfo | null;
+  /** Quiénes se registraron con su código en esta tienda (teléfono enmascarado). */
+  referrals?: { total: number; list: { phone: string; at: string }[] };
 }
 
 export async function getReferralLinkByStore(
@@ -260,6 +283,28 @@ export interface ActiveSweepstake {
   drawDate?: string;
   participationMessage?: string;
   storeId?: string;
+}
+
+/** Recompensa por referidos de la tienda (config pública, sin cliente). null = apagada. */
+export interface StoreReferralReward {
+  title: string;
+  amount: number;
+  minPurchase: number;
+  imageUrl: string | null;
+  bannerUrl?: string | null;
+  terms: string;
+  referredBonusCoupon: boolean;
+}
+
+export async function getStoreReferralReward(storeId: string): Promise<StoreReferralReward | null> {
+  try {
+    const res = await api.get<{ reward: StoreReferralReward | null }>(
+      `/sweepstakes/referral-reward/public/${storeId}`
+    );
+    return res.data?.reward ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export interface Prize {

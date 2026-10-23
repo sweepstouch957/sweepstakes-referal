@@ -31,7 +31,16 @@ import { Email, Sms, X } from "@mui/icons-material";
 import { useState, useMemo } from "react";
 
 import Navbar from "@/app/win-a-car/components/Navbar";
-import { getReferralLinkByStore, getActiveSweepstakeByStoreId, getPrizeById, Prize } from "@/services/sweeptake.service";
+import GroupsIcon from "@mui/icons-material/Groups";
+import RewardCard from "../components/RewardCard";
+import ReferralBanner from "../components/ReferralBanner";
+import { misReferidosHref, saveOptinSession } from "../session";
+import {
+  getReferralLinkByStore,
+  getActiveSweepstakeByStoreId,
+  getPrizeById,
+  Prize,
+} from "@/services/sweeptake.service";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 function getFirstPrizeId(prizes?: string[] | Record<string, unknown>[]): string {
@@ -212,6 +221,11 @@ function ThankYouOptinInner() {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
+  // Sesión del referidor (30 días): vuelve a "Mis referidos" sin registrarse de nuevo.
+  useEffect(() => {
+    if (referralCode && slug) saveOptinSession({ referralCode, slug });
+  }, [referralCode, slug]);
+
   // Redirect if no params
   useEffect(() => {
     if (!referralCode || !slug) {
@@ -300,6 +314,7 @@ function ThankYouOptinInner() {
 
   return (
     <Box sx={{ minHeight: { xs: "calc(100svh - 56px)", sm: "calc(100svh - 64px)" }, bgcolor: "#f8f9fc", display: "flex", flexDirection: "column", minWidth: 0 }}>
+      <ReferralBanner src={referralData?.referralReward?.bannerUrl} alt={referralData?.referralReward?.title || ""} />
       <Box component="main" sx={{ flexGrow: 1, display: "flex", alignItems: "center", py: { xs: 1, sm: 3 }, minWidth: 0 }}>
         <Container maxWidth="sm" sx={{ px: { xs: 1.5, sm: 3 } }}>
           <Fade in timeout={400}>
@@ -414,6 +429,33 @@ function ThankYouOptinInner() {
                       Toca para copiar tu enlace
                     </Typography>
                   </Box>
+
+                  {/* Referral reward ($X OFF al primer referido) */}
+                  <RewardCard
+                    reward={referralData.referralReward}
+                    mainColor={mainColor}
+                  />
+
+                  {/* Panel del referidor: quién se registró con su código y su cupón. */}
+                  <Button
+                    fullWidth
+                    onClick={() => router.push(misReferidosHref({ referralCode, slug }))}
+                    startIcon={<GroupsIcon />}
+                    sx={{
+                      mt: { xs: 1, sm: 2 },
+                      bgcolor: mainColor,
+                      color: "#fff",
+                      fontWeight: 700,
+                      borderRadius: 3,
+                      minHeight: 44,
+                      textTransform: "none",
+                      boxShadow: `0 4px 16px ${mainColor}35`,
+                      "&:hover": { bgcolor: "#c40d6a" },
+                    }}
+                  >
+                    Ver mis referidos
+                    {typeof referralData.referrals?.total === "number" ? ` (${referralData.referrals.total})` : ""}
+                  </Button>
 
                   {/* Prize section */}
                   <PrizeSection
