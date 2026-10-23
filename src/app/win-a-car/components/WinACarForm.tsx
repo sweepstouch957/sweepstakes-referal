@@ -153,8 +153,8 @@ export default function WinACarFormWithThankYou({
               sx={{
                 bgcolor: "#fff",
                 borderRadius: { xs: 3, sm: 4 },
-                boxShadow: "0 2px 24px rgba(255,20,147,0.07), 0 1px 4px rgba(0,0,0,0.04)",
-                border: "1px solid rgba(255,20,147,0.09)",
+                boxShadow: "0 1px 2px rgba(15,23,42,0.04)",
+                border: "1px solid rgba(232,18,127,0.14)",
                 p: { xs: 2.5, sm: 3.5 },
               }}
             >

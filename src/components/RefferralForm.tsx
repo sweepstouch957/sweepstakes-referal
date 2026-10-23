@@ -254,8 +254,8 @@ export default function ReferralForm({
             sx={{
               fontSize: 12.5,
               fontWeight: 600,
-              color: "#2563eb",
-              "&:hover": { color: "#1d4ed8" },
+              color: "#E8127F",
+              "&:hover": { color: "#c40d6a" },
             }}
           >
             {t("form.termsLink")}
@@ -269,8 +269,8 @@ export default function ReferralForm({
             sx={{
               fontSize: 12.5,
               fontWeight: 600,
-              color: "#2563eb",
-              "&:hover": { color: "#1d4ed8" },
+              color: "#E8127F",
+              "&:hover": { color: "#c40d6a" },
             }}
           >
             {t("form.privacyLink")}

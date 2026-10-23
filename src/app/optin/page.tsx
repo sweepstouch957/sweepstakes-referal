@@ -74,12 +74,12 @@ function StoreBadge({
   return (
     <Container maxWidth="sm" sx={{ mt: { xs: 0.75, sm: 2 }, position: "relative", zIndex: 10, px: { xs: 1.5, sm: 3 } }}>
       <Paper
-        elevation={6}
+        elevation={0}
         sx={{
           borderRadius: 3,
           overflow: "hidden",
           background: "#fff",
-          boxShadow: `0 8px 32px ${mainColor}28`,
+          border: `1px solid ${mainColor}22`,
         }}
       >
         <Stack direction="row" spacing={1.5} alignItems="center" sx={{ p: { xs: 0.75, sm: 1.5 } }}>
@@ -262,8 +262,9 @@ function OptinPageInner() {
       <Navbar hideActions hideMobileMenu />
 
       {/* Store badge below the fixed navbar */}
+      {/* Banner de la campaña (hero) → tienda → título: un solo bloque, sin sombras apiladas. */}
+      <ReferralBanner desktop={referralReward?.bannerDesktopUrl} mobile={referralReward?.bannerMobileUrl} alt={referralReward?.title || ""} />
       <StoreBadge store={store} isLoading={storeLoading} mainColor={mainColor} />
-      <ReferralBanner src={referralReward?.bannerUrl} alt={referralReward?.title || ""} />
 
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, py: 0.5 }}>
       {/* Section heading */}
@@ -294,7 +295,7 @@ function OptinPageInner() {
           "& .MuiInputBase-input": { fontSize: "16px", py: { xs: "8px", sm: "11px" }, minWidth: 0 },
           "& .MuiButton-containedPrimary": {
             background: `${mainColor} !important`,
-            boxShadow: `0 4px 18px ${mainColor}44 !important`,
+            boxShadow: "none !important",
           },
           "& .MuiStepIcon-root.Mui-active": { color: `${mainColor} !important` },
           "& .MuiStepIcon-root.Mui-completed": { color: `${mainColor} !important` },

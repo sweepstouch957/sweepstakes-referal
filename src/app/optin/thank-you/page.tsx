@@ -119,7 +119,6 @@ function PrizeSection({
             overflow: "hidden",
             border: `1.5px solid ${mainColor}22`,
             background: "#fff",
-            boxShadow: `0 6px 30px ${mainColor}15`,
           }}
         >
           {/* Prize image */}
@@ -314,7 +313,7 @@ function ThankYouOptinInner() {
 
   return (
     <Box sx={{ minHeight: { xs: "calc(100svh - 56px)", sm: "calc(100svh - 64px)" }, bgcolor: "#f8f9fc", display: "flex", flexDirection: "column", minWidth: 0 }}>
-      <ReferralBanner src={referralData?.referralReward?.bannerUrl} alt={referralData?.referralReward?.title || ""} />
+      <ReferralBanner desktop={referralData?.referralReward?.bannerDesktopUrl} mobile={referralData?.referralReward?.bannerMobileUrl} alt={referralData?.referralReward?.title || ""} />
       <Box component="main" sx={{ flexGrow: 1, display: "flex", alignItems: "center", py: { xs: 1, sm: 3 }, minWidth: 0 }}>
         <Container maxWidth="sm" sx={{ px: { xs: 1.5, sm: 3 } }}>
           <Fade in timeout={400}>
@@ -328,7 +327,7 @@ function ThankYouOptinInner() {
                 zIndex: 10,
                 overflow: "hidden",
                 background: "#fff",
-                boxShadow: `0 12px 48px ${mainColor}18`,
+                border: `1px solid ${mainColor}22`, boxShadow: "0 1px 2px rgba(15,23,42,0.04)",
               }}
             >
               {/* Success header */}
@@ -354,7 +353,6 @@ function ThankYouOptinInner() {
                     justifyContent: "center",
                     mx: "auto",
                     mb: { xs: 0.75, sm: 2 },
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
                   }}
                 >
                   <CheckCircleIcon sx={{ fontSize: { xs: 28, sm: 52 }, color: "#fff" }} />
@@ -449,7 +447,6 @@ function ThankYouOptinInner() {
                       borderRadius: 3,
                       minHeight: 44,
                       textTransform: "none",
-                      boxShadow: `0 4px 16px ${mainColor}35`,
                       "&:hover": { bgcolor: "#c40d6a" },
                     }}
                   >
@@ -509,7 +506,6 @@ function ThankYouOptinInner() {
                       minHeight: 44,
                       fontSize: 14,
                       textTransform: "none",
-                      boxShadow: "0 4px 16px #25d36635",
                       "&:hover": { bgcolor: "#22c55e" },
                     }}
                   >
@@ -531,7 +527,6 @@ function ThankYouOptinInner() {
                       minHeight: 44,
                       fontSize: 14,
                       textTransform: "none",
-                      boxShadow: "0 4px 16px #7c3aed35",
                       "&:hover": { bgcolor: "#6d28d9" },
                     }}
                   >

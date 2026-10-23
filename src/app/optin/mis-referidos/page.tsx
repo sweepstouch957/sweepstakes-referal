@@ -112,10 +112,10 @@ function MisReferidosInner() {
 
   return (
     <Box sx={{ minHeight: { xs: "calc(100svh - 56px)", sm: "calc(100svh - 64px)" }, bgcolor: "#f8f9fc", py: { xs: 1, sm: 3 } }}>
-      <ReferralBanner src={reward?.bannerUrl} alt={reward?.title || ""} />
+      <ReferralBanner desktop={reward?.bannerDesktopUrl} mobile={reward?.bannerMobileUrl} alt={reward?.title || ""} />
       <Container maxWidth="sm" sx={{ px: { xs: 1.5, sm: 3 } }}>
         <Fade in timeout={400}>
-          <Paper elevation={0} sx={{ borderRadius: 4, overflow: "hidden", bgcolor: "#fff", boxShadow: `0 12px 48px ${MAIN}18` }}>
+          <Paper elevation={0} sx={{ borderRadius: 4, overflow: "hidden", bgcolor: "#fff", border: `1px solid ${MAIN}22`, boxShadow: "0 1px 2px rgba(15,23,42,0.04)" }}>
             {/* Header */}
             <Box sx={{ background: MAIN, px: { xs: 2, sm: 4 }, py: { xs: 2, sm: 3.5 }, textAlign: "center", color: "#fff" }}>
               <Avatar
