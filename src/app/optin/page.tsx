@@ -18,6 +18,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 import Cookies from "js-cookie";
+import { useTranslation } from "react-i18next";
 import ReferralBanner from "./components/ReferralBanner";
 
 import Navbar from "@/app/win-a-car/components/Navbar";
@@ -137,8 +138,9 @@ function SectionHeading({
   reward?: { title?: string; amount?: number; minPurchase?: number; referredBonusCoupon?: boolean } | null;
   invited: boolean;
 }) {
+  const { t } = useTranslation();
   const rewardTitle = reward?.title || (reward?.amount ? `$${reward.amount} OFF` : "");
-  const minTxt = reward?.minPurchase ? ` (compra mín. $${reward.minPurchase})` : "";
+  const minTxt = reward?.minPurchase ? t("optin.minPurchase", { amount: reward.minPurchase }) : "";
   return (
     <Container maxWidth="sm" sx={{ mt: { xs: 1, sm: 3 }, mb: { xs: 0, sm: 1 }, px: { xs: 1.5, sm: 3 } }}>
       <Stack alignItems="center" spacing={0.5}>
@@ -152,13 +154,13 @@ function SectionHeading({
             lineHeight: 1.15,
           }}
         >
-          ¡Regístrate y participa!
+          {t("optin.title")}
         </Typography>
         <Typography
           textAlign="center"
           sx={{ color: "#64748b", fontSize: { xs: 11, sm: 15 }, lineHeight: 1.3, maxWidth: 380 }}
         >
-          Completa el formulario para entrar al sorteo. Comparte tu link y aumenta tus chances.
+          {t("optin.subtitle")}
         </Typography>
         {reward && rewardTitle && (
           <Stack
@@ -177,9 +179,7 @@ function SectionHeading({
           >
             <CardGiftcardIcon sx={{ fontSize: 16, color: mainColor, flexShrink: 0 }} />
             <Typography sx={{ fontSize: { xs: 11, sm: 13 }, color: "#334155", fontWeight: 600, lineHeight: 1.25 }}>
-              {invited && reward.referredBonusCoupon !== false
-                ? `Vienes invitado: entras con participación doble. Y tu primer referido te da ${rewardTitle}${minTxt}.`
-                : `Tu primer referido te da ${rewardTitle}${minTxt}.`}
+              {t(invited && reward.referredBonusCoupon !== false ? "optin.rewardInvited" : "optin.rewardPlain", { reward: rewardTitle, min: minTxt })}
             </Typography>
           </Stack>
         )}
@@ -200,6 +200,7 @@ function SectionHeading({
 
 // ─── Main container ───────────────────────────────────────────────────────────
 function OptinPageInner() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const slug = searchParams.get("slug") || "";
   const referralCode = searchParams.get("referralcode") || "";
@@ -287,10 +288,7 @@ function OptinPageInner() {
           minWidth: 0,
           "& #form": { bgcolor: "transparent" },
           "& #form > .MuiContainer-root": { mt: { xs: 1, sm: 3 }, mb: 0.5, px: { xs: 1.5, sm: 3 } },
-          "& #form > .MuiContainer-root > .MuiBox-root": { p: { xs: 1.5, sm: 3.5 } },
-          "& form > .MuiStack-root:first-of-type": { display: { xs: "none", sm: "flex" } },
-          "& form > .MuiBox-root": { mt: { xs: 0, sm: 2.5 } },
-          "& form > .MuiStack-root": { mt: { xs: 0.75, sm: 2.5 } },
+          "& #form > .MuiContainer-root > .MuiBox-root": { p: { xs: 2, sm: 3.5 } },
           "& form .MuiButton-root": { minHeight: 44, py: 0.75, boxShadow: "none !important" },
           "& .MuiInputBase-input": { fontSize: "16px", py: { xs: "8px", sm: "11px" }, minWidth: 0 },
           "& .MuiButton-containedPrimary": {
@@ -317,7 +315,6 @@ function OptinPageInner() {
             storeId={store?._id || Cookies.get("storeId") || ""}
             sweepstakeId={sweepstakeId}
             hideTitle
-            compact
             stepperVariant="full"
             thankYouPath="/optin/thank-you"
             prizeId={prizeId}
@@ -337,12 +334,10 @@ function OptinPageInner() {
             >
               <EmojiEventsIcon sx={{ fontSize: 64, color: "#e2e8f0", mb: 2 }} />
               <Typography variant="h6" fontWeight={700} color="#1a1a2e" mb={1}>
-                No hay sorteo activo
+                {t("optin.noSweepTitle")}
               </Typography>
               <Typography color="#64748b" fontSize={14}>
-                Esta tienda no tiene un sorteo activo en este momento.
-                <br />
-                Vuelve pronto para participar.
+                {t("optin.noSweepBody")}
               </Typography>
             </Paper>
           </Container>

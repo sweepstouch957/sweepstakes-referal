@@ -46,6 +46,15 @@ const en = {
     store: {
       openInMaps: "Open in Google Maps",
     },
+    optin: {
+      title: "Sign up & enter!",
+      subtitle: "Fill out the form to enter the sweepstake. Share your link to boost your chances.",
+      rewardInvited: "You were invited: you enter with a double entry. And your first referral earns you {{reward}}{{min}}.",
+      rewardPlain: "Your first referral earns you {{reward}}{{min}}.",
+      minPurchase: " (min. purchase ${{amount}})",
+      noSweepTitle: "No active sweepstake",
+      noSweepBody: "This store has no active sweepstake right now. Come back soon to enter.",
+    },
     form: {
       firstName: "First Name",
       lastName: "Last Name",
@@ -68,6 +77,8 @@ const en = {
       referralCodeLabel: "Invitation Code",
       codeApplied: "Applied",
       referralBonusChip: "+1 entry each",
+      referralCodeTitle: "Referral Code",
+      referralHint: "Did a friend invite you? Enter their code so you both earn extra entries.",
       referralBonusTitle: "Extra Entries!",
       referralBonusBody: "Enter a friend's referral code — you both earn +1 extra entry in the sweepstake!",
       errors: {

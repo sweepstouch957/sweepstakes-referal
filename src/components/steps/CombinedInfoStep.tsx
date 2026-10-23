@@ -4,24 +4,15 @@ import {
   Autocomplete,
   Box,
   Checkbox,
-  Collapse,
   FormControlLabel,
   Grid,
   InputAdornment,
   TextField,
   Typography,
   Chip,
-  Tooltip,
 } from "@mui/material";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import { FormData } from "@/hooks/useReferralStepper";
 import { useTranslation } from "react-i18next";
@@ -31,32 +22,39 @@ import {
   SweepstakeStoreOption,
 } from "@/services/store.service";
 
+const PINK = "var(--optin-pink, #E8127F)";
+
+/** Campo sin label de MUI: la etiqueta va arriba, en negrita (mock 23 oct 2026). */
 const fieldSx = {
-  "& .MuiInputLabel-root": {
-    fontSize: "0.85rem",
-    fontWeight: 600,
-    color: "#6b7280",
-    "&.Mui-focused": { color: "var(--optin-pink, #ff1493)" },
-  },
   "& .MuiOutlinedInput-root": {
     borderRadius: "12px",
-    backgroundColor: "#fafafa",
+    backgroundColor: "#fff",
     "& fieldset": { borderColor: "#e5e7eb", borderWidth: "1.5px" },
-    "&:hover fieldset": { borderColor: "var(--optin-pink, #fba8d0)" },
-    "&.Mui-focused fieldset": { borderColor: "var(--optin-pink, #ff1493)", borderWidth: "2px" },
+    "&:hover fieldset": { borderColor: PINK },
+    "&.Mui-focused fieldset": { borderColor: PINK, borderWidth: "2px" },
     "&.Mui-error fieldset": { borderColor: "#ef4444" },
   },
   "& .MuiInputBase-input": {
-    fontSize: "0.95rem",
+    fontSize: "1rem",
     color: "#111827",
-    py: "11px",
-  },
-  "& .MuiInputAdornment-root svg": {
-    fontSize: "1.05rem",
-    color: "#9ca3af",
+    py: "14px",
+    "&::placeholder": { color: "#9ca3af", opacity: 1 },
   },
   "& .MuiFormHelperText-root": { mx: 0.5, mt: 0.25, fontSize: "0.75rem" },
 };
+
+function FieldLabel({ children, hint }: { children: React.ReactNode; hint?: string }) {
+  return (
+    <Typography component="label" sx={{ display: "block", fontWeight: 700, fontSize: "0.95rem", color: "#1f2937", mb: 0.75 }}>
+      {children}
+      {hint && (
+        <Typography component="span" sx={{ fontWeight: 400, color: "#9ca3af", ml: 0.75, fontSize: "0.85rem" }}>
+          ({hint})
+        </Typography>
+      )}
+    </Typography>
+  );
+}
 
 export default function CombinedInfoStep({
   compact = false,
@@ -83,9 +81,6 @@ export default function CombinedInfoStep({
 
   const { t } = useTranslation();
   const smsConsent = watch("smsConsent") ?? true;
-  const [referralOpen, setReferralOpen] = useState(
-    () => !!(defaultReferralCode || form.getValues("referralCode"))?.trim()
-  );
 
   const {
     data: stores = [],
@@ -122,301 +117,186 @@ export default function CombinedInfoStep({
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: compact ? "10px" : "12px", minWidth: 0 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: compact ? "14px" : "18px", minWidth: 0 }}>
 
-      {/* ── Name row ── */}
-      <Grid container spacing={1.5}>
-        <Grid size={{ xs: 12, sm: compact ? 12 : 6 }}>
+      {/* ── Nombre / Apellido ── */}
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <FieldLabel>{t("form.firstName")}</FieldLabel>
           <TextField
             {...register("firstName")}
-            label={t("form.firstName")}
-            InputLabelProps={{ shrink: true }}
+            placeholder="Maria"
             error={!!errors.firstName}
             helperText={errors.firstName?.message}
             fullWidth
+            autoComplete="given-name"
             sx={fieldSx}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonOutlineIcon />
-                </InputAdornment>
-              ),
-            }}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: compact ? 12 : 6 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <FieldLabel>{t("form.lastName")}</FieldLabel>
           <TextField
             {...register("lastName")}
-            label={t("form.lastName")}
-            InputLabelProps={{ shrink: true }}
+            placeholder="Lopez"
             error={!!errors.lastName}
             helperText={errors.lastName?.message}
             fullWidth
+            autoComplete="family-name"
             sx={fieldSx}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonOutlineIcon />
-                </InputAdornment>
-              ),
-            }}
           />
         </Grid>
       </Grid>
 
-      {/* ── Phone ── */}
-      <TextField
-        {...register("phone")}
-        label={t("form.phone")}
-        InputLabelProps={{ shrink: true }}
-        error={!!errors.phone}
-        helperText={errors.phone?.message}
-        fullWidth
-        inputMode="tel"
-        sx={fieldSx}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <LocalPhoneOutlinedIcon />
-              <Typography
-                component="span"
-                sx={{ fontSize: "0.9rem", color: "#374151", fontWeight: 600, ml: 0.5 }}
-              >
-                +1
-              </Typography>
-            </InputAdornment>
-          ),
-        }}
-        onChange={(e) => {
-          setValue("phone", formatPhone(e.target.value), {
-            shouldValidate: smsConsent,
-            shouldDirty: true,
-          });
-          if (!smsConsent) clearErrors("phone");
-        }}
-      />
+      {/* ── Teléfono: prefijo +1 en caja aparte ── */}
+      <Box>
+        <FieldLabel>{t("form.phone")}</FieldLabel>
+        <TextField
+          {...register("phone")}
+          placeholder="(555) 123-4567"
+          error={!!errors.phone}
+          helperText={errors.phone?.message}
+          fullWidth
+          inputMode="tel"
+          autoComplete="tel-national"
+          sx={{ ...fieldSx, "& .MuiOutlinedInput-root": { ...fieldSx["& .MuiOutlinedInput-root"], pl: 0 } }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start" sx={{ m: 0, mr: 1.5, alignSelf: "stretch", height: "auto", maxHeight: "none" }}>
+                <Box sx={{ display: "flex", alignItems: "center", px: 2, height: "100%", bgcolor: "#f8f9fc", borderRight: "1.5px solid #e5e7eb", borderRadius: "12px 0 0 12px", fontWeight: 700, color: "#1f2937", fontSize: "1rem" }}>
+                  +1
+                </Box>
+              </InputAdornment>
+            ),
+          }}
+          onChange={(e) => {
+            setValue("phone", formatPhone(e.target.value), {
+              shouldValidate: smsConsent,
+              shouldDirty: true,
+            });
+            if (!smsConsent) clearErrors("phone");
+          }}
+        />
+      </Box>
 
       {/* ── Email ── */}
-      <TextField
-        {...register("email")}
-        label={t("form.email")}
-        placeholder={t("form.emailPlaceholder")}
-        InputLabelProps={{ shrink: true }}
-        error={!!errors.email}
-        helperText={errors.email?.message}
-        fullWidth
-        inputMode="email"
-        sx={fieldSx}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <EmailOutlinedIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
-
-      {/* ── ZIP ── */}
-      <TextField
-        {...register("zip")}
-        label={t("form.zip")}
-        InputLabelProps={{ shrink: true }}
-        error={!!errors.zip}
-        helperText={errors.zip?.message}
-        fullWidth
-        inputMode="numeric"
-        sx={fieldSx}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <LocationOnOutlinedIcon />
-            </InputAdornment>
-          ),
-        }}
-        onChange={(e) =>
-          setValue("zip", e.target.value.replace(/\D/g, "").slice(0, 5))
-        }
-      />
+      <Box>
+        <FieldLabel>{t("form.email")}</FieldLabel>
+        <TextField
+          {...register("email")}
+          placeholder="name@email.com"
+          error={!!errors.email}
+          helperText={errors.email?.message}
+          fullWidth
+          inputMode="email"
+          autoComplete="email"
+          sx={fieldSx}
+        />
+      </Box>
 
       {showSupermarket && (
         <Controller
           name="supermarket"
           control={control}
           render={({ field }) => (
-            <Autocomplete
-              options={storesSafe}
-              loading={isLoadingStores}
-              value={storesSafe.find((store) => store._id === field.value) || null}
-              onChange={(_, store) => {
-                field.onChange(store?._id || "");
-                if (store) clearErrors("supermarket");
-              }}
-              getOptionLabel={(store) => store.name}
-              isOptionEqualToValue={(option, value) => option._id === value._id}
-              disabled={!sweepstakeId}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={t("form.supermarket")}
-                  placeholder={t("form.selectSupermarket")}
-                  InputLabelProps={{ shrink: true }}
-                  error={!!errors.supermarket}
-                  helperText={
-                    errors.supermarket?.message ||
-                    (!sweepstakeId
-                      ? t("form.errors.supermarket.missingSweepstake")
-                      : undefined)
-                  }
-                  fullWidth
-                  sx={fieldSx}
-                />
-              )}
-            />
+            <Box>
+              <FieldLabel>{t("form.supermarket")}</FieldLabel>
+              <Autocomplete
+                options={storesSafe}
+                loading={isLoadingStores}
+                value={storesSafe.find((store) => store._id === field.value) || null}
+                onChange={(_, store) => {
+                  field.onChange(store?._id || "");
+                  if (store) clearErrors("supermarket");
+                }}
+                getOptionLabel={(store) => store.name}
+                isOptionEqualToValue={(option, value) => option._id === value._id}
+                disabled={!sweepstakeId}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder={t("form.selectSupermarket")}
+                    error={!!errors.supermarket}
+                    helperText={
+                      errors.supermarket?.message ||
+                      (!sweepstakeId ? t("form.errors.supermarket.missingSweepstake") : undefined)
+                    }
+                    fullWidth
+                    sx={fieldSx}
+                  />
+                )}
+              />
+            </Box>
           )}
         />
       )}
 
-      {/* ── Referral Code ── */}
-      <Box
-        sx={{
-          border: "1.5px dashed",
-          borderColor: defaultReferralCode ? "var(--optin-pink, #ff1493)" : "#e5e7eb",
-          borderRadius: "13px",
-          p: compact ? 0.75 : 1.5,
-          bgcolor: defaultReferralCode ? "var(--optin-surface, #fff5fa)" : "#fafafa",
-          transition: "border-color 0.2s, background 0.2s",
-          "&:focus-within": {
-            borderColor: "var(--optin-pink, #ff1493)",
-            bgcolor: "var(--optin-surface, #fff5fa)",
-            borderStyle: "solid",
-          },
-        }}
-      >
-        {/* Header */}
-        <Box
-          component="button"
-          type="button"
-          aria-expanded={referralOpen}
-          onClick={() => setReferralOpen((open) => !open)}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-            mb: referralOpen ? 0.75 : 0,
-            p: 0,
-            border: 0,
-            bgcolor: "transparent",
-            cursor: "pointer",
-            textAlign: "left",
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
-            <ConfirmationNumberOutlinedIcon
-              sx={{ fontSize: 14, color: defaultReferralCode ? "var(--optin-pink, #ff1493)" : "#9ca3af" }}
+      {/* ── ZIP + Código de referido, misma fila ── */}
+      <Box>
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <FieldLabel>{t("form.zip")}</FieldLabel>
+            <TextField
+              {...register("zip")}
+              placeholder="07505"
+              error={!!errors.zip}
+              helperText={errors.zip?.message}
+              fullWidth
+              inputMode="numeric"
+              autoComplete="postal-code"
+              sx={fieldSx}
+              onChange={(e) => setValue("zip", e.target.value.replace(/\D/g, "").slice(0, 5))}
             />
-            <Typography sx={{ fontWeight: 700, fontSize: "0.82rem", color: "#374151" }}>
-              {t("form.referralCodeLabel")}
-              <Typography component="span" sx={{ fontWeight: 400, color: "#9ca3af", ml: 0.5, fontSize: "0.76rem" }}>
-                ({t("common.optional")})
-              </Typography>
-            </Typography>
-            <Tooltip
-              title={
-                <Box sx={{ p: 0.25 }}>
-                  <Typography sx={{ fontSize: "0.8rem", fontWeight: 700, mb: 0.25 }}>
-                    {t("form.referralBonusTitle")}
-                  </Typography>
-                  <Typography sx={{ fontSize: "0.75rem", lineHeight: 1.45 }}>
-                    {t("form.referralBonusBody")}
-                  </Typography>
-                </Box>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <FieldLabel hint={t("common.optional")}>{t("form.referralCodeTitle")}</FieldLabel>
+            <TextField
+              {...register("referralCode")}
+              placeholder="E.G. MARIA123"
+              defaultValue={defaultReferralCode}
+              error={!!errors.referralCode}
+              helperText={errors.referralCode?.message}
+              fullWidth
+              autoCapitalize="characters"
+              sx={{
+                ...fieldSx,
+                "& .MuiOutlinedInput-root": {
+                  ...fieldSx["& .MuiOutlinedInput-root"],
+                  backgroundColor: "var(--optin-surface, #fff5fa)",
+                  "& fieldset": { borderColor: defaultReferralCode ? PINK : "#f3b9d6", borderWidth: "1.5px", borderStyle: "dashed" },
+                  "&.Mui-focused fieldset": { borderColor: PINK, borderWidth: "2px", borderStyle: "solid" },
+                },
+                "& .MuiInputBase-input": { ...fieldSx["& .MuiInputBase-input"], fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase" },
+              }}
+              InputProps={
+                defaultReferralCode
+                  ? {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Chip
+                            icon={<CheckCircleIcon sx={{ fontSize: "12px !important" }} />}
+                            label={t("form.codeApplied")}
+                            size="small"
+                            sx={{ bgcolor: "#dcfce7", color: "#16a34a", fontWeight: 700, fontSize: "0.67rem", border: "1px solid #bbf7d0", height: 20, "& .MuiChip-icon": { color: "#16a34a" } }}
+                          />
+                        </InputAdornment>
+                      ),
+                    }
+                  : undefined
               }
-              placement="top"
-              arrow
-              enterTouchDelay={0}
-              leaveTouchDelay={3000}
-            >
-              <InfoOutlinedIcon sx={{ fontSize: 13, color: "#cbd5e1", cursor: "help", ml: 0.25 }} />
-            </Tooltip>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 0.5, alignItems: "center", flexShrink: 0 }}>
-            <Chip
-              icon={<EmojiEventsOutlinedIcon sx={{ fontSize: "11px !important", color: "#d97706 !important" }} />}
-              label={t("form.referralBonusChip")}
-              size="small"
-              sx={{
-                display: compact ? "none" : "inline-flex", bgcolor: "#fffbeb", color: "#92400e", fontWeight: 700, fontSize: "0.67rem",
-                border: "1px solid #fde68a", height: 19,
-                "& .MuiChip-icon": { color: "#d97706" },
-              }}
             />
-            {defaultReferralCode && (
-              <Chip
-                icon={<CheckCircleIcon sx={{ fontSize: "11px !important" }} />}
-                label={t("form.codeApplied")}
-                size="small"
-                sx={{
-                  bgcolor: "#dcfce7", color: "#16a34a", fontWeight: 700, fontSize: "0.67rem",
-                  border: "1px solid #bbf7d0", height: 19,
-                  "& .MuiChip-icon": { color: "#16a34a" },
-                }}
-              />
-            )}
-            <Typography
-              component="span"
-              aria-hidden="true"
-              sx={{
-                ml: 0.25,
-                color: "#9ca3af",
-                fontSize: 18,
-                lineHeight: 1,
-                transform: referralOpen ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 0.2s ease",
-              }}
-            >
-              ▾
-            </Typography>
-          </Box>
-        </Box>
-
-        <Collapse in={referralOpen} timeout={200}>
-          <TextField
-            {...register("referralCode")}
-            placeholder={t("form.referralCodePlaceholder")}
-            error={!!errors.referralCode}
-            defaultValue={defaultReferralCode}
-            helperText={errors.referralCode?.message}
-            fullWidth
-            variant="outlined"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "10px",
-                bgcolor: "#fff",
-                "& fieldset": { borderColor: "#e5e7eb", borderWidth: "1.5px" },
-                "&:hover fieldset": { borderColor: "var(--optin-pink, #fba8d0)" },
-                "&.Mui-focused fieldset": { borderColor: "var(--optin-pink, #ff1493)", borderWidth: "2px" },
-              },
-              "& .MuiInputBase-input": {
-                py: "10px", fontSize: "0.93rem", fontWeight: 600,
-                color: "#1f2937", letterSpacing: "0.04em",
-                "&::placeholder": { color: "#9ca3af", fontWeight: 400, letterSpacing: "normal", fontSize: "0.8rem" },
-              },
-              "& .MuiFormHelperText-root": { mx: 0.5 },
-            }}
-          />
-        </Collapse>
+          </Grid>
+        </Grid>
+        <Typography sx={{ fontSize: "0.85rem", color: "#64748b", mt: 1 }}>{t("form.referralHint")}</Typography>
       </Box>
 
-      {/* ── SMS Consent (checkbox below as requested) ── */}
+      {/* ── SMS Consent ── */}
       <Box
         sx={{
           bgcolor: "var(--optin-surface, #fff8fc)",
           border: "1.5px solid var(--optin-pink, #fce7f3)",
           borderRadius: "12px",
-          px: compact ? 0.75 : 1.75,
-          py: compact ? 0.5 : 0.75,
+          px: 2,
+          py: 1.5,
         }}
       >
         <Controller
@@ -432,25 +312,19 @@ export default function CombinedInfoStep({
                     if (e.target.checked) trigger("phone");
                     else clearErrors("phone");
                   }}
-                  size="small"
-                  sx={{
-                    color: "var(--optin-pink, #ff1493)",
-                    "&.Mui-checked": { color: "var(--optin-pink, #ff1493)" },
-                    py: 0.25,
-                    pr: 0.5,
-                  }}
+                  sx={{ color: PINK, "&.Mui-checked": { color: PINK }, py: 0.25, pr: 1, alignSelf: "flex-start" }}
                 />
               }
               label={
-                <Typography sx={{ fontSize: "0.875rem", color: "#374151", fontWeight: 600 }}>
+                <Typography sx={{ fontSize: "1rem", color: "#1f2937", fontWeight: 700 }}>
                   {t("form.smsConsent")}
                 </Typography>
               }
-              sx={{ alignItems: "center", ml: 0, mr: 0 }}
+              sx={{ alignItems: "flex-start", ml: 0, mr: 0 }}
             />
           )}
         />
-        <Typography sx={{ fontSize: "0.67rem", color: "#9ca3af", lineHeight: compact ? 1.2 : 1.5, mt: compact ? 0.25 : 0.5, ml: "28px" }}>
+        <Typography sx={{ fontSize: "0.85rem", color: "#4b5563", lineHeight: 1.5, mt: 0.25, ml: "42px" }}>
           {t("form.smsConsentDisclaimer")}
         </Typography>
       </Box>

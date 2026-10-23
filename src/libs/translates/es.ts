@@ -46,6 +46,15 @@ const es = {
     store: {
       openInMaps: "Abrir en Google Maps",
     },
+    optin: {
+      title: "¡Regístrate y participa!",
+      subtitle: "Completa el formulario para entrar al sorteo. Comparte tu link y aumenta tus chances.",
+      rewardInvited: "Vienes invitado: entras con participación doble. Y tu primer referido te da {{reward}}{{min}}.",
+      rewardPlain: "Tu primer referido te da {{reward}}{{min}}.",
+      minPurchase: " (compra mín. ${{amount}})",
+      noSweepTitle: "No hay sorteo activo",
+      noSweepBody: "Esta tienda no tiene un sorteo activo en este momento. Vuelve pronto para participar.",
+    },
     form: {
       firstName: "Nombre",
       lastName: "Apellido",
@@ -68,6 +77,8 @@ const es = {
       referralCodeLabel: "Código de Invitación",
       codeApplied: "Aplicado",
       referralBonusChip: "+1 por cada uno",
+      referralCodeTitle: "Código de referido",
+      referralHint: "¿Te invitó un amigo? Pon su código y los dos ganan participaciones extra.",
       referralBonusTitle: "¡Entradas Extra!",
       referralBonusBody: "Ingresa el código de tu amigo — ¡ambos ganan +1 participación extra en el sorteo!",
       errors: {
