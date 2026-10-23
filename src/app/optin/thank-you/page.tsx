@@ -35,6 +35,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import RewardCard from "../components/RewardCard";
 import ReferralBanner from "../components/ReferralBanner";
 import { misReferidosHref, saveOptinSession } from "../session";
+import { buildShareText, optinReferralLink } from "../share";
 import {
   getReferralLinkByStore,
   getActiveSweepstakeByStoreId,
@@ -269,8 +270,14 @@ function ThankYouOptinInner() {
 
   const mainColor = "#E8127F";
 
-  const referralLink = referralData?.referralLink || "";
-  const shareText = `🎉 ¡Participa en ${sweepstake?.name || "el sorteo"}! Usa mi código para registrarte: ${referralLink}`;
+  // Link a /optin de esta app y texto según la recompensa de la tienda (configurable en el panel).
+  const referralLink = referralData ? optinReferralLink(referralData.referralCode || referralCode, slug) : "";
+  const shareText = buildShareText(referralData?.referralReward, {
+    name: referralData?.firstName,
+    store: referralData?.storeName,
+    sweepstake: sweepstake?.name,
+    link: referralLink,
+  });
 
   const shareOnWhatsApp = () => window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank");
   const shareOnFacebook = () =>

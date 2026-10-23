@@ -38,6 +38,7 @@ import { getReferralLinkByStore } from "@/services/sweeptake.service";
 import RewardCard from "../components/RewardCard";
 import ReferralBanner from "../components/ReferralBanner";
 import { readOptinSession, saveOptinSession } from "../session";
+import { buildShareText, optinReferralLink } from "../share";
 
 const MAIN = "#E8127F";
 
@@ -82,8 +83,8 @@ function MisReferidosInner() {
   });
 
   const [copied, setCopied] = useState(false);
-  const link = data?.referralLink || "";
-  const shareText = `🎉 ¡Regístrate en ${data?.storeName || "la tienda"} con mi código y participa! ${link}`;
+  const link = data && session ? optinReferralLink(data.referralCode || session.referralCode, session.slug) : "";
+  const shareText = buildShareText(data?.referralReward, { name: data?.firstName, store: data?.storeName, link });
   const copyLink = () => {
     if (!link) return;
     navigator.clipboard.writeText(link);

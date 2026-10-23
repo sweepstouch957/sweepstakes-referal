@@ -132,6 +132,7 @@ export interface ReferralRewardInfo {
   imageUrl: string | null;
   bannerDesktopUrl?: string | null;
   bannerMobileUrl?: string | null;
+  shareMessage?: string;
   terms: string;
   referredBonusCoupon: boolean;
   referredCount: number;
@@ -294,6 +295,7 @@ export interface StoreReferralReward {
   imageUrl: string | null;
   bannerDesktopUrl?: string | null;
   bannerMobileUrl?: string | null;
+  shareMessage?: string;
   terms: string;
   referredBonusCoupon: boolean;
 }
