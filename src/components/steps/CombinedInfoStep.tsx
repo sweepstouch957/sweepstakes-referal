@@ -316,7 +316,7 @@ export default function CombinedInfoStep({
                 />
               }
               label={
-                <Typography sx={{ fontSize: "0.9rem", color: "#1f2937", fontWeight: 700 }}>
+                <Typography sx={{ fontSize: "0.8rem", color: "#1f2937", fontWeight: 700 }}>
                   {t("form.smsConsent")}
                 </Typography>
               }
