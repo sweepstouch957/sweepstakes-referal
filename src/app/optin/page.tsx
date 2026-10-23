@@ -54,10 +54,13 @@ function StoreBadge({
   store,
   isLoading,
   mainColor,
+  attached = false,
 }: {
   store?: Awaited<ReturnType<typeof getStoreBySlug>>;
   isLoading: boolean;
   mainColor: string;
+  /** Pegado debajo del banner: sin margen arriba ni esquinas superiores. */
+  attached?: boolean;
 }) {
   if (isLoading) {
     return (
@@ -73,14 +76,15 @@ function StoreBadge({
   const fullAddr = [addr, store.zipCode].filter(Boolean).join(", ");
 
   return (
-    <Container maxWidth="sm" sx={{ mt: { xs: 0.75, sm: 2 }, position: "relative", zIndex: 10, px: { xs: 1.5, sm: 3 } }}>
+    <Container maxWidth="sm" sx={{ mt: attached ? 0 : { xs: 0.75, sm: 2 }, position: "relative", zIndex: 10, px: { xs: 1.5, sm: 3 } }}>
       <Paper
         elevation={0}
         sx={{
-          borderRadius: 3,
+          borderRadius: attached ? "0 0 12px 12px" : 3,
           overflow: "hidden",
           background: "#fff",
           border: `1px solid ${mainColor}22`,
+          borderTop: attached ? "none" : undefined,
         }}
       >
         <Stack direction="row" spacing={1.5} alignItems="center" sx={{ p: { xs: 0.75, sm: 1.5 } }}>
@@ -264,8 +268,8 @@ function OptinPageInner() {
 
       {/* Store badge below the fixed navbar */}
       {/* Banner de la campaña (hero) → tienda → título: un solo bloque, sin sombras apiladas. */}
-      <ReferralBanner desktop={referralReward?.bannerDesktopUrl} mobile={referralReward?.bannerMobileUrl} alt={referralReward?.title || ""} />
-      <StoreBadge store={store} isLoading={storeLoading} mainColor={mainColor} />
+      <ReferralBanner desktop={referralReward?.bannerDesktopUrl} mobile={referralReward?.bannerMobileUrl} alt={referralReward?.title || ""} attached />
+      <StoreBadge store={store} isLoading={storeLoading} mainColor={mainColor} attached={!!(referralReward?.bannerDesktopUrl || referralReward?.bannerMobileUrl)} />
 
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, py: 0.5 }}>
       {/* Section heading */}
