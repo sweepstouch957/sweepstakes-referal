@@ -295,8 +295,8 @@ export default function CombinedInfoStep({
           bgcolor: "var(--optin-surface, #fff8fc)",
           border: "1.5px solid var(--optin-pink, #fce7f3)",
           borderRadius: "12px",
-          px: 2,
-          py: 1.5,
+          px: 1.75,
+          py: 1.25,
         }}
       >
         <Controller
@@ -316,7 +316,7 @@ export default function CombinedInfoStep({
                 />
               }
               label={
-                <Typography sx={{ fontSize: "1rem", color: "#1f2937", fontWeight: 700 }}>
+                <Typography sx={{ fontSize: "0.9rem", color: "#1f2937", fontWeight: 700 }}>
                   {t("form.smsConsent")}
                 </Typography>
               }
@@ -324,7 +324,7 @@ export default function CombinedInfoStep({
             />
           )}
         />
-        <Typography sx={{ fontSize: "0.85rem", color: "#4b5563", lineHeight: 1.5, mt: 0.25, ml: "42px" }}>
+        <Typography sx={{ fontSize: "0.72rem", color: "#6b7280", lineHeight: 1.45, mt: 0, ml: "42px" }}>
           {t("form.smsConsentDisclaimer")}
         </Typography>
       </Box>
