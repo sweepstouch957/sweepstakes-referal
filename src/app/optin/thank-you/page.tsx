@@ -313,7 +313,6 @@ function ThankYouOptinInner() {
 
   return (
     <Box sx={{ minHeight: { xs: "calc(100svh - 56px)", sm: "calc(100svh - 64px)" }, bgcolor: "#f8f9fc", display: "flex", flexDirection: "column", minWidth: 0 }}>
-      <ReferralBanner desktop={referralData?.referralReward?.bannerDesktopUrl} mobile={referralData?.referralReward?.bannerMobileUrl} alt={referralData?.referralReward?.title || ""} />
       <Box component="main" sx={{ flexGrow: 1, display: "flex", alignItems: "center", py: { xs: 1, sm: 3 }, minWidth: 0 }}>
         <Container maxWidth="sm" sx={{ px: { xs: 1.5, sm: 3 } }}>
           <Fade in timeout={400}>
@@ -330,6 +329,9 @@ function ThankYouOptinInner() {
                 border: `1px solid ${mainColor}22`, boxShadow: "0 1px 2px rgba(15,23,42,0.04)",
               }}
             >
+              {/* Banner de la tienda (panel > Recompensa por referidos), parte de la tarjeta */}
+              <ReferralBanner inline desktop={referralData?.referralReward?.bannerDesktopUrl} mobile={referralData?.referralReward?.bannerMobileUrl} alt={referralData?.referralReward?.title || ""} />
+
               {/* Success header */}
               <Box
                 sx={{
@@ -393,7 +395,7 @@ function ThankYouOptinInner() {
                     >
                       Registrado en{" "}
                       <Box component="span" fontWeight={700} color="#1a1a2e">
-                        {referralData.storeName}
+                        {referralData.storeName.replace(/\s+\d.*$/, "").trim()}
                       </Box>
                     </Typography>
                   )}
