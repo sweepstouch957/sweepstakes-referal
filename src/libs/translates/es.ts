@@ -78,6 +78,7 @@ const es = {
       codeApplied: "Aplicado",
       referralBonusChip: "+1 por cada uno",
       referralCodeTitle: "Código de referido",
+      referralAsk: "¿Tienes un código de referido?",
       referralHint: "¿Te invitó un amigo? Pon su código y los dos ganan participaciones extra.",
       referralBonusTitle: "¡Entradas Extra!",
       referralBonusBody: "Ingresa el código de tu amigo — ¡ambos ganan +1 participación extra en el sorteo!",

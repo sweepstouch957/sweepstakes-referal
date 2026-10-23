@@ -78,6 +78,7 @@ const en = {
       codeApplied: "Applied",
       referralBonusChip: "+1 entry each",
       referralCodeTitle: "Referral Code",
+      referralAsk: "Have a referral code?",
       referralHint: "Did a friend invite you? Enter their code so you both earn extra entries.",
       referralBonusTitle: "Extra Entries!",
       referralBonusBody: "Enter a friend's referral code — you both earn +1 extra entry in the sweepstake!",

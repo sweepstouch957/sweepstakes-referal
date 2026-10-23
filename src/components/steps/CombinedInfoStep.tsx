@@ -10,9 +10,12 @@ import {
   TextField,
   Typography,
   Chip,
+  Collapse,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { useEffect } from "react";
+import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useEffect, useState } from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import { FormData } from "@/hooks/useReferralStepper";
 import { useTranslation } from "react-i18next";
@@ -81,6 +84,7 @@ export default function CombinedInfoStep({
 
   const { t } = useTranslation();
   const smsConsent = watch("smsConsent") ?? true;
+  const [referralOpen, setReferralOpen] = useState(() => !!(defaultReferralCode || form.getValues("referralCode"))?.trim());
 
   const {
     data: stores = [],
@@ -230,25 +234,71 @@ export default function CombinedInfoStep({
         />
       )}
 
-      {/* ── ZIP + Código de referido, misma fila ── */}
+      {/* ── ZIP ── */}
       <Box>
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <FieldLabel>{t("form.zip")}</FieldLabel>
-            <TextField
-              {...register("zip")}
-              placeholder="07505"
-              error={!!errors.zip}
-              helperText={errors.zip?.message}
-              fullWidth
-              inputMode="numeric"
-              autoComplete="postal-code"
-              sx={fieldSx}
-              onChange={(e) => setValue("zip", e.target.value.replace(/\D/g, "").slice(0, 5))}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <FieldLabel hint={t("common.optional")}>{t("form.referralCodeTitle")}</FieldLabel>
+        <FieldLabel>{t("form.zip")}</FieldLabel>
+        <TextField
+          {...register("zip")}
+          placeholder="07505"
+          error={!!errors.zip}
+          helperText={errors.zip?.message}
+          fullWidth
+          inputMode="numeric"
+          autoComplete="postal-code"
+          sx={fieldSx}
+          onChange={(e) => setValue("zip", e.target.value.replace(/\D/g, "").slice(0, 5))}
+        />
+      </Box>
+
+      {/* ── Código de referido: una línea tipo acordeón. Con código en el link viene abierto
+          y aplicado; sin código, cerrado ("¿Tienes un código?") para no estorbar. ── */}
+      <Box
+        sx={{
+          border: "1.5px dashed",
+          borderColor: defaultReferralCode ? PINK : "#e5e7eb",
+          borderRadius: "12px",
+          bgcolor: defaultReferralCode ? "var(--optin-surface, #fff5fa)" : "#fafafa",
+          overflow: "hidden",
+          transition: "border-color .2s, background .2s",
+          "&:focus-within": { borderColor: PINK, borderStyle: "solid" },
+        }}
+      >
+        <Box
+          component="button"
+          type="button"
+          aria-expanded={referralOpen}
+          onClick={() => setReferralOpen((o) => !o)}
+          sx={{
+            display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1,
+            width: "100%", minHeight: 48, px: 1.75, border: 0, bgcolor: "transparent", cursor: "pointer", textAlign: "left",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}>
+            <ConfirmationNumberOutlinedIcon sx={{ fontSize: 18, color: defaultReferralCode ? PINK : "#9ca3af", flexShrink: 0 }} />
+            <Typography sx={{ fontWeight: 700, fontSize: "0.9rem", color: "#1f2937", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {defaultReferralCode ? t("form.referralCodeTitle") : t("form.referralAsk")}
+              {!defaultReferralCode && (
+                <Typography component="span" sx={{ fontWeight: 400, color: "#9ca3af", ml: 0.75, fontSize: "0.8rem" }}>
+                  ({t("common.optional")})
+                </Typography>
+              )}
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, flexShrink: 0 }}>
+            {defaultReferralCode && (
+              <Chip
+                icon={<CheckCircleIcon sx={{ fontSize: "12px !important" }} />}
+                label={t("form.codeApplied")}
+                size="small"
+                sx={{ bgcolor: "#dcfce7", color: "#16a34a", fontWeight: 700, fontSize: "0.67rem", border: "1px solid #bbf7d0", height: 20, "& .MuiChip-icon": { color: "#16a34a" } }}
+              />
+            )}
+            <ExpandMoreIcon sx={{ color: "#9ca3af", transform: referralOpen ? "rotate(180deg)" : "none", transition: "transform .2s" }} />
+          </Box>
+        </Box>
+
+        <Collapse in={referralOpen} timeout={200}>
+          <Box sx={{ px: 1.75, pb: 1.5 }}>
             <TextField
               {...register("referralCode")}
               placeholder="E.G. MARIA123"
@@ -259,34 +309,12 @@ export default function CombinedInfoStep({
               autoCapitalize="characters"
               sx={{
                 ...fieldSx,
-                "& .MuiOutlinedInput-root": {
-                  ...fieldSx["& .MuiOutlinedInput-root"],
-                  backgroundColor: "var(--optin-surface, #fff5fa)",
-                  "& fieldset": { borderColor: defaultReferralCode ? PINK : "#f3b9d6", borderWidth: "1.5px", borderStyle: "dashed" },
-                  "&.Mui-focused fieldset": { borderColor: PINK, borderWidth: "2px", borderStyle: "solid" },
-                },
-                "& .MuiInputBase-input": { ...fieldSx["& .MuiInputBase-input"], fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase" },
+                "& .MuiInputBase-input": { ...fieldSx["& .MuiInputBase-input"], py: "11px", fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase" },
               }}
-              InputProps={
-                defaultReferralCode
-                  ? {
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Chip
-                            icon={<CheckCircleIcon sx={{ fontSize: "12px !important" }} />}
-                            label={t("form.codeApplied")}
-                            size="small"
-                            sx={{ bgcolor: "#dcfce7", color: "#16a34a", fontWeight: 700, fontSize: "0.67rem", border: "1px solid #bbf7d0", height: 20, "& .MuiChip-icon": { color: "#16a34a" } }}
-                          />
-                        </InputAdornment>
-                      ),
-                    }
-                  : undefined
-              }
             />
-          </Grid>
-        </Grid>
-        <Typography sx={{ fontSize: "0.85rem", color: "#64748b", mt: 1 }}>{t("form.referralHint")}</Typography>
+            <Typography sx={{ fontSize: "0.8rem", color: "#64748b", mt: 0.75 }}>{t("form.referralHint")}</Typography>
+          </Box>
+        </Collapse>
       </Box>
 
       {/* ── SMS Consent ── */}
