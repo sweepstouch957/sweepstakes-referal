@@ -61,12 +61,16 @@ function FieldLabel({ children, hint }: { children: React.ReactNode; hint?: stri
 
 export default function CombinedInfoStep({
   compact = false,
+  omitEmailAndZip = false,
+  hideReferralCode = false,
   form,
   defaultReferralCode = "",
   showSupermarket = false,
   sweepstakeId,
 }: {
   compact?: boolean;
+  omitEmailAndZip?: boolean;
+  hideReferralCode?: boolean;
   form: UseFormReturn<FormData, any, FormData>;
   defaultReferralCode?: string;
   showSupermarket?: boolean;
@@ -183,6 +187,7 @@ export default function CombinedInfoStep({
       </Box>
 
       {/* ── Email ── */}
+      {!omitEmailAndZip && (
       <Box>
         <FieldLabel>{t("form.email")}</FieldLabel>
         <TextField
@@ -196,6 +201,7 @@ export default function CombinedInfoStep({
           sx={fieldSx}
         />
       </Box>
+      )}
 
       {showSupermarket && (
         <Controller
@@ -235,6 +241,7 @@ export default function CombinedInfoStep({
       )}
 
       {/* ── ZIP ── */}
+      {!omitEmailAndZip && (
       <Box>
         <FieldLabel>{t("form.zip")}</FieldLabel>
         <TextField
@@ -249,9 +256,11 @@ export default function CombinedInfoStep({
           onChange={(e) => setValue("zip", e.target.value.replace(/\D/g, "").slice(0, 5))}
         />
       </Box>
+      )}
 
       {/* ── Código de referido: una línea tipo acordeón. Con código en el link viene abierto
           y aplicado; sin código, cerrado ("¿Tienes un código?") para no estorbar. ── */}
+      {!hideReferralCode && (
       <Box
         sx={{
           border: "1.5px dashed",
@@ -316,6 +325,7 @@ export default function CombinedInfoStep({
           </Box>
         </Collapse>
       </Box>
+      )}
 
       {/* ── SMS Consent ── */}
       <Box

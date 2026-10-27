@@ -31,6 +31,8 @@ interface Props {
   backendError?: string | null;
   onClearError?: () => void;
   showExtendedFields?: boolean;
+  omitEmailAndZip?: boolean;
+  hideReferralCode?: boolean;
   disabled?: boolean;
   referralCodeNotice?: string;
 }
@@ -47,6 +49,8 @@ export default function ReferralForm({
   backendError,
   onClearError,
   showExtendedFields = false,
+  omitEmailAndZip = false,
+  hideReferralCode = false,
   disabled = false,
   stepperVariant = "full",
 }: Props) {
@@ -74,7 +78,7 @@ export default function ReferralForm({
     resendLeft,
     locked,
     success,
-  } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit, storeId);
+  } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit, storeId, omitEmailAndZip);
 
   const { t } = useTranslation();
   const stepContentRef = useRef<HTMLDivElement>(null);
@@ -113,7 +117,7 @@ export default function ReferralForm({
 
       // Validate referral code if provided
       const code = getValues("referralCode");
-      if (code) {
+      if (!hideReferralCode && code) {
         try {
           const result = await validateReferralCodeMutation(code);
           if (!result.valid) return;
@@ -162,6 +166,8 @@ export default function ReferralForm({
               compact={compact}
               form={form}
               defaultReferralCode={defaultReferralCode}
+              omitEmailAndZip={omitEmailAndZip}
+              hideReferralCode={hideReferralCode}
               showSupermarket={!showExtendedFields}
               sweepstakeId={sweepstakeId}
             />
@@ -230,7 +236,7 @@ export default function ReferralForm({
             {isLoadingOtp || isValidatingReferral ? (
               <CircularProgress size={22} color="inherit" />
             ) : (
-              t("common.next")
+              t(skipOtpVerification ? "common.submit" : "common.next")
             )}
           </CustomButton>
         )}

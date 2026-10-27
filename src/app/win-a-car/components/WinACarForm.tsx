@@ -25,6 +25,8 @@ interface Props {
   compact?: boolean;
   skipOtpVerification?: boolean;
   showExtendedFields?: boolean;
+  omitEmailAndZip?: boolean;
+  hideReferralCode?: boolean;
   tokenValue?: string;
   storeName?: string;
   isLoading?: boolean;
@@ -44,6 +46,8 @@ export default function WinACarFormWithThankYou({
   compact = false,
   skipOtpVerification = false,
   showExtendedFields = false,
+  omitEmailAndZip = false,
+  hideReferralCode = false,
   tokenValue = "",
   storeName = "",
   isLoading = false,
@@ -103,11 +107,10 @@ export default function WinACarFormWithThankYou({
       sweepstakeId,
       storeId: resolvedStoreId,
       campaignId,
-      referralCode: data.referralCode,
+      ...(hideReferralCode ? {} : { referralCode: data.referralCode }),
       firstName: data.firstName,
       lastName: data.lastName,
-      email: data.email,
-      zipCode: data.zip,
+      ...(omitEmailAndZip ? {} : { email: data.email, zipCode: data.zip }),
       customerPhone: cleanPhone,
       method: "referral",
       language
@@ -168,6 +171,8 @@ export default function WinACarFormWithThankYou({
                 defaultReferralCode={tokenValue}
                 defaultStoreName={storeName}
                 showExtendedFields={showExtendedFields}
+                omitEmailAndZip={omitEmailAndZip}
+                hideReferralCode={hideReferralCode}
                 sweepstakeId={sweepstakeId}
                 storeId={storeId}
               />

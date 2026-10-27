@@ -24,7 +24,7 @@ export type FormData = {
   otp: string;
 };
 
-export const schema: z.ZodType<FormData> = z
+const createSchema = (omitEmailAndZip = false): z.ZodType<FormData> => z
   .object({
     firstName: z
       .string()
@@ -35,8 +35,8 @@ export const schema: z.ZodType<FormData> = z
       .min(1, { message: t("form.errors.lastName.required") })
       .max(50, { message: t("form.errors.lastName.max") }),
     phone: z.string().optional(),
-    email: z.string().email({ message: t("form.errors.email") }),
-    zip: z.string().regex(/^\d{5}$/, { message: t("form.errors.zip") }),
+    email: omitEmailAndZip ? z.string() : z.string().email({ message: t("form.errors.email") }),
+    zip: omitEmailAndZip ? z.string() : z.string().regex(/^\d{5}$/, { message: t("form.errors.zip") }),
     referralCode: z.string().optional(),
     supermarket: z.string().optional(),
     smsConsent: z.boolean(),
@@ -65,6 +65,8 @@ export const schema: z.ZodType<FormData> = z
     }
   });
 
+export const schema = createSchema();
+
 const OTP_COOLDOWN = 120;
 const FORM_COOKIE_KEY = "referral-form-data";
 
@@ -76,7 +78,8 @@ export function useReferralStepper(
   defaultReferralCode = "",
   defaultStoreName = "",
   onSubmit: (data: FormData) => void,
-  storeId = ""
+  storeId = "",
+  omitEmailAndZip = false
 ) {
   const [activeStep, setActiveStep] = useState(0);
   const [otpSent, setOtpSent] = useState(false);
@@ -104,7 +107,7 @@ export function useReferralStepper(
   })();
 
   const form = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(omitEmailAndZip ? createSchema(true) : schema),
     mode: "onBlur",
     defaultValues: {
       firstName: cookieData.firstName || "",
