@@ -5,6 +5,7 @@ import { api } from "../http/client";
 
 export interface RegisterPayload {
   genericRegistration?: boolean;
+  suppressMessages?: boolean;
   sweepstakeId: string;
   customerPhone: string;
   storeId?: string; // opcional

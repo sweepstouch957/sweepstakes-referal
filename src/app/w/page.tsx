@@ -311,6 +311,8 @@ function OptinPageInner() {
           </Container>
         ) : sweepstakeId ? (
           <WinACarForm
+            skipOtpVerification
+            suppressMessages
             allowGenericRegistration={!slug}
             hideReferralCode
             omitEmailAndZip
@@ -322,7 +324,7 @@ function OptinPageInner() {
             storeId={store?._id || ""}
             sweepstakeId={sweepstakeId}
             hideTitle
-            stepperVariant="full"
+            stepperVariant="personalOnly"
             thankYouPath="/w/thank-you"
             prizeId={prizeId}
           />

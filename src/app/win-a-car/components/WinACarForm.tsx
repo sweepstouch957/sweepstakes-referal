@@ -24,6 +24,7 @@ import { useLanguage } from "@/libs/context/LanguageContext";
 interface Props {
   compact?: boolean;
   skipOtpVerification?: boolean;
+  suppressMessages?: boolean;
   showExtendedFields?: boolean;
   omitEmailAndZip?: boolean;
   hideReferralCode?: boolean;
@@ -46,6 +47,7 @@ interface Props {
 export default function WinACarFormWithThankYou({
   compact = false,
   skipOtpVerification = false,
+  suppressMessages = false,
   showExtendedFields = false,
   omitEmailAndZip = false,
   hideReferralCode = false,
@@ -107,6 +109,7 @@ export default function WinACarFormWithThankYou({
 
     mutation.mutate({
       sweepstakeId,
+      ...(suppressMessages ? { suppressMessages: true } : {}),
       ...(resolvedStoreId ? { storeId: resolvedStoreId } : {}),
       ...(allowGenericRegistration && !resolvedStoreId ? { genericRegistration: true } : {}),
       campaignId,
