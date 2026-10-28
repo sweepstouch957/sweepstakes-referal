@@ -209,6 +209,9 @@ function SectionHeading({
 }
 
 // ─── Main container ───────────────────────────────────────────────────────────
+// Temporary preview: open the coupon immediately after registration.
+const PREVIEW_COUPON_AFTER_REGISTRATION = true;
+
 function OptinPageInner() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
@@ -273,17 +276,16 @@ function OptinPageInner() {
       <Dialog open={confirmationOpen} onClose={() => setConfirmationOpen(false)} maxWidth="xs" fullWidth
         aria-labelledby="w-registration-success" PaperProps={{ sx: { borderRadius: 4, textAlign: "center" } }}>
         <DialogTitle id="w-registration-success" sx={{ color: mainColor, fontWeight: 900 }}>
-          Te has registrado correctamente
+          {t("w.registered")}
         </DialogTitle>
         <DialogContent>
           <Typography sx={{ color: "#475569", lineHeight: 1.6 }}>
-            Te enviamos un mensaje con el cupón para canjearlo
-            {confirmation?.storeName ? " en la tienda de:" : " en la tienda participante."}
+            {t(confirmation?.storeName ? "w.sentStore" : "w.sentGeneric")}
           </Typography>
           {confirmation?.storeName && <Typography fontWeight={800} sx={{ mt: 1 }}>{cleanStoreName(confirmation.storeName)}</Typography>}
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center", pb: 3 }}>
-          <Button variant="contained" onClick={() => setConfirmationOpen(false)} sx={{ bgcolor: mainColor, borderRadius: 2, textTransform: "none" }}>Entendido</Button>
+          <Button variant="contained" onClick={() => setConfirmationOpen(false)} sx={{ bgcolor: mainColor, borderRadius: 2, textTransform: "none" }}>{t("w.gotIt")}</Button>
         </DialogActions>
       </Dialog>
 
@@ -335,14 +337,14 @@ function OptinPageInner() {
           </Container>
         ) : sweepstakeId ? (
           <WinACarForm
-            onRegistered={(result) => {
+            onRegistered={PREVIEW_COUPON_AFTER_REGISTRATION ? undefined : (result) => {
               setConfirmation(result);
               setConfirmationOpen(true);
             }}
             skipOtpVerification
             allowGenericRegistration={!slug}
             hideReferralCode
-            omitEmailAndZip
+            nameEmailPhoneOnly
             showExtendedFields={!!slug}
             tokenValue={referralCode}
             storeName={store?.name || ""}

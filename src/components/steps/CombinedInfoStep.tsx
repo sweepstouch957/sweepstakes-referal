@@ -62,6 +62,7 @@ function FieldLabel({ children, hint }: { children: React.ReactNode; hint?: stri
 export default function CombinedInfoStep({
   compact = false,
   omitEmailAndZip = false,
+  nameEmailPhoneOnly = false,
   hideReferralCode = false,
   form,
   defaultReferralCode = "",
@@ -70,6 +71,7 @@ export default function CombinedInfoStep({
 }: {
   compact?: boolean;
   omitEmailAndZip?: boolean;
+  nameEmailPhoneOnly?: boolean;
   hideReferralCode?: boolean;
   form: UseFormReturn<FormData, any, FormData>;
   defaultReferralCode?: string;
@@ -129,18 +131,19 @@ export default function CombinedInfoStep({
 
       {/* ── Nombre / Apellido ── */}
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <FieldLabel>{t("form.firstName")}</FieldLabel>
+        <Grid size={{ xs: 12, sm: nameEmailPhoneOnly ? 12 : 6 }}>
+          <FieldLabel>{t(nameEmailPhoneOnly ? "form.fullName" : "form.firstName")}</FieldLabel>
           <TextField
             {...register("firstName")}
-            placeholder="Maria"
+            placeholder={nameEmailPhoneOnly ? "Maria Lopez" : "Maria"}
             error={!!errors.firstName}
             helperText={errors.firstName?.message}
             fullWidth
-            autoComplete="given-name"
+            autoComplete={nameEmailPhoneOnly ? "name" : "given-name"}
             sx={fieldSx}
           />
         </Grid>
+        {!nameEmailPhoneOnly && (
         <Grid size={{ xs: 12, sm: 6 }}>
           <FieldLabel>{t("form.lastName")}</FieldLabel>
           <TextField
@@ -153,9 +156,26 @@ export default function CombinedInfoStep({
             sx={fieldSx}
           />
         </Grid>
+        )}
       </Grid>
 
       {/* ── Teléfono: prefijo +1 en caja aparte ── */}
+      {nameEmailPhoneOnly && (
+      <Box>
+        <FieldLabel>{t("form.email")}</FieldLabel>
+        <TextField
+          {...register("email")}
+          placeholder="name@email.com"
+          error={!!errors.email}
+          helperText={errors.email?.message}
+          fullWidth
+          inputMode="email"
+          autoComplete="email"
+          sx={fieldSx}
+        />
+      </Box>
+      )}
+
       <Box>
         <FieldLabel>{t("form.phone")}</FieldLabel>
         <TextField
@@ -187,7 +207,9 @@ export default function CombinedInfoStep({
       </Box>
 
       {/* ── Email ── */}
-      {!omitEmailAndZip && (
+
+
+      {(!omitEmailAndZip && !nameEmailPhoneOnly) && (
       <Box>
         <FieldLabel>{t("form.email")}</FieldLabel>
         <TextField
@@ -241,7 +263,7 @@ export default function CombinedInfoStep({
       )}
 
       {/* ── ZIP ── */}
-      {!omitEmailAndZip && (
+      {!omitEmailAndZip && !nameEmailPhoneOnly && (
       <Box>
         <FieldLabel>{t("form.zip")}</FieldLabel>
         <TextField

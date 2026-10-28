@@ -1,26 +1,20 @@
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { useLanguage } from "@/libs/context/LanguageContext";
-import { useState } from "react";
 
 export default function LanguageSwitcher() {
 const { language, changeLanguage } = useLanguage();
-  const [alignment, setAlignment] = useState<"es" | "en">(
-    language as "es" | "en"
-  );
-
   const handleChange = (
     _: React.MouseEvent<HTMLElement>,
     newLanguage: "es" | "en" | null
   ) => {
     if (newLanguage) {
       changeLanguage(newLanguage);
-      setAlignment(newLanguage);
     }
   };
 
   return (
     <ToggleButtonGroup
-      value={alignment}
+      value={language}
       exclusive
       onChange={handleChange}
       size="small"

@@ -24,19 +24,19 @@ export type FormData = {
   otp: string;
 };
 
-const createSchema = (omitEmailAndZip = false): z.ZodType<FormData> => z
+const createSchema = (omitEmailAndZip = false, nameEmailPhoneOnly = false): z.ZodType<FormData> => z
   .object({
     firstName: z
       .string()
       .min(1, { message: t("form.errors.firstName.required") })
       .max(50, { message: t("form.errors.firstName.max") }),
-    lastName: z
+    lastName: nameEmailPhoneOnly ? z.string() : z
       .string()
       .min(1, { message: t("form.errors.lastName.required") })
       .max(50, { message: t("form.errors.lastName.max") }),
     phone: z.string().optional(),
-    email: omitEmailAndZip ? z.string() : z.string().email({ message: t("form.errors.email") }),
-    zip: omitEmailAndZip ? z.string() : z.string().regex(/^\d{5}$/, { message: t("form.errors.zip") }),
+    email: omitEmailAndZip && !nameEmailPhoneOnly ? z.string() : z.string().trim().email({ message: t("form.errors.email") }),
+    zip: omitEmailAndZip || nameEmailPhoneOnly ? z.string() : z.string().regex(/^\d{5}$/, { message: t("form.errors.zip") }),
     referralCode: z.string().optional(),
     supermarket: z.string().optional(),
     smsConsent: z.boolean(),
@@ -80,7 +80,8 @@ export function useReferralStepper(
   onSubmit: (data: FormData) => void,
   storeId = "",
   omitEmailAndZip = false,
-  allowGenericRegistration = false
+  allowGenericRegistration = false,
+  nameEmailPhoneOnly = false
 ) {
   const [activeStep, setActiveStep] = useState(0);
   const [otpSent, setOtpSent] = useState(false);
@@ -110,11 +111,11 @@ export function useReferralStepper(
   })();
 
   const form = useForm<FormData>({
-    resolver: zodResolver(omitEmailAndZip ? createSchema(true) : schema),
+    resolver: zodResolver(createSchema(omitEmailAndZip, nameEmailPhoneOnly)),
     mode: "onBlur",
     defaultValues: {
-      firstName: cookieData.firstName || "",
-      lastName: cookieData.lastName || "",
+      firstName: nameEmailPhoneOnly ? [cookieData.firstName, cookieData.lastName].filter(Boolean).join(" ") : cookieData.firstName || "",
+      lastName: nameEmailPhoneOnly ? "" : cookieData.lastName || "",
       phone: cookieData.phone || "",
       email: cookieData.email || "",
       zip: cookieData.zip || "",

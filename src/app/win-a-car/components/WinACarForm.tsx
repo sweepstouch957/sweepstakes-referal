@@ -27,6 +27,7 @@ interface Props {
   suppressMessages?: boolean;
   showExtendedFields?: boolean;
   omitEmailAndZip?: boolean;
+  nameEmailPhoneOnly?: boolean;
   hideReferralCode?: boolean;
   allowGenericRegistration?: boolean;
   tokenValue?: string;
@@ -51,6 +52,7 @@ export default function WinACarFormWithThankYou({
   suppressMessages = false,
   showExtendedFields = false,
   omitEmailAndZip = false,
+  nameEmailPhoneOnly = false,
   hideReferralCode = false,
   allowGenericRegistration = false,
   tokenValue = "",
@@ -122,8 +124,8 @@ export default function WinACarFormWithThankYou({
       campaignId,
       ...(hideReferralCode ? {} : { referralCode: data.referralCode }),
       firstName: data.firstName,
-      lastName: data.lastName,
-      ...(omitEmailAndZip ? {} : { email: data.email, zipCode: data.zip }),
+      lastName: nameEmailPhoneOnly ? "" : data.lastName,
+      ...(nameEmailPhoneOnly ? { email: data.email.trim() } : omitEmailAndZip ? {} : { email: data.email, zipCode: data.zip }),
       customerPhone: cleanPhone,
       method: "referral",
       language
@@ -185,6 +187,7 @@ export default function WinACarFormWithThankYou({
                 defaultStoreName={storeName}
                 showExtendedFields={showExtendedFields}
                 omitEmailAndZip={omitEmailAndZip}
+                nameEmailPhoneOnly={nameEmailPhoneOnly}
                 hideReferralCode={hideReferralCode}
                 allowGenericRegistration={allowGenericRegistration}
                 sweepstakeId={sweepstakeId}

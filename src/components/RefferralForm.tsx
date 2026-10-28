@@ -32,6 +32,7 @@ interface Props {
   onClearError?: () => void;
   showExtendedFields?: boolean;
   omitEmailAndZip?: boolean;
+  nameEmailPhoneOnly?: boolean;
   hideReferralCode?: boolean;
   allowGenericRegistration?: boolean;
   disabled?: boolean;
@@ -51,6 +52,7 @@ export default function ReferralForm({
   onClearError,
   showExtendedFields = false,
   omitEmailAndZip = false,
+  nameEmailPhoneOnly = false,
   hideReferralCode = false,
   allowGenericRegistration = false,
   disabled = false,
@@ -80,7 +82,7 @@ export default function ReferralForm({
     resendLeft,
     locked,
     success,
-  } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit, storeId, omitEmailAndZip, allowGenericRegistration);
+  } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit, storeId, omitEmailAndZip, allowGenericRegistration, nameEmailPhoneOnly);
 
   const { t } = useTranslation();
   const stepContentRef = useRef<HTMLDivElement>(null);
@@ -174,6 +176,7 @@ export default function ReferralForm({
               form={form}
               defaultReferralCode={defaultReferralCode}
               omitEmailAndZip={omitEmailAndZip}
+              nameEmailPhoneOnly={nameEmailPhoneOnly}
               hideReferralCode={hideReferralCode}
               showSupermarket={!allowGenericRegistration && !showExtendedFields}
               sweepstakeId={sweepstakeId}

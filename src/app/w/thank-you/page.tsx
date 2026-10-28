@@ -15,15 +15,14 @@ import {
   Fade,
   CircularProgress,
 } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import StarIcon from "@mui/icons-material/Star";
+import { useTranslation } from "react-i18next";
 import { useMemo } from "react";
 
 import Navbar from "@/app/win-a-car/components/Navbar";
 import { getStoreBySlug } from "@/services/store.service";
 import CouponCard from "../components/CouponCard";
-import ReferralBanner from "../components/ReferralBanner";
 
 import { SWEEPSTAKE_ID, getWSweepstake } from "../config";
 
@@ -34,6 +33,28 @@ import {
 } from "@/services/sweeptake.service";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
+function CouponHeading({ name }: { name?: string }) {
+  const { t } = useTranslation();
+  return (
+    <Stack spacing={0.5} alignItems="center" sx={{ pt: 0.75 }}>
+      {name?.trim() && (
+        <Typography fontWeight={400} sx={{ color: "#000", fontSize: { xs: 18, sm: 22 }, lineHeight: 1.2, textAlign: "center", maxWidth: "100%", overflowWrap: "anywhere" }}>
+          {name.trim().split(/\s+/)[0].toUpperCase()},
+        </Typography>
+      )}
+      <Typography fontWeight={900} sx={{ color: "#E8127F", fontSize: { xs: "clamp(21px, 6vw, 27px)", sm: 34 }, lineHeight: 1.2, textAlign: "center" }}>
+        {t("w.won")}
+      </Typography>
+      <Typography fontWeight={400} sx={{ color: "#E8127F", fontSize: { xs: 11, sm: 13 }, lineHeight: 1.3, textAlign: "center" }}>
+        {t("w.valid")}
+      </Typography>
+      <Typography sx={{ color: "#000", fontSize: { xs: 13, sm: 15 }, lineHeight: 1.3, textAlign: "center" }}>
+        {t("w.showCashier")}
+      </Typography>
+    </Stack>
+  );
+}
+
 function getFirstPrizeId(prizes?: string[] | Record<string, unknown>[]): string {
   if (!prizes || prizes.length === 0) return "";
   const first = prizes[0];
@@ -74,6 +95,7 @@ function PrizeSection({
   isLoading: boolean;
   mainColor: string;
 }) {
+  const { t } = useTranslation();
   if (isLoading) {
     return (
       <Box sx={{ mt: { xs: 1, sm: 3 } }}>
@@ -89,7 +111,7 @@ function PrizeSection({
         <Divider sx={{ mb: { xs: 1, sm: 2.5 } }}>
           <Chip
             icon={<EmojiEventsIcon sx={{ fontSize: 16, color: mainColor }} />}
-            label="Premio del Sorteo"
+            label={t("w.prize")}
             sx={{
               fontWeight: 700,
               fontSize: 12,
@@ -160,7 +182,7 @@ function PrizeSection({
             <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap mb={{ xs: 0.25, sm: 1 }}>
               <Chip
                 icon={<StarIcon sx={{ fontSize: 13 }} />}
-                label="Premio Principal"
+                label={t("w.mainPrize")}
                 size="small"
                 sx={{
                   bgcolor: `${mainColor}15`,
@@ -199,6 +221,7 @@ function PrizeSection({
 
 // ─── Main thank-you content ───────────────────────────────────────────────────
 function ThankYouOptinInner() {
+  const { t } = useTranslation();
   const params = useSearchParams();
   const router = useRouter();
 
@@ -257,18 +280,18 @@ function ThankYouOptinInner() {
   const mainColor = "#E8127F";
 
   if (!referralCode) {
-    return <CenteredLoader text="Ocurrió un error. Redirigiendo..." color={mainColor} />;
+    return <CenteredLoader text={t("w.redirecting")} color={mainColor} />;
   }
 
   if (referralLoading || sweepLoading) {
-    return <CenteredLoader text="Cargando tu información..." color={mainColor} />;
+    return <CenteredLoader text={t("w.loadingInfo")} color={mainColor} />;
   }
 
   if (referralError) {
     return (
       <Container maxWidth="sm" sx={{ mt: 10, textAlign: "center" }}>
         <Typography variant="h6" color="error" fontWeight={700}>
-          Ocurrió un error. Intenta de nuevo.
+          {t("w.error")}
         </Typography>
       </Container>
     );
@@ -295,61 +318,14 @@ function ThankYouOptinInner() {
                 border: `1px solid ${mainColor}22`, boxShadow: "0 1px 2px rgba(15,23,42,0.04)",
               }}
             >
-              {/* Banner de la tienda (panel > Recompensa por referidos), parte de la tarjeta */}
-              <Box sx={{ display: { xs: "none", sm: "block" } }}><ReferralBanner inline desktop={referralData?.referralReward?.bannerDesktopUrl} mobile={referralData?.referralReward?.bannerMobileUrl} alt={referralData?.referralReward?.title || ""} /></Box>
-
-              {/* Success header */}
               <Box
-                sx={{
-                  background: mainColor,
-                  px: { xs: 1.5, sm: 4 },
-                  pt: { xs: 1, sm: 4 },
-                  pb: { xs: 1, sm: 4.5 },
-                  textAlign: "center",
-                }}
-              >
-                {/* Check icon */}
-                <Box
-                  sx={{
-                    width: { xs: 32, sm: 88 },
-                    height: { xs: 32, sm: 88 },
-                    borderRadius: "50%",
-                    bgcolor: "rgba(255,255,255,0.2)",
-                    border: "3px solid rgba(255,255,255,0.6)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    mx: "auto",
-                    mb: { xs: 0.5, sm: 2 },
-                  }}
-                >
-                  <CheckCircleIcon sx={{ fontSize: { xs: 22, sm: 52 }, color: "#fff" }} />
-                </Box>
-
-                <Typography
-                  fontWeight={900}
-                  sx={{
-                    fontSize: { xs: "1.2rem", sm: "2.4rem" },
-                    color: "#fff",
-                    lineHeight: 1.1,
-                    mb: { xs: 0.5, sm: 1 },
-                  }}
-                >
-                  ¡Ya estás dentro!
-                </Typography>
-
-                {referralData?.firstName && (
-                  <Typography
-                    sx={{ color: "rgba(255,255,255,0.9)", fontSize: { xs: 12, sm: 17 }, fontWeight: 500 }}
-                  >
-                    Hola,{" "}
-                    <Box component="span" fontWeight={800}>
-                      {referralData.firstName}
-                    </Box>
-                    . Tu registro fue exitoso.
-                  </Typography>
-                )}
-              </Box>
+                component="img"
+                src="/w-new-year-banner-v2.jpeg"
+                alt="Sweepstouch New Year Sweepstakes: win a total of $5,000 in cash prizes."
+                width={1600}
+                height={533}
+                sx={{ display: "block", width: "100%", height: "auto", flexShrink: 0 }}
+              />
 
               {/* Store name + referral code */}
               {referralData && (
@@ -371,27 +347,15 @@ function ThankYouOptinInner() {
                           }}
                         />
                       )}
-                      <Typography fontWeight={900} sx={{ color: "#E8127F", fontSize: { xs: 23, sm: 30 }, lineHeight: 1.2, textAlign: "center", pt: 0.75 }}>
-                        ¡Ganaste $10 OFF!
-                      </Typography>
-                      <Typography
-                        textAlign="center"
-                        sx={{ color: "#64748b", fontSize: { xs: 12, sm: 14 }, lineHeight: 1.3 }}
-                      >
-                        Canjea tu cupón en la tienda de:
-                        <Box component="span" display="block" fontWeight={800} color="#1a1a2e">
-                          {referralData.storeName.replace(/\s+\d.*$/, "").trim()}
-                        </Box>
-                      </Typography>
+                      <CouponHeading name={referralData.firstName} />
                     </Stack>
                   )}
 
-                  {!referralData.storeName && (
-                    <Typography textAlign="center" fontWeight={900} sx={{ color: mainColor, fontSize: 24 }}>¡Ganaste $10 OFF!</Typography>
-                  )}
+                  {!referralData.storeName && <CouponHeading name={referralData.firstName} />}
                   <CouponCard
                     referralCode={referralData.referralCode || referralCode}
-                    storeName={referralData.storeName || "Sweepstouch"}
+                    storeName={store?.name || referralData.storeName || ""}
+                    storeAddress={store?.address}
                     reward={referralData.referralReward}
                   />
 
@@ -416,7 +380,7 @@ function ThankYouOptinInner() {
                 }}
               >
                 <Typography sx={{ color: "rgba(255,255,255,0.9)", fontSize: { xs: 10, sm: 12 }, fontWeight: 500 }}>
-                  © {new Date().getFullYear()} Sweepstouch · Todos los derechos reservados
+                  © {new Date().getFullYear()} Sweepstouch · {t("w.rights")}
                 </Typography>
               </Box>
             </Paper>
@@ -431,6 +395,7 @@ function ThankYouOptinInner() {
 
 // ─── Page export ──────────────────────────────────────────────────────────────
 export default function ThankYouOptinPage() {
+  const { t } = useTranslation();
   return (
     <Box sx={{ bgcolor: "#f8f9fc", minHeight: "100dvh", minWidth: 0,
       "& .MuiToggleButton-root.Mui-selected, & .MuiToggleButton-root.Mui-selected:hover": { bgcolor: "#E8127F" },
@@ -440,7 +405,7 @@ export default function ThankYouOptinPage() {
     }}>
       <Navbar hideActions hideMobileMenu />
       <Box sx={{ pt: { xs: "56px", sm: "64px" }, pb: "env(safe-area-inset-bottom)" }}>
-        <Suspense fallback={<CenteredLoader text="Cargando la página..." />}>
+        <Suspense fallback={<CenteredLoader text={t("w.loadingPage")} />}>
           <ThankYouOptinInner />
         </Suspense>
       </Box>
