@@ -1,6 +1,8 @@
 const en = {
   translation: {
     w: {
+  "retry": "Retry",
+  "storeRequired": "Your registration is saved. A store must be assigned before a redeemable coupon can be issued.",
   "won": "YOU HAVE WON $10 OFF!",
   "valid": "VALID WITH ADD'L $100.00 PURCHASE OR MORE",
   "showCashier": "Show this coupon to the cashier to redeem it.",
@@ -22,7 +24,7 @@ const en = {
   "cancelled": "This coupon was cancelled.",
   "minimum": "Minimum purchase: ${{amount}}.",
   "couponTitle": "Your $10 OFF coupon",
-  "showQr": "Present this QR code at checkout.",
+  "showQr": "Present it at checkout and scan it on the tablet to redeem it.",
   "preview": "PREVIEW - Not valid for redemption",
   "registered": "You have successfully registered",
   "sentStore": "We sent you a message with your coupon to redeem at:",
@@ -98,6 +100,7 @@ const en = {
       phone: "Phone",
       phoneOptional: "Phone (optional)",
       smsConsent: "Yes, I want to receive text messages",
+      smsConsentDetails: "Read full terms",
       smsConsentDisclaimer: "By checking this box, you agree to receive recurring promotional text messages from Sweepstouch, including grocery deals, coupons, weekly specials, and promotional updates. Message frequency may vary. Message and data rates may apply. Consent is not a condition of purchase. Reply STOP to opt out and HELP for help. View our Terms & Conditions and Privacy Policy. Mobile opt-in data will not be shared with third parties.",
       termsLink: "Terms and Conditions",
       privacyLink: "Privacy Policy",
@@ -268,7 +271,8 @@ const en = {
         phone: "Phone (10 digits) *",
         phoneOptional: "Phone (10 digits, optional)",
         smsConsent: "Yes, I want to receive text messages",
-        smsConsentDisclaimer: "By checking this box, you agree to receive recurring promotional text messages from Sweepstouch, including grocery deals, coupons, weekly specials, and promotional updates. Message frequency may vary. Message and data rates may apply. Consent is not a condition of purchase. Reply STOP to opt out and HELP for help. View our Terms & Conditions and Privacy Policy. Mobile opt-in data will not be shared with third parties.",
+        smsConsentDetails: "Read full terms",
+      smsConsentDisclaimer: "By checking this box, you agree to receive recurring promotional text messages from Sweepstouch, including grocery deals, coupons, weekly specials, and promotional updates. Message frequency may vary. Message and data rates may apply. Consent is not a condition of purchase. Reply STOP to opt out and HELP for help. View our Terms & Conditions and Privacy Policy. Mobile opt-in data will not be shared with third parties.",
         termsLink: "Terms and Conditions",
         privacyLink: "Privacy Policy",
         email: "Email (optional)",

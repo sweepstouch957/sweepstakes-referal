@@ -1,71 +1,82 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Alert, Box, Button, Link, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import DownloadIcon from "@mui/icons-material/Download";
-import { drawCouponQr } from "../qr";
-import type { ReferralRewardInfo } from "@/services/sweeptake.service";
-import { SWEEPSTAKE_ID } from "../config";
+import { isAxiosError } from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { getWCoupon } from "@/services/wCoupon.service";
 
 
 
-export default function CouponCard({ referralCode, storeName, storeAddress, reward }: {
+export default function CouponCard({ referralCode, storeName, storeAddress, slug }: {
   referralCode: string;
   storeName: string;
   storeAddress?: string;
-  reward?: ReferralRewardInfo | null;
+  slug: string;
 }) {
   const { t } = useTranslation();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
   const [downloading, setDownloading] = useState(false);
   const [instructionsOpen, setInstructionsOpen] = useState(false);
-  const earned = reward?.earned;
-  const isIssued = !!earned?.code && reward?.amount === 10;
-  const unavailable = isIssued && (earned?.status === "redeemed" || earned?.status === "cancelled");
-  // Never invent a redeemable code. A sample QR only identifies this registration.
-  const value = isIssued ? earned!.code : `PREVIEW:10OFF:${SWEEPSTAKE_ID}:${referralCode}`;
-
-  useEffect(() => {
-    setReady(false);
-    setError("");
-    if (!canvasRef.current || unavailable) return;
-    try {
-      drawCouponQr(canvasRef.current, value);
-      setReady(true);
-    } catch {
-      setError(t("w.qrError"));
-    }
-  }, [value, unavailable, t]);
+  const { data: earned, isPending, isError, refetch } = useQuery({
+    queryKey: ["w-coupon", referralCode, slug],
+    queryFn: () => getWCoupon(referralCode, slug),
+    retry: (count, failure) => count < 6 && isAxiosError(failure) && (!failure.response || failure.response.status >= 500),
+    retryDelay: 5000,
+    refetchOnWindowFocus: true,
+  });
+  const unavailable = earned?.status === "redeemed" || earned?.status === "cancelled";
+  const isIssued = !!earned?.code && !!earned?.qrUrl;
 
   const download = async () => {
-    if (!canvasRef.current || !ready || unavailable) return;
+    if (!imageRef.current || !ready || unavailable || !isIssued) return;
     setDownloading(true);
     setError("");
     try {
       const output = document.createElement("canvas");
       output.width = 1000;
-      output.height = 760;
+      output.height = 860;
       const ctx = output.getContext("2d");
       if (!ctx) throw new Error("Canvas unavailable");
       ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, 1000, 760);
+      ctx.fillRect(0, 0, output.width, output.height);
 
       ctx.textAlign = "center";
       ctx.fillStyle = "#E8127F";
       ctx.font = "bold 42px Arial";
       ctx.fillText(t("w.couponTitle"), 500, 90);
-      ctx.drawImage(canvasRef.current, 300, 120, 400, 400);
+      ctx.drawImage(imageRef.current, 300, 120, 400, 400);
       ctx.fillStyle = "#334155";
       ctx.font = "26px Arial";
       ctx.fillText(storeName, 500, 570, 900);
       ctx.font = "22px Arial";
-      ctx.fillText(isIssued ? t("w.showQr") : t("w.preview"), 500, 620);
-      if (isIssued) ctx.fillText(earned!.code, 500, 660, 900);
+      const drawWrappedText = (text: string, startY: number) => {
+        let line = "";
+        let y = startY;
+        for (const word of text.trim().split(/\s+/)) {
+          const next = line ? `${line} ${word}` : word;
+          if (line && ctx.measureText(next).width > 900) {
+            ctx.fillText(line, 500, y, 900);
+            y += 30;
+            line = word;
+          } else {
+            line = next;
+          }
+        }
+        if (line) ctx.fillText(line, 500, y, 900);
+        return y;
+      };
+      let textY = 570;
+      if (storeAddress?.trim() && !storeName.toLocaleLowerCase().includes(storeAddress.trim().toLocaleLowerCase())) {
+        textY = drawWrappedText(storeAddress, 610);
+      }
+      textY = drawWrappedText(t("w.showQr"), textY + 60);
       ctx.font = "18px Arial";
-      ctx.fillText("Sweepstouch", 500, 720);
+      ctx.fillText("Sweepstouch", 500, Math.max(800, textY + 60));
       const blob = await new Promise<Blob>((resolve, reject) => output.toBlob(
         (result) => result ? resolve(result) : reject(new Error("PNG unavailable")), "image/png"));
       const url = URL.createObjectURL(blob);
@@ -85,12 +96,16 @@ export default function CouponCard({ referralCode, storeName, storeAddress, rewa
 
   return (
     <Stack alignItems="center" spacing={{ xs: 0.75, sm: 1.5 }} sx={{ py: { xs: 0.75, sm: 1.5 } }}>
-      {unavailable ? (
+      {isPending ? <CircularProgress aria-label={t("w.loading")} /> : isError ? (
+        <Alert severity="error" action={<Button onClick={() => refetch()}>{t("w.retry")}</Button>}>{t("w.qrError")}</Alert>
+      ) : !earned ? <Alert severity="info">{t("w.storeRequired")}</Alert> : unavailable ? (
         <Alert severity="info">{earned?.status === "redeemed" ? t("w.redeemed") : t("w.cancelled")}</Alert>
       ) : (
         <>
-          <Box sx={{ bgcolor: "#fff", border: "1px solid #f5c8df", borderRadius: 2, p: 0.5, maxWidth: "100%", "& canvas": { width: { xs: "clamp(144px, 29svh, 216px)", sm: 260 }, height: "auto", display: "block" } }}>
-            <canvas ref={canvasRef} role="img" aria-label={t("w.qrLabel")}  />
+          <Box sx={{ bgcolor: "#fff", border: "1px solid #f5c8df", borderRadius: 2, p: 0, width: { xs: "clamp(220px, 34svh, 280px)", sm: 310 }, maxWidth: "100%", aspectRatio: "1", overflow: "hidden", "& img": { width: "128%", maxWidth: "none", height: "auto", display: "block", margin: "-14%" } }}>
+            {earned.qrUrl && <img key={earned.qrUrl} ref={imageRef} src={earned.qrUrl} crossOrigin="anonymous"
+              alt={t("w.qrLabel")} onLoad={() => { setReady(true); setError(""); }}
+              onError={() => { setReady(false); setError(t("w.qrError")); }} />}
           </Box>
           <Link
             component="button"
@@ -113,9 +128,6 @@ export default function CouponCard({ referralCode, storeName, storeAddress, rewa
               )}
             </Typography>
           )}
-          {isIssued && <Typography fontWeight={700}>{earned!.code}</Typography>}
-          {isIssued && reward?.minPurchase ? <Typography fontSize={12}>{t("w.minimum", { amount: reward.minPurchase })}</Typography> : null}
-          {isIssued && reward?.terms && <Typography fontSize={12} color="text.secondary">{reward.terms}</Typography>}
           <Button fullWidth variant="contained" startIcon={downloading ? <CircularProgress size={18} color="inherit" /> : <DownloadIcon />}
             disabled={!ready || downloading} onClick={download}
             sx={{ bgcolor: "#E8127F", borderRadius: 3, minHeight: { xs: 40, sm: 48 }, py: 0.75, fontSize: { xs: 13, sm: 15 }, fontWeight: 800, textTransform: "none", boxShadow: "none", "&:hover": { bgcolor: "#c40d6a" } }}>

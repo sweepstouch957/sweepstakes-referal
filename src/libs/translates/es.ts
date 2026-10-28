@@ -1,6 +1,8 @@
 const es = {
   translation: {
     w: {
+  "retry": "Reintentar",
+  "storeRequired": "Tu registro est\u00e1 guardado. Para emitir un cup\u00f3n canjeable necesitas una tienda asignada.",
   "won": "\u00a1GANASTE $10 OFF!",
   "valid": "V\u00c1LIDO CON UNA COMPRA ADICIONAL DE $100.00 O M\u00c1S",
   "showCashier": "Mu\u00e9stralo a la cajera para canjearlo.",
@@ -22,7 +24,7 @@ const es = {
   "cancelled": "Este cup\u00f3n fue cancelado.",
   "minimum": "Compra m\u00ednima: ${{amount}}.",
   "couponTitle": "Tu cup\u00f3n de $10 OFF",
-  "showQr": "Presenta este QR en caja.",
+  "showQr": "Pres\u00e9ntalo en caja y escan\u00e9alo en la tablet para redimirlo.",
   "preview": "VISTA PREVIA \u00b7 No v\u00e1lido para canje",
   "registered": "Te has registrado correctamente",
   "sentStore": "Te enviamos un mensaje con el cup\u00f3n para canjearlo en la tienda de:",
@@ -98,6 +100,7 @@ const es = {
       phone: "Teléfono",
       phoneOptional: "Teléfono (opcional)",
       smsConsent: "Sí quiero recibir mensajes de texto",
+      smsConsentDetails: "Ver condiciones completas",
       smsConsentDisclaimer: "Al marcar esta casilla, aceptas recibir mensajes de texto promocionales recurrentes de Sweepstouch, incluyendo ofertas de supermercado, cupones, especiales semanales y actualizaciones promocionales. La frecuencia de los mensajes puede variar. Pueden aplicarse tarifas por mensajes y datos. El consentimiento no es una condición de compra. Responde STOP para darte de baja y HELP para obtener ayuda. Consulta nuestros Términos y condiciones y Política de privacidad. Los datos de suscripción móvil no se compartirán con terceros.",
       termsLink: "Términos y condiciones",
       privacyLink: "Política de privacidad",
@@ -269,7 +272,8 @@ const es = {
         phone: "Teléfono (10 dígitos) *",
         phoneOptional: "Teléfono (10 dígitos, opcional)",
         smsConsent: "Sí quiero recibir mensajes de texto",
-        smsConsentDisclaimer: "Al marcar esta casilla, aceptas recibir mensajes de texto promocionales recurrentes de Sweepstouch, incluyendo ofertas de supermercado, cupones, especiales semanales y actualizaciones promocionales. La frecuencia de los mensajes puede variar. Pueden aplicarse tarifas por mensajes y datos. El consentimiento no es una condición de compra. Responde STOP para darte de baja y HELP para obtener ayuda. Consulta nuestros Términos y condiciones y Política de privacidad. Los datos de suscripción móvil no se compartirán con terceros.",
+        smsConsentDetails: "Ver condiciones completas",
+      smsConsentDisclaimer: "Al marcar esta casilla, aceptas recibir mensajes de texto promocionales recurrentes de Sweepstouch, incluyendo ofertas de supermercado, cupones, especiales semanales y actualizaciones promocionales. La frecuencia de los mensajes puede variar. Pueden aplicarse tarifas por mensajes y datos. El consentimiento no es una condición de compra. Responde STOP para darte de baja y HELP para obtener ayuda. Consulta nuestros Términos y condiciones y Política de privacidad. Los datos de suscripción móvil no se compartirán con terceros.",
         termsLink: "Términos y condiciones",
         privacyLink: "Política de privacidad",
         email: "Email (opcional)",

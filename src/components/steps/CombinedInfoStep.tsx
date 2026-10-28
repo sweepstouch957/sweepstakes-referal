@@ -90,6 +90,10 @@ export default function CombinedInfoStep({
 
   const { t } = useTranslation();
   const smsConsent = watch("smsConsent") ?? true;
+  const consentText = t("form.smsConsentDisclaimer");
+  const consentSentenceEnd = consentText.indexOf(". ");
+  const consentPreview = consentSentenceEnd >= 0 ? consentText.slice(0, consentSentenceEnd + 1) : consentText;
+  const consentDetails = consentSentenceEnd >= 0 ? consentText.slice(consentSentenceEnd + 2) : "";
   const [referralOpen, setReferralOpen] = useState(() => !!(defaultReferralCode || form.getValues("referralCode"))?.trim());
 
   const {
@@ -385,8 +389,16 @@ export default function CombinedInfoStep({
           )}
         />
         <Typography sx={{ fontSize: "0.72rem", color: "#6b7280", lineHeight: 1.45, mt: 0, ml: "42px" }}>
-          {t("form.smsConsentDisclaimer")}
+          {nameEmailPhoneOnly ? consentPreview : consentText}
         </Typography>
+        {nameEmailPhoneOnly && consentDetails && (
+          <Box component="details" sx={{ ml: "42px", mt: 0.5, fontSize: "0.72rem", color: "#6b7280", lineHeight: 1.45 }}>
+            <Box component="summary" sx={{ cursor: "pointer", color: PINK, fontWeight: 600, py: 0.5, display: "list-item", listStyle: "disclosure-closed inside", "details[open] > &": { listStyleType: "disclosure-open" } }}>
+              {t("form.smsConsentDetails")}
+            </Box>
+            <Typography sx={{ fontSize: "inherit", lineHeight: "inherit", mt: 0.5 }}>{consentDetails}</Typography>
+          </Box>
+        )}
       </Box>
 
     </Box>

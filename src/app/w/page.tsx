@@ -209,9 +209,6 @@ function SectionHeading({
 }
 
 // ─── Main container ───────────────────────────────────────────────────────────
-// Temporary preview: open the coupon immediately after registration.
-const PREVIEW_COUPON_AFTER_REGISTRATION = true;
-
 function OptinPageInner() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
@@ -337,7 +334,7 @@ function OptinPageInner() {
           </Container>
         ) : sweepstakeId ? (
           <WinACarForm
-            onRegistered={PREVIEW_COUPON_AFTER_REGISTRATION ? undefined : (result) => {
+            onRegistered={(result) => {
               setConfirmation(result);
               setConfirmationOpen(true);
             }}

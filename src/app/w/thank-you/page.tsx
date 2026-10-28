@@ -356,7 +356,7 @@ function ThankYouOptinInner() {
                     referralCode={referralData.referralCode || referralCode}
                     storeName={store?.name || referralData.storeName || ""}
                     storeAddress={store?.address}
-                    reward={referralData.referralReward}
+                    slug={slug}
                   />
 
                   {/* Prize section */}
