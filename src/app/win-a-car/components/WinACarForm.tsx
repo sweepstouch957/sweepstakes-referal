@@ -125,7 +125,7 @@ export default function WinACarFormWithThankYou({
       ...(hideReferralCode ? {} : { referralCode: data.referralCode }),
       firstName: data.firstName,
       lastName: nameEmailPhoneOnly ? "" : data.lastName,
-      ...(nameEmailPhoneOnly ? { email: data.email.trim() } : omitEmailAndZip ? {} : { email: data.email, zipCode: data.zip }),
+      ...(nameEmailPhoneOnly ? { zipCode: data.zip, ...(data.email.trim() ? { email: data.email.trim() } : {}) } : omitEmailAndZip ? {} : { email: data.email, zipCode: data.zip }),
       customerPhone: cleanPhone,
       method: "referral",
       language

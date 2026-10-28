@@ -164,21 +164,7 @@ export default function CombinedInfoStep({
       </Grid>
 
       {/* ── Teléfono: prefijo +1 en caja aparte ── */}
-      {nameEmailPhoneOnly && (
-      <Box>
-        <FieldLabel>{t("form.email")}</FieldLabel>
-        <TextField
-          {...register("email")}
-          placeholder="name@email.com"
-          error={!!errors.email}
-          helperText={errors.email?.message}
-          fullWidth
-          inputMode="email"
-          autoComplete="email"
-          sx={fieldSx}
-        />
-      </Box>
-      )}
+
 
       <Box>
         <FieldLabel>{t("form.phone")}</FieldLabel>
@@ -267,7 +253,7 @@ export default function CombinedInfoStep({
       )}
 
       {/* ── ZIP ── */}
-      {!omitEmailAndZip && !nameEmailPhoneOnly && (
+      {(!omitEmailAndZip || nameEmailPhoneOnly) && (
       <Box>
         <FieldLabel>{t("form.zip")}</FieldLabel>
         <TextField
@@ -286,6 +272,22 @@ export default function CombinedInfoStep({
 
       {/* ── Código de referido: una línea tipo acordeón. Con código en el link viene abierto
           y aplicado; sin código, cerrado ("¿Tienes un código?") para no estorbar. ── */}
+      {nameEmailPhoneOnly && (
+      <Box>
+        <FieldLabel hint={t("common.optional")}>{t("form.email")}</FieldLabel>
+        <TextField
+          {...register("email")}
+          placeholder="name@email.com"
+          error={!!errors.email}
+          helperText={errors.email?.message}
+          fullWidth
+          inputMode="email"
+          autoComplete="email"
+          sx={fieldSx}
+        />
+      </Box>
+      )}
+
       {!hideReferralCode && (
       <Box
         sx={{

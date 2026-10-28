@@ -35,8 +35,8 @@ const createSchema = (omitEmailAndZip = false, nameEmailPhoneOnly = false): z.Zo
       .min(1, { message: t("form.errors.lastName.required") })
       .max(50, { message: t("form.errors.lastName.max") }),
     phone: z.string().optional(),
-    email: omitEmailAndZip && !nameEmailPhoneOnly ? z.string() : z.string().trim().email({ message: t("form.errors.email") }),
-    zip: omitEmailAndZip || nameEmailPhoneOnly ? z.string() : z.string().regex(/^\d{5}$/, { message: t("form.errors.zip") }),
+    email: nameEmailPhoneOnly ? z.string().trim().pipe(z.union([z.literal(""), z.string().email({ message: t("form.errors.email") })])) : omitEmailAndZip ? z.string() : z.string().trim().email({ message: t("form.errors.email") }),
+    zip: omitEmailAndZip && !nameEmailPhoneOnly ? z.string() : z.string().regex(/^\d{5}$/, { message: t("form.errors.zip") }),
     referralCode: z.string().optional(),
     supermarket: z.string().optional(),
     smsConsent: z.boolean(),
