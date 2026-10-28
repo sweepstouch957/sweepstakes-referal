@@ -39,11 +39,22 @@ export class OtpService {
   private basePath = "/otp";
 
   async sendOtp(dto: SendOtpDto): Promise<ApiResponse<SendOtpResponseData>> {
-    const { data } = await api.post<ApiResponse<SendOtpResponseData>>(
+    // The OTP service returns counters at the top level; older deployments
+    // wrap them in data. Expose the same shape to all forms.
+    const { data } = await api.post<ApiResponse<SendOtpResponseData> & Partial<SendOtpResponseData>>(
       `${this.basePath}/send`,
-      dto!
+      dto
     );
-    return data;
+    return {
+      ...data,
+      data: data.data ?? (typeof data.secondsLeft === "number" ? {
+        channel: "sms",
+        secondsLeft: data.secondsLeft,
+        attemptsLeft: data.attemptsLeft!,
+        resendLeft: data.resendLeft!,
+        locked: data.locked!,
+      } : undefined),
+    };
   }
 
   async verifyOtp(dto: VerifyOtpDto): Promise<ApiResponse<null>> {

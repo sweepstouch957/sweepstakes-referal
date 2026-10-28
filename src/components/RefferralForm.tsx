@@ -33,6 +33,7 @@ interface Props {
   showExtendedFields?: boolean;
   omitEmailAndZip?: boolean;
   hideReferralCode?: boolean;
+  allowGenericRegistration?: boolean;
   disabled?: boolean;
   referralCodeNotice?: string;
 }
@@ -51,6 +52,7 @@ export default function ReferralForm({
   showExtendedFields = false,
   omitEmailAndZip = false,
   hideReferralCode = false,
+  allowGenericRegistration = false,
   disabled = false,
   stepperVariant = "full",
 }: Props) {
@@ -78,7 +80,7 @@ export default function ReferralForm({
     resendLeft,
     locked,
     success,
-  } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit, storeId, omitEmailAndZip);
+  } = useReferralStepper(defaultReferralCode, defaultStoreName, onSubmit, storeId, omitEmailAndZip, allowGenericRegistration);
 
   const { t } = useTranslation();
   const stepContentRef = useRef<HTMLDivElement>(null);
@@ -89,7 +91,12 @@ export default function ReferralForm({
 
   /* ── Step advance (2-step flow) ── */
   const nextStep = async () => {
-    if (disabled) return;
+    if (disabled || isLoading || isLoadingOtp || isValidatingOtp || isValidatingReferral) return;
+
+    if (activeStep === 1) {
+      await form.handleSubmit(handleFinalSubmit)();
+      return;
+    }
 
     if (activeStep === 0) {
       // Validate personal info
@@ -107,7 +114,7 @@ export default function ReferralForm({
       const valid = await trigger(["firstName", "lastName", "phone", "email", "zip"]);
       if (!valid) return;
 
-      if (!storeId && !getValues("supermarket")) {
+      if (!allowGenericRegistration && !storeId && !getValues("supermarket")) {
         form.setError("supermarket", {
           type: "required",
           message: t("form.errors.supermarket.required"),
@@ -135,8 +142,8 @@ export default function ReferralForm({
       }
 
       // Send OTP and advance to verification step
-      setActiveStep(1);
-      await handleSendOtp();
+      const sent = await handleSendOtp();
+      if (sent) setActiveStep(1);
     }
   };
 
@@ -168,9 +175,11 @@ export default function ReferralForm({
               defaultReferralCode={defaultReferralCode}
               omitEmailAndZip={omitEmailAndZip}
               hideReferralCode={hideReferralCode}
-              showSupermarket={!showExtendedFields}
+              showSupermarket={!allowGenericRegistration && !showExtendedFields}
               sweepstakeId={sweepstakeId}
             />
+
+            {resendError && <Alert severity="error" sx={{ mt: 2 }}>{resendError}</Alert>}
 
             {referralError && (
               <Alert severity="error" sx={{ mt: 2, borderRadius: 3 }} onClose={() => setReferralError(null)}>
@@ -188,7 +197,7 @@ export default function ReferralForm({
             resendTimer={resendTimer}
             phone={getValues("phone")}
             onResend={handleSendOtp}
-            onComplete={form.handleSubmit(handleFinalSubmit)}
+            onComplete={() => { void form.handleSubmit(handleFinalSubmit)(); }}
             attemptsLeft={attemptsLeft}
             locked={locked}
             resendLeft={resendLeft}

@@ -79,7 +79,8 @@ export function useReferralStepper(
   defaultStoreName = "",
   onSubmit: (data: FormData) => void,
   storeId = "",
-  omitEmailAndZip = false
+  omitEmailAndZip = false,
+  allowGenericRegistration = false
 ) {
   const [activeStep, setActiveStep] = useState(0);
   const [otpSent, setOtpSent] = useState(false);
@@ -96,6 +97,8 @@ export function useReferralStepper(
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [otp, setOtp] = useState("");
+  const sendingOtpRef = useRef(false);
+  const verifyingOtpRef = useRef(false);
 
   const cookieData = (() => {
     try {
@@ -195,6 +198,7 @@ export function useReferralStepper(
   );
 
   const handleSendOtp = useCallback(async () => {
+    if (sendingOtpRef.current) return false;
     setResendError(null);
     setAttemptsLeft(undefined);
     setLocked(undefined);
@@ -204,59 +208,81 @@ export function useReferralStepper(
     const phoneFormatted = getValues("phone") || "";
     if (!phoneFormatted) {
       setResendError(t("form.errors.phoneRequiredIfSms"));
-      return;
+      return false;
     }
 
     const phone = phoneFormatted.replace(/\D/g, "");
     if (phone.length !== 10) {
       setResendError(t("form.errors.phone"));
-      return;
+      return false;
     }
 
-    const phoneWithCode = phone.startsWith("1") ? `+${phone}` : `+1${phone}`;
+    const phoneWithCode = `+1${phone}`;
 
     const otpService = new OtpService();
+    sendingOtpRef.current = true;
     setIsLoadingOtp(true);
     setIsResending(true);
     try {
-      await otpService.sendOtp({
+      const response = await otpService.sendOtp({
         phone: phoneWithCode,
         channel: "sms",
-        storeId: storeId || getValues("supermarket") || undefined,
+        storeId: storeId || (allowGenericRegistration ? undefined : getValues("supermarket")) || undefined,
       });
+      if (!response.success) {
+        throw { response: { data: { ...response.data, error: response.message } } };
+      }
+      handeSetOtp("");
       setOtpSent(true);
-      setResendTimer(OTP_COOLDOWN);
+      setResendTimer(response.data?.secondsLeft ?? OTP_COOLDOWN);
+      setAttemptsLeft(response.data?.attemptsLeft);
+      setResendLeft(response.data?.resendLeft);
+      setLocked(response.data?.locked);
+      return true;
     } catch (err: any) {
-      setResendError(err?.response?.data?.error || "OTP validation failed");
+      setResendError(err?.response?.data?.error || err?.response?.data?.message || err?.message || "OTP validation failed");
       setAttemptsLeft(err?.response?.data?.attemptsLeft);
       setLocked(err?.response?.data?.locked);
       setResendLeft(err?.response?.data?.resendLeft);
+      const wait = err?.response?.data?.secondsLeft ?? err?.response?.data?.cooldown;
+      if (typeof wait === "number") setResendTimer(wait);
+      return false;
+    } finally {
+      sendingOtpRef.current = false;
+      setIsLoadingOtp(false);
+      setIsResending(false);
     }
-    setIsLoadingOtp(false);
-    setIsResending(false);
-  }, [getValues, storeId]);
+  }, [getValues, storeId, handeSetOtp, allowGenericRegistration]);
 
   const handleFinalSubmit = useCallback(
     async (data: FormData) => {
+      if (sendingOtpRef.current || verifyingOtpRef.current || locked || !/^\d{6}$/.test(data.otp)) return;
+      verifyingOtpRef.current = true;
+      setResendError(null);
       setIsValidatingOtp(true);
       setSuccess(false);
       try {
         const phone = (data.phone || "").replace(/\D/g, "");
-        await new OtpService().verifyOtp({
-          phone: phone.startsWith("1") ? `+${phone}` : `+1${phone}`,
+        const response = await new OtpService().verifyOtp({
+          phone: `+1${phone}`,
           code: data.otp,
         });
+        if (!response.success) {
+          throw { response: { data: { error: response.message } } };
+        }
         setSuccess(true);
         clearFormCookies();
         onSubmit({ ...data });
       } catch (err: any) {
-        setResendError(err?.response?.data?.error || "OTP validation failed");
+        setResendError(err?.response?.data?.error || err?.response?.data?.message || err?.message || "OTP validation failed");
         setAttemptsLeft(err?.response?.data?.attemptsLeft);
         setLocked(err?.response?.data?.locked);
+      } finally {
+        verifyingOtpRef.current = false;
+        setIsValidatingOtp(false);
       }
-      setIsValidatingOtp(false);
     },
-    [onSubmit, clearFormCookies]
+    [onSubmit, clearFormCookies, locked]
   );
 
   useEffect(() => {

@@ -311,6 +311,7 @@ function OptinPageInner() {
           </Container>
         ) : sweepstakeId ? (
           <WinACarForm
+            allowGenericRegistration={!slug}
             hideReferralCode
             omitEmailAndZip
             showExtendedFields={!!slug}
@@ -318,7 +319,7 @@ function OptinPageInner() {
             storeName={store?.name || ""}
             isLoading={isLoading}
             slug={slug}
-            storeId={store?._id || Cookies.get("storeId") || ""}
+            storeId={store?._id || ""}
             sweepstakeId={sweepstakeId}
             hideTitle
             stepperVariant="full"

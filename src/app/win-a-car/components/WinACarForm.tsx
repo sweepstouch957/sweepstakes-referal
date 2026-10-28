@@ -27,6 +27,7 @@ interface Props {
   showExtendedFields?: boolean;
   omitEmailAndZip?: boolean;
   hideReferralCode?: boolean;
+  allowGenericRegistration?: boolean;
   tokenValue?: string;
   storeName?: string;
   isLoading?: boolean;
@@ -48,6 +49,7 @@ export default function WinACarFormWithThankYou({
   showExtendedFields = false,
   omitEmailAndZip = false,
   hideReferralCode = false,
+  allowGenericRegistration = false,
   tokenValue = "",
   storeName = "",
   isLoading = false,
@@ -101,11 +103,12 @@ export default function WinACarFormWithThankYou({
 
     // If opened without a slug, allow using the selected supermarket value
     // from the form (stored as a storeId).
-    const resolvedStoreId = storeId || data.supermarket;
+    const resolvedStoreId = storeId || (allowGenericRegistration ? undefined : data.supermarket);
 
     mutation.mutate({
       sweepstakeId,
-      storeId: resolvedStoreId,
+      ...(resolvedStoreId ? { storeId: resolvedStoreId } : {}),
+      ...(allowGenericRegistration && !resolvedStoreId ? { genericRegistration: true } : {}),
       campaignId,
       ...(hideReferralCode ? {} : { referralCode: data.referralCode }),
       firstName: data.firstName,
@@ -173,6 +176,7 @@ export default function WinACarFormWithThankYou({
                 showExtendedFields={showExtendedFields}
                 omitEmailAndZip={omitEmailAndZip}
                 hideReferralCode={hideReferralCode}
+                allowGenericRegistration={allowGenericRegistration}
                 sweepstakeId={sweepstakeId}
                 storeId={storeId}
               />

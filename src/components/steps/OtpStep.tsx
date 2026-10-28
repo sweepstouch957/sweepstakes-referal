@@ -63,7 +63,9 @@ export default function OtpStep({
     }
   }, []);
 
-  const handleChange = (val: string) => {
+  const handleChange = (value: string) => {
+    if (isVerifying || isResending || locked || success) return;
+    const val = value.replace(/\D/g, "").slice(0, 6);
     if (val.length > prevOtpLen.current && otpContainerRef.current) {
       const inputs = otpContainerRef.current.querySelectorAll("input");
       const filledIndex = val.length - 1;
@@ -153,7 +155,7 @@ export default function OtpStep({
       </Typography>
 
       {/* OTP Inputs */}
-      <Box ref={otpContainerRef} sx={{ mb: 2 }}>
+      <Box ref={otpContainerRef} sx={{ mb: 2, width: "100%", minWidth: 0 }}>
         <OTPInput
           value={otp}
           onChange={handleChange}
@@ -163,8 +165,12 @@ export default function OtpStep({
             <input
               {...props}
               aria-label={`Digit ${idx + 1}`}
+              disabled={isVerifying || isResending || locked || success}
+              autoComplete={idx === 0 ? "one-time-code" : "off"}
               style={{
-                width: "2.9rem",
+                width: "clamp(24px, 7vw, 46px)",
+                minWidth: 0,
+                boxSizing: "border-box",
                 height: "3.5rem",
                 fontSize: "1.4rem",
                 borderRadius: 11,
@@ -173,7 +179,7 @@ export default function OtpStep({
                 textAlign: "center",
                 fontWeight: 800,
                 outline: "none",
-                marginRight: idx < 5 ? 9 : 0,
+                marginRight: idx < 5 ? 4 : 0,
                 boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
                 transition: "border-color 0.18s, box-shadow 0.18s",
                 color: "#111827",

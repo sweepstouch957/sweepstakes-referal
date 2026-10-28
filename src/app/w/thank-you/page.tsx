@@ -210,7 +210,7 @@ function ThankYouOptinInner() {
 
   // Redirect if no params
   useEffect(() => {
-    if (!referralCode || !slug) {
+    if (!referralCode) {
       const t = setTimeout(() => router.replace("/"), 2200);
       return () => clearTimeout(t);
     }
@@ -220,7 +220,7 @@ function ThankYouOptinInner() {
   const { data: referralData, isLoading: referralLoading, isError: referralError } = useQuery({
     queryKey: ["referral-store-info", referralCode, slug],
     queryFn: () => getReferralLinkByStore(referralCode, slug),
-    enabled: !!referralCode && !!slug,
+    enabled: !!referralCode,
   });
 
   // Fetch active sweepstake (for brand colors & prize list)
@@ -247,7 +247,7 @@ function ThankYouOptinInner() {
 
   const mainColor = "#E8127F";
 
-  if (!referralCode || !slug) {
+  if (!referralCode) {
     return <CenteredLoader text="Ocurrió un error. Redirigiendo..." color={mainColor} />;
   }
 
@@ -359,7 +359,7 @@ function ThankYouOptinInner() {
 
                   <CouponCard
                     referralCode={referralData.referralCode || referralCode}
-                    storeName={referralData.storeName}
+                    storeName={referralData.storeName || "Sweepstouch"}
                     reward={referralData.referralReward}
                   />
 
