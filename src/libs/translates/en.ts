@@ -14,8 +14,8 @@ const en = {
 
   "retry": "Retry",
   "storeRequired": "Your registration is saved. A store must be assigned before a redeemable coupon can be issued.",
-  "won": "YOU HAVE WON $10 OFF!",
-  "valid": "VALID WITH ADD'L $100.00 PURCHASE OR MORE",
+  "won": "$10 OFF",
+  "valid": "VALID WITH A MINIMUM PURCHASE OF $100.00 OR MORE",
   "showCashier": "Show this coupon to the cashier to redeem it.",
   "redeemAt": "Redeem your coupon at:",
   "how": "How to redeem?",

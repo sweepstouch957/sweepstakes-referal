@@ -45,7 +45,7 @@ function CouponHeading({ name }: { name?: string }) {
       <Typography fontWeight={900} sx={{ color: "#E8127F", fontSize: { xs: "clamp(21px, 6vw, 27px)", sm: 34 }, lineHeight: 1.2, textAlign: "center" }}>
         {t("w.won")}
       </Typography>
-      <Typography fontWeight={400} sx={{ color: "#E8127F", fontSize: { xs: 11, sm: 13 }, lineHeight: 1.3, textAlign: "center" }}>
+      <Typography fontWeight={400} sx={{ color: "#000", fontSize: { xs: 11, sm: 13 }, lineHeight: 1.3, textAlign: "center" }}>
         {t("w.valid")}
       </Typography>
       <Typography sx={{ color: "#000", fontSize: { xs: 13, sm: 15 }, lineHeight: 1.3, textAlign: "center" }}>

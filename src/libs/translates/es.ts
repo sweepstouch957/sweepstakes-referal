@@ -14,8 +14,8 @@ const es = {
 
   "retry": "Reintentar",
   "storeRequired": "Tu registro est\u00e1 guardado. Para emitir un cup\u00f3n canjeable necesitas una tienda asignada.",
-  "won": "\u00a1GANASTE $10 OFF!",
-  "valid": "V\u00c1LIDO CON UNA COMPRA ADICIONAL DE $100.00 O M\u00c1S",
+  "won": "$10 OFF",
+  "valid": "V\u00c1LIDO CON UNA COMPRA M\u00cdNIMA DE $100.00 O M\u00c1S",
   "showCashier": "Mu\u00e9stralo a la cajera para canjearlo.",
   "redeemAt": "Canjea tu cup\u00f3n en la tienda de:",
   "how": "\u00bfC\u00f3mo canjearlo?",
