@@ -1,6 +1,17 @@
 const en = {
   translation: {
     w: {
+  "redeemTitleFirst": "How to redeem",
+  "redeemTitleSecond": "your coupon",
+  "redeemVisit": "Visit",
+  "redeemSpend": "Spend $100 or more",
+  "redeemPurchase": "in one purchase.",
+  "redeemCheckout": "At checkout,",
+  "redeemOpenQr": "open your coupon QR code.",
+  "redeemCashier": "Ask the cashier",
+  "redeemTablet": "to scan it using the store tablet.",
+  "closeInstructions": "Close instructions",
+
   "retry": "Retry",
   "storeRequired": "Your registration is saved. A store must be assigned before a redeemable coupon can be issued.",
   "won": "YOU HAVE WON $10 OFF!",

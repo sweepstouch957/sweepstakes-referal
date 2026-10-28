@@ -1,8 +1,10 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Alert, Box, Button, Link, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, IconButton, Link, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import Image from "next/image";
+import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
 import { isAxiosError } from "axios";
 import { useQuery } from "@tanstack/react-query";
@@ -141,21 +143,39 @@ export default function CouponCard({ referralCode, storeName, storeAddress, slug
         aria-labelledby="coupon-redemption-title"
         maxWidth="xs"
         fullWidth
-        PaperProps={{ sx: { borderRadius: 3 } }}
+        PaperProps={{ sx: { borderRadius: "26px", m: 2, width: "calc(100% - 32px)", maxWidth: 400, maxHeight: "calc(100dvh - 32px)", bgcolor: "#fff" } }}
+        BackdropProps={{ sx: { bgcolor: "rgba(0, 0, 0, 0.65)" } }}
       >
-        <DialogTitle id="coupon-redemption-title" sx={{ color: "#E8127F", fontWeight: 800 }}>
-          {t("w.howTitle")}
+        <Box aria-hidden="true" sx={{ width: 44, height: 5, borderRadius: 4, bgcolor: "#d0cfd2", mx: "auto", mt: 1.5, flexShrink: 0 }} />
+        <IconButton aria-label={t("w.closeInstructions")} onClick={() => setInstructionsOpen(false)}
+          sx={{ position: "absolute", right: 12, top: 13, width: 36, height: 36, bgcolor: "#f2f2f2", color: "#555" }}>
+          <CloseIcon />
+        </IconButton>
+        <DialogTitle id="coupon-redemption-title" sx={{ px: 2.75, pt: 2, pb: 1, pr: 6, color: "#2b2036", fontWeight: 900, fontSize: { xs: 29, sm: 32 }, lineHeight: 1.03, letterSpacing: "-0.8px" }}>
+          {t("w.redeemTitleFirst")}
+          <Box component="span" sx={{ display: "block", color: "#f00083" }}>{t("w.redeemTitleSecond")}</Box>
         </DialogTitle>
-        <DialogContent>
-          <Box component="ol" sx={{ m: 0, pl: 3, color: "#000", listStyleType: "decimal", listStylePosition: "outside", "& li": { display: "list-item", mb: 1.5, pl: 0.5, lineHeight: 1.5 } }}>
-            <li>{t("w.visit", { store: storeName || t("w.store") })}</li>
-            <li>{t("w.purchase")}</li>
-            <li>{t("w.checkout")}</li>
-            <li>{t("w.scan")}</li>
+        <DialogContent sx={{ px: 2.75, pb: 0, pt: "4px !important" }}>
+          <Box component="ol" sx={{ m: 0, p: 0, listStyle: "none" }}>
+            {[
+              { image: "store", title: t("w.redeemVisit"), body: storeName || t("w.store") },
+              { image: "cart", title: t("w.redeemSpend"), body: t("w.redeemPurchase") },
+              { image: "phone", title: t("w.redeemCheckout"), body: t("w.redeemOpenQr") },
+              { image: "tablet", title: t("w.redeemCashier"), body: t("w.redeemTablet") },
+            ].map((step, index) => (
+              <Box component="li" key={step.image} sx={{ display: "grid", gridTemplateColumns: { xs: "26px 64px minmax(0, 1fr)", sm: "28px 72px minmax(0, 1fr)" }, gap: 0.75, alignItems: "center", py: 1.1, borderBottom: index < 3 ? "1px solid #f1eff2" : "none" }}>
+                <Box component="span" sx={{ alignSelf: "start", mt: 0.75, width: 28, height: 28, borderRadius: "50%", bgcolor: "#f00083", color: "#fff", fontWeight: 800, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center" }}>{index + 1}</Box>
+                <Image src={`/w-redeem/${step.image}.png`} alt="" width={80} height={80} sizes="80px" style={{ width: "100%", height: "auto", objectFit: "contain" }} />
+                <Box sx={{ pl: 0.75, minWidth: 0 }}>
+                  <Typography sx={{ color: "#2b2036", fontWeight: 800, fontSize: 16, lineHeight: 1.25 }}>{step.title}</Typography>
+                  <Typography sx={{ color: "#6b7280", fontSize: 14.5, lineHeight: 1.35, mt: 0.25, overflowWrap: "anywhere" }}>{step.body}</Typography>
+                </Box>
+              </Box>
+            ))}
           </Box>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2.5 }}>
-          <Button onClick={() => setInstructionsOpen(false)} variant="contained" sx={{ bgcolor: "#E8127F", borderRadius: 2, textTransform: "none", "&:hover": { bgcolor: "#c40d6a" } }}>
+        <DialogActions sx={{ px: 2.5, pt: 1.25, pb: 2.5 }}>
+          <Button fullWidth onClick={() => setInstructionsOpen(false)} variant="contained" sx={{ bgcolor: "#f00083", borderRadius: "14px", minHeight: 50, fontSize: 19, fontWeight: 800, textTransform: "none", boxShadow: "none", "&:hover": { bgcolor: "#c40d6a" } }}>
             {t("w.gotIt")}
           </Button>
         </DialogActions>

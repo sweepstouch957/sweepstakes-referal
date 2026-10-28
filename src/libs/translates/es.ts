@@ -1,6 +1,17 @@
 const es = {
   translation: {
     w: {
+  "redeemTitleFirst": "C\u00f3mo canjear",
+  "redeemTitleSecond": "tu cup\u00f3n",
+  "redeemVisit": "Visita",
+  "redeemSpend": "Compra $100 o m\u00e1s",
+  "redeemPurchase": "en una sola compra.",
+  "redeemCheckout": "En caja,",
+  "redeemOpenQr": "abre el c\u00f3digo QR de tu cup\u00f3n.",
+  "redeemCashier": "Pide a la cajera",
+  "redeemTablet": "que lo escanee con la tablet de la tienda.",
+  "closeInstructions": "Cerrar instrucciones",
+
   "retry": "Reintentar",
   "storeRequired": "Tu registro est\u00e1 guardado. Para emitir un cup\u00f3n canjeable necesitas una tienda asignada.",
   "won": "\u00a1GANASTE $10 OFF!",
