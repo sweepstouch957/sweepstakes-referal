@@ -42,6 +42,7 @@ interface Props {
   thankYouPath?: string;
   /** ID del premio principal para pasar a la thank-you dinámica */
   prizeId?: string;
+  onRegistered?: (result: { couponUrl: string; storeName: string }) => void;
 }
 
 export default function WinACarFormWithThankYou({
@@ -63,6 +64,7 @@ export default function WinACarFormWithThankYou({
   stepperVariant = 'full',
   thankYouPath,
   prizeId,
+  onRegistered,
 }: Props) {
   const theme = useTheme();
   const {language}=useLanguage()
@@ -91,7 +93,12 @@ export default function WinACarFormWithThankYou({
         ...(sweepstakeId ? { sweepstakeId } : {}),
         ...(prizeId ? { prizeId } : {}),
       });
-      router.push(`${basePath}?${params.toString()}`);
+      const couponUrl = `${basePath}?${params.toString()}`;
+      if (onRegistered) {
+        onRegistered({ couponUrl, storeName: data.storeName || storeName });
+        return;
+      }
+      router.push(couponUrl);
     },
 
     onError: (error: any) => {

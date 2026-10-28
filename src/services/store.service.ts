@@ -9,6 +9,7 @@ export interface Store {
   ownerId: string;
   description: string;
   image: string;
+  storePhoto?: string;
   active: boolean;
   subscription: string | null;
   createdAt: string;

@@ -21,6 +21,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { useMemo } from "react";
 
 import Navbar from "@/app/win-a-car/components/Navbar";
+import { getStoreBySlug } from "@/services/store.service";
 import CouponCard from "../components/CouponCard";
 import ReferralBanner from "../components/ReferralBanner";
 
@@ -206,6 +207,14 @@ function ThankYouOptinInner() {
 
   const prizeIdParam = params.get("prizeId") || "";
 
+  const { data: store } = useQuery({
+    queryKey: ["store", slug],
+    queryFn: () => getStoreBySlug(slug),
+    enabled: !!slug,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+  });
+
 
 
   // Redirect if no params
@@ -346,17 +355,40 @@ function ThankYouOptinInner() {
               {referralData && (
                 <Box sx={{ px: { xs: 1.5, sm: 4 }, pt: { xs: 1, sm: 3 } }}>
                   {referralData.storeName && (
-                    <Typography
-                      textAlign="center"
-                      sx={{ color: "#64748b", fontSize: { xs: 12, sm: 14 }, mb: { xs: 0.75, sm: 1.5 } }}
-                    >
-                      Registrado en{" "}
-                      <Box component="span" fontWeight={700} color="#1a1a2e">
-                        {referralData.storeName.replace(/\s+\d.*$/, "").trim()}
-                      </Box>
-                    </Typography>
+                    <Stack alignItems="center" spacing={0.5} sx={{ mb: { xs: 0.5, sm: 1.5 } }}>
+                      {store?.storePhoto && (
+                        <Box
+                          component="img"
+                          src={store.storePhoto}
+                          alt={referralData.storeName}
+                          sx={{
+                            width: "100%",
+                            maxWidth: "100%",
+                            height: { xs: "clamp(120px, 27svh, 220px)", sm: 280 },
+                            objectFit: "cover",
+                            borderRadius: 2,
+                            display: "block",
+                          }}
+                        />
+                      )}
+                      <Typography fontWeight={900} sx={{ color: "#E8127F", fontSize: { xs: 23, sm: 30 }, lineHeight: 1.2, textAlign: "center", pt: 0.75 }}>
+                        ¡Ganaste $10 OFF!
+                      </Typography>
+                      <Typography
+                        textAlign="center"
+                        sx={{ color: "#64748b", fontSize: { xs: 12, sm: 14 }, lineHeight: 1.3 }}
+                      >
+                        Canjea tu cupón en la tienda de:
+                        <Box component="span" display="block" fontWeight={800} color="#1a1a2e">
+                          {referralData.storeName.replace(/\s+\d.*$/, "").trim()}
+                        </Box>
+                      </Typography>
+                    </Stack>
                   )}
 
+                  {!referralData.storeName && (
+                    <Typography textAlign="center" fontWeight={900} sx={{ color: mainColor, fontSize: 24 }}>¡Ganaste $10 OFF!</Typography>
+                  )}
                   <CouponCard
                     referralCode={referralData.referralCode || referralCode}
                     storeName={referralData.storeName || "Sweepstouch"}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -13,6 +13,11 @@ import {
   Skeleton,
   Paper,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import PlaceIcon from "@mui/icons-material/Place";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -207,6 +212,8 @@ function SectionHeading({
 function OptinPageInner() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
+  const [confirmation, setConfirmation] = useState<{ couponUrl: string; storeName: string } | null>(null);
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
   const slug = searchParams.get("slug") || "";
   const referralCode = searchParams.get("referralcode") || "";
 
@@ -263,6 +270,23 @@ function OptinPageInner() {
       "& > .MuiAppBar-root .MuiToolbar-root": { px: { xs: 0, sm: 2 } },
       "& > .MuiAppBar-root img": { maxWidth: "45vw", height: "auto" },
     }}>
+      <Dialog open={confirmationOpen} onClose={() => setConfirmationOpen(false)} maxWidth="xs" fullWidth
+        aria-labelledby="w-registration-success" PaperProps={{ sx: { borderRadius: 4, textAlign: "center" } }}>
+        <DialogTitle id="w-registration-success" sx={{ color: mainColor, fontWeight: 900 }}>
+          Te has registrado correctamente
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: "#475569", lineHeight: 1.6 }}>
+            Te enviamos un mensaje con el cupón para canjearlo
+            {confirmation?.storeName ? " en la tienda de:" : " en la tienda participante."}
+          </Typography>
+          {confirmation?.storeName && <Typography fontWeight={800} sx={{ mt: 1 }}>{cleanStoreName(confirmation.storeName)}</Typography>}
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center", pb: 3 }}>
+          <Button variant="contained" onClick={() => setConfirmationOpen(false)} sx={{ bgcolor: mainColor, borderRadius: 2, textTransform: "none" }}>Entendido</Button>
+        </DialogActions>
+      </Dialog>
+
       {/* Navbar */}
       <Navbar hideActions hideMobileMenu />
 
@@ -311,8 +335,11 @@ function OptinPageInner() {
           </Container>
         ) : sweepstakeId ? (
           <WinACarForm
+            onRegistered={(result) => {
+              setConfirmation(result);
+              setConfirmationOpen(true);
+            }}
             skipOtpVerification
-            suppressMessages
             allowGenericRegistration={!slug}
             hideReferralCode
             omitEmailAndZip
